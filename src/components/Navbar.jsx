@@ -69,7 +69,7 @@ const Navbar = () => {
             <Link href="/about" className={linkClass("/about")}>
               About
             </Link>
-            {user && (
+            {user?.email === "admin@techmarket.com" && (
               <>
                 <Link href="/items/add" className={linkClass("/items/add")}>
                   Add Product
@@ -134,22 +134,24 @@ const Navbar = () => {
                       </p>
                     </div>
 
-                    <div className="px-2 py-2 border-b border-zinc-800/50 mb-2">
-                      <Link
-                        href="/items/add"
-                        onClick={() => setDropdownOpen(false)}
-                        className="block w-full text-left px-3 py-2 text-sm font-bold text-zinc-300 hover:text-cyan-400 hover:bg-cyan-500/10 rounded-lg transition-colors cursor-pointer"
-                      >
-                        ➕ Add Product
-                      </Link>
-                      <Link
-                        href="/items/manage"
-                        onClick={() => setDropdownOpen(false)}
-                        className="block w-full text-left px-3 py-2 text-sm font-bold text-zinc-300 hover:text-cyan-400 hover:bg-cyan-500/10 rounded-lg transition-colors cursor-pointer mt-1"
-                      >
-                        ⚙️ Manage Products
-                      </Link>
-                    </div>
+                    {user?.email === "admin@techmarket.com" && (
+                      <div className="px-2 py-2 border-b border-zinc-800/50 mb-2">
+                        <Link
+                          href="/items/add"
+                          onClick={() => setDropdownOpen(false)}
+                          className="block w-full text-left px-3 py-2 text-sm font-bold text-zinc-300 hover:text-cyan-400 hover:bg-cyan-500/10 rounded-lg transition-colors cursor-pointer"
+                        >
+                          ➕ Add Product
+                        </Link>
+                        <Link
+                          href="/items/manage"
+                          onClick={() => setDropdownOpen(false)}
+                          className="block w-full text-left px-3 py-2 text-sm font-bold text-zinc-300 hover:text-cyan-400 hover:bg-cyan-500/10 rounded-lg transition-colors cursor-pointer mt-1"
+                        >
+                          ⚙️ Manage Products
+                        </Link>
+                      </div>
+                    )}
 
                     <button
                       onClick={handleLogout}
@@ -234,20 +236,24 @@ const Navbar = () => {
           </Link>
           {user ? (
             <>
-              <Link
-                href="/items/add"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block px-3 py-2 rounded-lg text-base font-medium text-white hover:text-cyan-400"
-              >
-                Add Product
-              </Link>
-              <Link
-                href="/items/manage"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block px-3 py-2 rounded-lg text-base font-medium text-white hover:text-cyan-400"
-              >
-                Manage Products
-              </Link>
+              {user?.email === "admin@techmarket.com" && (
+                <>
+                  <Link
+                    href="/items/add"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block px-3 py-2 rounded-lg text-base font-medium text-white hover:text-cyan-400"
+                  >
+                    Add Product
+                  </Link>
+                  <Link
+                    href="/items/manage"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block px-3 py-2 rounded-lg text-base font-medium text-white hover:text-cyan-400"
+                  >
+                    Manage Products
+                  </Link>
+                </>
+              )}
               <div className="mt-4 border-t border-cyan-500/20 pt-4">
                 <div className="flex items-center gap-3 px-3 mb-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-tr from-cyan-500 to-pink-500 font-bold text-white shadow-[0_0_10px_rgba(0,243,255,0.5)]">

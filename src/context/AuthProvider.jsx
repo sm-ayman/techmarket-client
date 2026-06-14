@@ -36,8 +36,21 @@ const AuthProvider = ({ children }) => {
       };
       setUser(mockAdmin);
       setLoading(false);
-      localStorage.setItem("techmarket_mock_admin", JSON.stringify(mockAdmin));
+      localStorage.setItem("techmarket_mock_user", JSON.stringify(mockAdmin));
       return Promise.resolve(mockAdmin);
+    }
+    if (email === "customer@techmarket.com" && password === "customer123") {
+      const mockCustomer = {
+        uid: "customer-demo-id",
+        email: "customer@techmarket.com",
+        displayName: "Demo Customer",
+        photoURL: null,
+        role: "customer"
+      };
+      setUser(mockCustomer);
+      setLoading(false);
+      localStorage.setItem("techmarket_mock_user", JSON.stringify(mockCustomer));
+      return Promise.resolve(mockCustomer);
     }
     return signInWithEmailAndPassword(auth, email, password);
   };
@@ -53,7 +66,11 @@ const AuthProvider = ({ children }) => {
   const logoutUser = () => {
     setLoading(true);
     localStorage.removeItem("techmarket_mock_admin");
-    return signOut(auth);
+    localStorage.removeItem("techmarket_mock_user");
+    return signOut(auth).then(() => {
+      setUser(null);
+      setLoading(false);
+    });
   };
 
   // Update profile
@@ -69,18 +86,13 @@ const AuthProvider = ({ children }) => {
 
   // Observe user auth state changes
   useEffect(() => {
-    const mockAdminStored = localStorage.getItem("techmarket_mock_admin");
-    if (mockAdminStored) {
-      const parsedAdmin = JSON.parse(mockAdminStored);
-      setTimeout(() => {
-        setUser(parsedAdmin);
-        setLoading(false);
-      }, 0);
-      return;
-    }
-
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
+      const mockUserStored = localStorage.getItem("techmarket_mock_user") || localStorage.getItem("techmarket_mock_admin");
+      if (mockUserStored) {
+        setUser(JSON.parse(mockUserStored));
+      } else {
+        setUser(currentUser);
+      }
       setLoading(false);
     });
     return () => unsubscribe();

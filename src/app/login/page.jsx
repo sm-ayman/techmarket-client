@@ -55,6 +55,11 @@ const Login = () => {
     setPassword("admin123");
   };
 
+  const fillCustomerCredentials = () => {
+    setEmail("customer@techmarket.com");
+    setPassword("customer123");
+  };
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#020202] px-4 py-12 sm:px-6 lg:px-8 border-t border-zinc-900">
       <div className="w-full max-w-md space-y-8 bg-[#0a0a0a] p-8 rounded-3xl border border-cyan-500/30 shadow-[0_0_30px_rgba(0,243,255,0.15)] relative overflow-hidden">
@@ -77,14 +82,27 @@ const Login = () => {
           </p>
         </div>
 
-        <div 
-          onClick={fillDemoCredentials}
-          className="relative z-10 rounded-xl bg-[#050505] border border-cyan-500/50 p-4 text-xs text-cyan-400 cursor-pointer hover:bg-cyan-500/10 hover:neon-glow-cyan transition-all"
-        >
-          <strong className="neon-text-cyan">Click to use Admin Credentials:</strong><br />
-          <div className="mt-2 space-y-1">
-            <p>Email: <code className="font-mono bg-[#0a0a0a] px-1.5 py-0.5 rounded border border-cyan-500/30">admin@techmarket.com</code></p>
-            <p>Password: <code className="font-mono bg-[#0a0a0a] px-1.5 py-0.5 rounded border border-cyan-500/30">admin123</code></p>
+        <div className="grid grid-cols-2 gap-4 relative z-10">
+          <div 
+            onClick={fillDemoCredentials}
+            className="rounded-xl bg-[#050505] border border-cyan-500/50 p-4 text-xs text-cyan-400 cursor-pointer hover:bg-cyan-500/10 hover:neon-glow-cyan transition-all flex flex-col justify-between"
+          >
+            <strong className="neon-text-cyan">Admin Demo:</strong>
+            <div className="mt-2 space-y-1">
+              <p>Email: <code className="block mt-0.5 font-mono bg-[#0a0a0a] px-1.5 py-0.5 rounded border border-cyan-500/30 truncate" title="admin@techmarket.com">admin@techmarket.com</code></p>
+              <p>Pass: <code className="block mt-0.5 font-mono bg-[#0a0a0a] px-1.5 py-0.5 rounded border border-cyan-500/30">admin123</code></p>
+            </div>
+          </div>
+
+          <div 
+            onClick={fillCustomerCredentials}
+            className="rounded-xl bg-[#050505] border border-pink-500/50 p-4 text-xs text-pink-400 cursor-pointer hover:bg-pink-500/10 hover:neon-glow-pink transition-all flex flex-col justify-between"
+          >
+            <strong className="neon-text-pink">Customer Demo:</strong>
+            <div className="mt-2 space-y-1">
+              <p>Email: <code className="block mt-0.5 font-mono bg-[#0a0a0a] px-1.5 py-0.5 rounded border border-pink-500/30 truncate" title="customer@techmarket.com">customer@techmarket.com</code></p>
+              <p>Pass: <code className="block mt-0.5 font-mono bg-[#0a0a0a] px-1.5 py-0.5 rounded border border-pink-500/30">customer123</code></p>
+            </div>
           </div>
         </div>
 
