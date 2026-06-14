@@ -98,6 +98,86 @@ const INITIAL_PRODUCTS = [
       "Body": "CNC Machined Aluminum",
       "Hot-swappable": "Yes (3-pin & 5-pin MX switches)"
     }
+  },
+  {
+    id: "samsung-s24-ultra",
+    title: "Samsung Galaxy S24 Ultra",
+    shortDescription: "Galaxy AI is here. Welcome to the era of mobile AI.",
+    description: "The new Galaxy S24 Ultra features a tough titanium exterior and a 6.8-inch flat display. It's an absolute marvel of design and the ultimate smartphone for gaming and productivity with the built-in S Pen.",
+    price: 1299,
+    category: "Phones",
+    rating: 4.8,
+    image: "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=600&auto=format&fit=crop&q=80",
+    specs: {
+      "Display": "6.8-inch Dynamic AMOLED 2X",
+      "Processor": "Snapdragon 8 Gen 3 for Galaxy",
+      "Camera": "200MP Main | 50MP Periscope",
+      "Storage": "256GB / 512GB / 1TB"
+    }
+  },
+  {
+    id: "dji-mini-4-pro",
+    title: "DJI Mini 4 Pro",
+    shortDescription: "Mini to the max with omnidirectional active obstacle sensing.",
+    description: "DJI Mini 4 Pro is our most advanced mini-camera drone to date. It integrates powerful imaging capabilities, omnidirectional obstacle sensing, and ActiveTrack 360° with the new Trace Mode.",
+    price: 759,
+    category: "Drones",
+    rating: 4.9,
+    image: "https://images.unsplash.com/photo-1579829366248-204fe8413f31?w=600&auto=format&fit=crop&q=80",
+    specs: {
+      "Weight": "Under 249 g",
+      "Video": "4K/60fps HDR True Vertical Shooting",
+      "Flight Time": "Up to 34 minutes",
+      "Sensing": "Omnidirectional"
+    }
+  },
+  {
+    id: "lg-c3-oled",
+    title: "LG C3 55-inch OLED evo TV",
+    shortDescription: "Our best-selling OLED TV just got better.",
+    description: "The LG OLED evo C-Series is powered by the a9 AI Processor Gen6—made exclusively for LG OLED—for beautiful picture and performance. The Brightness Booster improves brightness so you get luminous picture and high contrast.",
+    price: 1499,
+    category: "Displays",
+    rating: 4.8,
+    image: "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=600&auto=format&fit=crop&q=80",
+    specs: {
+      "Display": "55-inch OLED evo",
+      "Resolution": "4K Ultra HD",
+      "Refresh Rate": "120Hz Native",
+      "Processor": "a9 AI Processor Gen6"
+    }
+  },
+  {
+    id: "logitech-mx-master-3s",
+    title: "Logitech MX Master 3S",
+    shortDescription: "The iconic mouse, remastered for ultimate tactility.",
+    description: "Meet MX Master 3S – an iconic mouse remastered. Feel every moment of your workflow with even more precision, tactility, and performance, thanks to Quiet Clicks and an 8,000 DPI track-on-glass sensor.",
+    price: 99,
+    category: "Accessories",
+    rating: 4.9,
+    image: "https://images.unsplash.com/photo-1586816879360-004f5b0c51e3?w=600&auto=format&fit=crop&q=80",
+    specs: {
+      "Sensor": "8000 DPI Darkfield",
+      "Buttons": "7 buttons, Quiet Clicks",
+      "Battery": "Up to 70 days",
+      "Connectivity": "Bluetooth & Logi Bolt"
+    }
+  },
+  {
+    id: "nintendo-switch-oled",
+    title: "Nintendo Switch - OLED Model",
+    shortDescription: "Play at home or on the go with a vibrant OLED screen.",
+    description: "Meet the newest member of the Nintendo Switch family. Play at home on the TV or on-the-go with a vibrant 7-inch OLED screen with the Nintendo Switch – OLED Model system.",
+    price: 349,
+    category: "Gaming",
+    rating: 4.7,
+    image: "https://images.unsplash.com/photo-1605901309584-818e25960b8f?w=600&auto=format&fit=crop&q=80",
+    specs: {
+      "Display": "7-inch OLED touch screen",
+      "Storage": "64GB Internal",
+      "Audio": "Enhanced audio",
+      "Stand": "Wide adjustable stand"
+    }
   }
 ];
 
@@ -107,10 +187,19 @@ export function useProducts() {
 
   useEffect(() => {
     const stored = localStorage.getItem("techmarket_products");
-    const data = stored ? JSON.parse(stored) : INITIAL_PRODUCTS;
-    if (!stored) {
-      localStorage.setItem("techmarket_products", JSON.stringify(INITIAL_PRODUCTS));
+    let data = stored ? JSON.parse(stored) : INITIAL_PRODUCTS;
+    
+    // Auto-update localStorage if it's missing the new products
+    if (!stored || data.length < 11) {
+      // Merge initial products that might be missing
+      const existingIds = new Set(data.map(p => p.id));
+      const missingProducts = INITIAL_PRODUCTS.filter(p => !existingIds.has(p.id));
+      if (missingProducts.length > 0) {
+        data = [...data, ...missingProducts];
+        localStorage.setItem("techmarket_products", JSON.stringify(data));
+      }
     }
+
     setTimeout(() => {
       setProducts(data);
       setLoading(false);
@@ -126,7 +215,7 @@ export function useProducts() {
         rating: 5.0, // default rating
         specs: newProduct.specs || {
           "Category": newProduct.category,
-          "Price": `$${newProduct.price}`
+          "Price": `৳${newProduct.price}`
         }
       }
     ];
@@ -140,5 +229,11 @@ export function useProducts() {
     setProducts(updated);
   };
 
-  return { products, loading, addProduct, deleteProduct };
+  const updateProduct = (id, updatedData) => {
+    const updated = products.map((p) => (p.id === id ? { ...p, ...updatedData } : p));
+    localStorage.setItem("techmarket_products", JSON.stringify(updated));
+    setProducts(updated);
+  };
+
+  return { products, loading, addProduct, deleteProduct, updateProduct };
 }

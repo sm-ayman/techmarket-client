@@ -8,6 +8,14 @@ const ItemDetails = ({ params }) => {
   const { id } = use(params);
   const { products, loading } = useProducts();
   const [selectedImageIdx, setSelectedImageIdx] = useState(0);
+  const [backgroundPos, setBackgroundPos] = useState("50% 50%");
+
+  const handleMouseMove = (e) => {
+    const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - left) / width) * 100;
+    const y = ((e.clientY - top) / height) * 100;
+    setBackgroundPos(`${x}% ${y}%`);
+  };
 
   if (loading) {
     return (
@@ -98,7 +106,7 @@ const ItemDetails = ({ params }) => {
   ];
 
   return (
-    <div className="bg-[#0A0A0C] text-white min-h-screen font-sans">
+    <div className="bg-[#050505] text-white min-h-screen font-sans">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         
         {/* Top Product Hero Layout */}
@@ -106,15 +114,31 @@ const ItemDetails = ({ params }) => {
           
           {/* Left: Image Canvas */}
           <div className="space-y-6">
-            <div className="relative aspect-square w-full rounded-3xl bg-radial-[circle_at_center,rgba(30,30,35,0.8)_0%,rgba(10,10,12,1)_100%] border border-zinc-800/80 flex items-center justify-center p-8 overflow-hidden group">
+            <div 
+              className="relative aspect-square w-full rounded-3xl bg-radial-[circle_at_center,rgba(0,243,255,0.05)_0%,rgba(5,5,5,1)_100%] border border-cyan-500/30 shadow-[0_0_20px_rgba(0,243,255,0.1)] flex items-center justify-center overflow-hidden group cursor-zoom-in hover:neon-glow-cyan transition-all"
+              onMouseMove={handleMouseMove}
+            >
               {/* Featured Badge */}
-              <div className="absolute top-6 left-6 rounded-full border border-teal-500/20 bg-teal-500/10 px-3 py-1 text-[10px] font-black text-teal-400 tracking-widest uppercase">
+              <div className="absolute top-6 left-6 rounded-full border border-pink-500 bg-pink-500/20 px-3 py-1 text-[10px] font-black text-pink-400 tracking-widest uppercase z-10 pointer-events-none shadow-[0_0_10px_rgba(255,0,255,0.3)]">
                 FEATURED TECH
               </div>
+              
+              {/* Base Image */}
               <img
                 src={images[selectedImageIdx]}
                 alt={product.title}
-                className="max-h-[80%] max-w-[80%] object-contain transition-transform duration-500 group-hover:scale-105"
+                className="max-h-[80%] max-w-[80%] object-contain transition-opacity duration-300 group-hover:opacity-0"
+              />
+
+              {/* Magnified Image Layer */}
+              <div 
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                style={{
+                  backgroundImage: `url(${images[selectedImageIdx]})`,
+                  backgroundPosition: backgroundPos,
+                  backgroundSize: '250%', // Zoom factor
+                  backgroundRepeat: 'no-repeat'
+                }}
               />
             </div>
             
@@ -124,8 +148,8 @@ const ItemDetails = ({ params }) => {
                 <button
                   key={idx}
                   onClick={() => setSelectedImageIdx(idx)}
-                  className={`aspect-square rounded-xl bg-zinc-900 border overflow-hidden p-2 flex items-center justify-center transition-all ${
-                    selectedImageIdx === idx ? "border-purple-500/80 shadow-md shadow-purple-500/10" : "border-zinc-800 hover:border-zinc-700"
+                  className={`aspect-square rounded-xl bg-[#020202] border overflow-hidden p-2 flex items-center justify-center transition-all ${
+                    selectedImageIdx === idx ? "border-cyan-400 neon-glow-cyan scale-105" : "border-zinc-800 hover:border-pink-500/50 hover:neon-glow-pink"
                   }`}
                 >
                   <img src={img} alt="thumbnail" className="max-h-full max-w-full object-contain" />
@@ -150,10 +174,10 @@ const ItemDetails = ({ params }) => {
               {gridSpecs.map((spec, idx) => (
                 <div
                   key={idx}
-                  className="bg-zinc-900/30 border border-zinc-800/80 rounded-2xl p-5 hover:border-zinc-700 transition-colors"
+                  className="bg-[#0a0a0a] border border-zinc-800 rounded-2xl p-5 hover:border-purple-500/50 hover:neon-glow-purple transition-all"
                 >
-                  <div className="flex items-center gap-2 text-zinc-550 text-[10px] font-bold tracking-wider uppercase">
-                    <span>{spec.icon}</span>
+                  <div className="flex items-center gap-2 text-zinc-500 text-[10px] font-bold tracking-wider uppercase">
+                    <span className="text-purple-400">{spec.icon}</span>
                     <span>{spec.label}</span>
                   </div>
                   <div className="text-lg font-bold text-white mt-2 leading-snug">
@@ -164,26 +188,26 @@ const ItemDetails = ({ params }) => {
             </div>
 
             {/* Price Card */}
-            <div className="bg-zinc-900/20 border border-zinc-800/80 rounded-2xl p-6 space-y-6">
+            <div className="bg-[#0a0a0a] border border-zinc-800 rounded-2xl p-6 space-y-6 hover:border-cyan-500/30 hover:shadow-[0_0_20px_rgba(0,243,255,0.05)] transition-all">
               <div className="flex items-center justify-between">
                 <div>
                   <span className="block text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Current Price</span>
                   <div className="flex items-baseline gap-3 mt-1.5">
-                    <span className="text-3xl font-black text-white">${product.price}.99</span>
-                    <span className="text-xs text-zinc-500 line-through">${product.price + 50}.99</span>
+                    <span className="text-3xl font-black text-white">৳{product.price}.99</span>
+                    <span className="text-xs text-zinc-500 line-through">৳{product.price + 50}.99</span>
                   </div>
                 </div>
                 <div className="rounded-full bg-purple-500/10 border border-purple-500/20 px-3 py-1 text-[10px] font-bold text-purple-400">
-                  Save $50.00
+                  Save ৳50.00
                 </div>
               </div>
 
               {/* Action Buttons */}
-              <div className="space-y-3">
-                <button className="w-full py-3.5 bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white font-bold text-sm rounded-xl transition-all shadow-lg shadow-purple-500/10 flex items-center justify-center gap-2 cursor-pointer">
+              <div className="space-y-4 pt-2">
+                <button className="w-full py-4 bg-transparent border-2 border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-black font-black text-sm uppercase tracking-wider rounded-xl transition-all shadow-[0_0_10px_rgba(0,243,255,0.3)] hover:shadow-[0_0_20px_rgba(0,243,255,0.6)] flex items-center justify-center gap-2 cursor-pointer">
                   🛒 Add to Cart
                 </button>
-                <button className="w-full py-3.5 bg-transparent border border-zinc-700 hover:bg-zinc-900/50 text-white font-bold text-sm rounded-xl transition-all cursor-pointer">
+                <button className="w-full py-4 bg-pink-500 hover:bg-pink-400 text-white font-black text-sm uppercase tracking-wider rounded-xl transition-all shadow-[0_0_10px_rgba(255,0,255,0.4)] hover:shadow-[0_0_20px_rgba(255,0,255,0.6)] cursor-pointer">
                   Buy Now
                 </button>
               </div>
@@ -248,18 +272,19 @@ const ItemDetails = ({ params }) => {
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
             {relatedItems.map((item, idx) => (
-              <div
+              <Link
+                href={`/items/${item.id}`}
                 key={idx}
-                className="group bg-zinc-900/30 border border-zinc-800/80 rounded-2xl p-4 flex flex-col justify-between hover:border-zinc-700 transition-all"
+                className="group bg-[#0a0a0a] border border-zinc-800 rounded-2xl p-4 flex flex-col justify-between hover:neon-glow-cyan hover:-translate-y-1 transition-all cursor-pointer"
               >
-                <div className="aspect-square bg-zinc-900/50 rounded-xl overflow-hidden p-4 mb-4 flex items-center justify-center">
-                  <img src={item.image} alt={item.title} className="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-105" />
+                <div className="aspect-square bg-[#020202] rounded-xl overflow-hidden p-4 mb-4 flex items-center justify-center">
+                  <img src={item.image} alt={item.title} className="max-h-full max-w-full object-contain transition-transform duration-500 group-hover:scale-105 opacity-80 group-hover:opacity-100" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-sm text-white line-clamp-1">{item.title}</h4>
-                  <span className="block font-black text-zinc-400 text-xs mt-2">${item.price}.00</span>
+                  <h4 className="font-bold text-sm text-white line-clamp-1 group-hover:text-cyan-400 transition-colors">{item.title}</h4>
+                  <span className="block font-mono font-bold text-cyan-400 text-xs mt-2">৳{item.price}.00</span>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>

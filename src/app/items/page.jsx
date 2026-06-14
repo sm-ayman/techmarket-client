@@ -41,10 +41,10 @@ const ItemsContent = () => {
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
       {/* Title */}
       <div className="text-center md:text-left mb-10">
-        <h1 className="text-3xl font-extrabold text-zinc-900 dark:text-white sm:text-4xl">
+        <h1 className="text-3xl font-extrabold text-white neon-text-cyan sm:text-4xl">
           Browse Tech Products
         </h1>
-        <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
+        <p className="mt-2 text-sm text-zinc-400">
           Find, search and filter through our latest catalog of high-end gadgets.
         </p>
       </div>
@@ -52,14 +52,14 @@ const ItemsContent = () => {
       {/* Search & Filter Controls */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 mb-12">
         {/* Sidebar Filters */}
-        <div className="bg-white border border-zinc-100 p-6 rounded-2xl dark:bg-zinc-900 dark:border-zinc-800 shadow-sm space-y-6">
-          <h2 className="font-bold text-lg text-zinc-900 dark:text-white mb-4 flex items-center gap-2">
+        <div className="bg-[#0a0a0a] border border-cyan-500/30 p-6 rounded-2xl shadow-[0_0_15px_rgba(0,243,255,0.1)] space-y-6">
+          <h2 className="font-bold text-lg text-cyan-400 mb-4 flex items-center gap-2">
             <span>⚙️</span> Filters
           </h2>
 
           {/* Search bar */}
           <div>
-            <label className="block text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
+            <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">
               Search
             </label>
             <input
@@ -67,19 +67,19 @@ const ItemsContent = () => {
               placeholder="Search product..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-3 py-2 bg-zinc-50 border border-zinc-200 dark:bg-zinc-800 dark:border-zinc-700 text-zinc-900 dark:text-white rounded-lg focus:outline-none focus:border-teal-500 transition-colors placeholder-zinc-400 text-sm"
+              className="w-full px-3 py-2 bg-[#050505] border border-cyan-500/30 text-white rounded-lg focus:outline-none focus:border-cyan-400 focus:neon-glow-cyan transition-all placeholder-zinc-500 text-sm"
             />
           </div>
 
           {/* Filter 1: Category */}
           <div>
-            <label className="block text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-2">
+            <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">
               Category
             </label>
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="w-full px-3 py-2 bg-zinc-50 border border-zinc-200 dark:bg-zinc-800 dark:border-zinc-700 text-zinc-900 dark:text-white rounded-lg focus:outline-none focus:border-teal-500 transition-colors text-sm"
+              className="w-full px-3 py-2 bg-[#050505] border border-cyan-500/30 text-white rounded-lg focus:outline-none focus:border-cyan-400 focus:neon-glow-cyan transition-all text-sm"
             >
               {categories.map((cat, idx) => (
                 <option key={idx} value={cat}>
@@ -92,10 +92,10 @@ const ItemsContent = () => {
           {/* Filter 2: Max Price */}
           <div>
             <div className="flex justify-between items-center mb-2">
-              <label className="block text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">
+              <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider">
                 Max Price
               </label>
-              <span className="text-sm font-semibold text-teal-500">${maxPrice}</span>
+              <span className="text-sm font-bold text-cyan-400 neon-text-cyan">৳{maxPrice}</span>
             </div>
             <input
               type="range"
@@ -104,22 +104,22 @@ const ItemsContent = () => {
               step="50"
               value={maxPrice}
               onChange={(e) => setMaxPrice(Number(e.target.value))}
-              className="w-full accent-teal-500 bg-zinc-200 dark:bg-zinc-855 rounded-lg h-2"
+              className="w-full accent-cyan-500 bg-zinc-800 rounded-lg h-2"
             />
           </div>
 
           {/* Filter 3: Min Rating */}
           <div>
             <div className="flex justify-between items-center mb-2">
-              <label className="block text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider">
+              <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider">
                 Min Rating
               </label>
-              <span className="text-sm font-semibold text-teal-500">{minRating} ⭐</span>
+              <span className="text-sm font-bold text-pink-400 neon-text-pink">{minRating} ⭐</span>
             </div>
             <select
               value={minRating}
               onChange={(e) => setMinRating(Number(e.target.value))}
-              className="w-full px-3 py-2 bg-zinc-50 border border-zinc-200 dark:bg-zinc-800 dark:border-zinc-700 text-zinc-900 dark:text-white rounded-lg focus:outline-none focus:border-teal-500 transition-colors text-sm"
+              className="w-full px-3 py-2 bg-[#050505] border border-cyan-500/30 text-white rounded-lg focus:outline-none focus:border-cyan-400 focus:neon-glow-cyan transition-all text-sm"
             >
               <option value="0">All Ratings</option>
               <option value="4.5">4.5+ Stars</option>
@@ -134,52 +134,59 @@ const ItemsContent = () => {
           {loading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {[1, 2, 3, 4, 5, 6].map((n) => (
-                <div key={n} className="h-96 rounded-2xl bg-zinc-100 dark:bg-zinc-800 animate-pulse" />
+                <div key={n} className="h-96 rounded-2xl bg-[#0a0a0a] animate-pulse border border-zinc-800" />
               ))}
             </div>
           ) : filteredProducts.length === 0 ? (
-            <div className="text-center py-20 bg-white border border-zinc-100 dark:bg-zinc-900 dark:border-zinc-800 rounded-2xl shadow-sm">
+            <div className="text-center py-20 bg-[#0a0a0a] border border-pink-500/30 rounded-2xl shadow-[0_0_15px_rgba(255,0,255,0.1)]">
               <div className="text-4xl mb-4">🔍</div>
-              <h3 className="text-lg font-bold text-zinc-900 dark:text-white">No Products Found</h3>
-              <p className="text-sm text-zinc-500 mt-2">Try adjusting your filters or search keywords.</p>
+              <h3 className="text-lg font-bold text-pink-400">No Products Found</h3>
+              <p className="text-sm text-zinc-400 mt-2">Try adjusting your filters or search keywords.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredProducts.map((p) => (
                 <div
                   key={p.id}
-                  className="group flex flex-col overflow-hidden rounded-2xl border border-zinc-100 bg-white dark:border-zinc-800 dark:bg-zinc-900 transition-all hover:shadow-lg"
+                  className="group flex flex-col overflow-hidden rounded-2xl border border-zinc-800 bg-[#0a0a0a] transition-all hover:neon-glow-cyan hover:-translate-y-1"
                 >
-                  <div className="relative aspect-video overflow-hidden bg-zinc-55">
+                  <div className="relative aspect-video overflow-hidden bg-[#050505]">
                     <img
                       src={p.image}
                       alt={p.title}
-                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-80 group-hover:opacity-100"
                     />
-                    <span className="absolute top-3 right-3 rounded-full bg-teal-500/95 px-2.5 py-1 text-xs font-semibold text-white">
+                    <span className="absolute top-3 right-3 rounded-full border border-pink-500 bg-pink-500/20 px-2.5 py-1 text-[10px] font-black text-pink-400 tracking-widest uppercase shadow-[0_0_10px_rgba(255,0,255,0.3)]">
                       {p.category}
                     </span>
                   </div>
                   <div className="flex flex-1 flex-col p-5">
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-xs font-medium text-zinc-400">Rating: {p.rating} ⭐</span>
+                      <span className="text-[10px] font-black text-zinc-500 uppercase tracking-wider">Rating: <span className="text-pink-400">{p.rating} ⭐</span></span>
                     </div>
-                    <h3 className="font-bold text-zinc-900 dark:text-white line-clamp-1 group-hover:text-teal-500 transition-colors">
+                    <h3 className="font-bold text-white line-clamp-1 group-hover:text-cyan-400 transition-colors">
                       {p.title}
                     </h3>
-                    <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400 line-clamp-2 leading-relaxed">
+                    <p className="mt-2 text-xs text-zinc-400 line-clamp-2 leading-relaxed">
                       {p.shortDescription}
                     </p>
-                    <div className="mt-auto pt-4 flex items-center justify-between border-t border-zinc-100 dark:border-zinc-800/80">
-                      <span className="font-bold text-lg text-zinc-950 dark:text-white">
-                        ${p.price}
+                    <div className="mt-auto pt-4 flex items-center justify-between border-t border-zinc-800/80 mt-4">
+                      <span className="font-mono font-bold text-lg text-white">
+                        ৳{p.price}
                       </span>
-                      <Link
-                        href={`/items/${p.id}`}
-                        className="rounded-lg bg-teal-500 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-teal-600 transition-colors cursor-pointer"
-                      >
-                        View Details
-                      </Link>
+                      <div className="flex items-center gap-2">
+                        <button className="rounded-lg bg-transparent border border-pink-500 p-1.5 text-pink-400 hover:bg-pink-500 hover:text-white transition-all cursor-pointer shadow-[0_0_5px_rgba(255,0,255,0.2)] hover:shadow-[0_0_15px_rgba(255,0,255,0.6)]" title="Add to Cart">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                          </svg>
+                        </button>
+                        <Link
+                          href={`/items/${p.id}`}
+                          className="rounded-lg bg-cyan-500 px-3.5 py-1.5 text-[10px] font-black tracking-widest text-black hover:bg-cyan-400 transition-all cursor-pointer shadow-[0_0_10px_rgba(0,243,255,0.4)] hover:shadow-[0_0_20px_rgba(0,243,255,0.8)] uppercase"
+                        >
+                          Buy Now
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 </div>

@@ -5,16 +5,15 @@ import Link from "next/link";
 
 const Footer = () => {
   return (
-    <footer className="bg-zinc-900 text-zinc-400 border-t border-zinc-800 transition-colors">
+    <footer className="bg-[#020202] text-zinc-400 border-t border-cyan-500/30 shadow-[0_-4px_20px_rgba(0,243,255,0.05)] transition-all">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
           {/* Brand section */}
           <div className="md:col-span-1 flex flex-col gap-4">
-            <Link href="/" className="flex items-center gap-2 font-bold text-xl tracking-tight text-white">
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-teal-500 to-emerald-400 text-white font-black">
-                T
+            <Link href="/" className="flex items-center gap-2 group">
+              <span className="font-extrabold text-2xl tracking-tight text-white neon-text-cyan transition-all group-hover:neon-text-pink">
+                TechMarket
               </span>
-              <span>Tech<span className="text-teal-400">Market</span></span>
             </Link>
             <p className="text-sm text-zinc-400 max-w-xs leading-relaxed">
               Your ultimate destination for the finest curated tech gadgets, premium accessories, and high-performance hardware.
@@ -69,12 +68,12 @@ const Footer = () => {
               <input
                 type="email"
                 placeholder="Enter email"
-                className="w-full px-3.5 py-2 text-sm bg-zinc-800 text-white rounded-lg border border-zinc-700 focus:outline-none focus:border-teal-500 transition-colors"
+                className="w-full px-3.5 py-2 text-sm bg-[#050505] text-white rounded-lg border border-cyan-500/30 focus:outline-none focus:border-cyan-400 focus:neon-glow-cyan transition-all"
                 required
               />
               <button
                 type="submit"
-                className="px-4 py-2 text-sm font-semibold bg-teal-500 text-white rounded-lg hover:bg-teal-600 shadow-md shadow-teal-500/10 transition-colors cursor-pointer"
+                className="px-4 py-2 text-sm font-bold bg-transparent border border-pink-500 text-pink-400 rounded-lg hover:neon-glow-pink hover:bg-pink-500 hover:text-white transition-all cursor-pointer"
               >
                 Join
               </button>
@@ -83,7 +82,7 @@ const Footer = () => {
         </div>
 
         {/* Bottom border & socials */}
-        <div className="border-t border-zinc-800 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="border-t border-cyan-500/20 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-zinc-500">
             &copy; {new Date().getFullYear()} TechMarket. All rights reserved.
           </p>
