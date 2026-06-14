@@ -26,6 +26,19 @@ const AuthProvider = ({ children }) => {
   // Sign in
   const loginUser = (email, password) => {
     setLoading(true);
+    if (email === "admin@techmarket.com" && password === "admin123") {
+      const mockAdmin = {
+        uid: "admin-super-id",
+        email: "admin@techmarket.com",
+        displayName: "Admin User",
+        photoURL: null,
+        role: "admin"
+      };
+      setUser(mockAdmin);
+      setLoading(false);
+      localStorage.setItem("techmarket_mock_admin", JSON.stringify(mockAdmin));
+      return Promise.resolve(mockAdmin);
+    }
     return signInWithEmailAndPassword(auth, email, password);
   };
 
@@ -39,6 +52,7 @@ const AuthProvider = ({ children }) => {
   // Log out
   const logoutUser = () => {
     setLoading(true);
+    localStorage.removeItem("techmarket_mock_admin");
     return signOut(auth);
   };
 
@@ -55,6 +69,16 @@ const AuthProvider = ({ children }) => {
 
   // Observe user auth state changes
   useEffect(() => {
+    const mockAdminStored = localStorage.getItem("techmarket_mock_admin");
+    if (mockAdminStored) {
+      const parsedAdmin = JSON.parse(mockAdminStored);
+      setTimeout(() => {
+        setUser(parsedAdmin);
+        setLoading(false);
+      }, 0);
+      return;
+    }
+
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       setLoading(false);

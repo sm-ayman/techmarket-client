@@ -85,7 +85,7 @@ const Footer = () => {
         {/* Bottom border & socials */}
         <div className="border-t border-zinc-800 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-zinc-500">
-            &copy; {new Date().getFullYear()} Tech Market. All rights reserved. Built with Next.js.
+            &copy; {new Date().getFullYear()} TechMarket. All rights reserved.
           </p>
           <div className="flex gap-4">
             <a href="#" className="hover:text-white transition-colors text-sm">Twitter</a>

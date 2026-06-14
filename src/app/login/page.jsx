@@ -68,6 +68,12 @@ const Login = () => {
           </p>
         </div>
 
+        <div className="rounded-xl bg-teal-50/50 border border-teal-200/50 p-4 text-xs text-teal-850 dark:bg-teal-950/20 dark:border-teal-900/40 dark:text-teal-400">
+          <strong>Default Admin Credentials:</strong><br />
+          Email: <code className="font-mono bg-white/50 px-1 py-0.5 rounded dark:bg-zinc-800">admin@techmarket.com</code><br />
+          Password: <code className="font-mono bg-white/50 px-1 py-0.5 rounded dark:bg-zinc-800">admin123</code>
+        </div>
+
         {error && (
           <div className="rounded-lg bg-red-50 p-4 text-sm text-red-600 dark:bg-red-950/30 dark:text-red-400">
             {error}
