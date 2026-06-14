@@ -86,7 +86,7 @@ export default function Home() {
 
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
           <div className="inline-flex items-center gap-1.5 rounded-full border border-cyan-500/50 bg-cyan-500/10 px-3 py-1 text-xs font-bold text-cyan-400 mb-6 backdrop-blur-md neon-glow-cyan">
-            🚀 NEON OVERDRIVE ACTIVATED
+            ⚡ Your One-Stop Premium Tech Destination
           </div>
           <h1 className="mx-auto max-w-4xl text-3xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl leading-tight">
             Welcome to the Future of{" "}
