@@ -26,12 +26,12 @@ export default function Home() {
         {/* Background Image & Gradients */}
         <div className="absolute inset-0 -z-20">
           <img
-            src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1920&auto=format&fit=crop&q=80"
+            src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1920&auto=format&fit=crop&q=80"
             alt="Neon Tech Background"
-            className="h-full w-full object-cover"
+            className="h-full w-full object-cover opacity-90"
           />
-          <div className="absolute inset-0 bg-black/80" />
-          <div className="absolute inset-0 bg-gradient-to-b from-cyan-900/30 via-black/80 to-[#050505]" />
+          <div className="absolute inset-0 bg-black/40" />
+          <div className="absolute inset-0 bg-gradient-to-b from-cyan-900/30 via-black/40 to-[#050505]" />
         </div>
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(45rem_50rem_at_top,theme(colors.cyan.600),transparent)] opacity-30 mix-blend-screen" />
 

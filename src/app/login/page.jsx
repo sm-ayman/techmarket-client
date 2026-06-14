@@ -50,40 +50,54 @@ const Login = () => {
     }
   };
 
+  const fillDemoCredentials = () => {
+    setEmail("admin@techmarket.com");
+    setPassword("admin123");
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 px-4 py-12 dark:bg-zinc-950 sm:px-6 lg:px-8">
-      <div className="w-full max-w-md space-y-8 bg-white p-8 rounded-2xl border border-zinc-100 shadow-xl dark:bg-zinc-900 dark:border-zinc-800">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-white">
+    <div className="flex min-h-screen items-center justify-center bg-[#020202] px-4 py-12 sm:px-6 lg:px-8 border-t border-zinc-900">
+      <div className="w-full max-w-md space-y-8 bg-[#0a0a0a] p-8 rounded-3xl border border-cyan-500/30 shadow-[0_0_30px_rgba(0,243,255,0.15)] relative overflow-hidden">
+        {/* Decorative neon blur */}
+        <div className="absolute -top-20 -right-20 w-40 h-40 bg-pink-500 rounded-full mix-blend-screen filter blur-[80px] opacity-20 pointer-events-none" />
+        <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-cyan-500 rounded-full mix-blend-screen filter blur-[80px] opacity-20 pointer-events-none" />
+
+        <div className="relative z-10">
+          <h2 className="mt-2 text-center text-3xl font-extrabold tracking-tight text-white neon-text-cyan">
             Welcome Back
           </h2>
-          <p className="mt-2 text-center text-sm text-zinc-600 dark:text-zinc-400">
+          <p className="mt-2 text-center text-sm text-zinc-400">
             Or{" "}
             <Link
               href="/register"
-              className="font-medium text-teal-500 hover:text-teal-600 transition-colors"
+              className="font-bold text-pink-400 hover:text-pink-300 hover:neon-text-pink transition-all"
             >
               create a new account
             </Link>
           </p>
         </div>
 
-        <div className="rounded-xl bg-teal-50/50 border border-teal-200/50 p-4 text-xs text-teal-850 dark:bg-teal-950/20 dark:border-teal-900/40 dark:text-teal-400">
-          <strong>Default Admin Credentials:</strong><br />
-          Email: <code className="font-mono bg-white/50 px-1 py-0.5 rounded dark:bg-zinc-800">admin@techmarket.com</code><br />
-          Password: <code className="font-mono bg-white/50 px-1 py-0.5 rounded dark:bg-zinc-800">admin123</code>
+        <div 
+          onClick={fillDemoCredentials}
+          className="relative z-10 rounded-xl bg-[#050505] border border-cyan-500/50 p-4 text-xs text-cyan-400 cursor-pointer hover:bg-cyan-500/10 hover:neon-glow-cyan transition-all"
+        >
+          <strong className="neon-text-cyan">Click to use Admin Credentials:</strong><br />
+          <div className="mt-2 space-y-1">
+            <p>Email: <code className="font-mono bg-[#0a0a0a] px-1.5 py-0.5 rounded border border-cyan-500/30">admin@techmarket.com</code></p>
+            <p>Password: <code className="font-mono bg-[#0a0a0a] px-1.5 py-0.5 rounded border border-cyan-500/30">admin123</code></p>
+          </div>
         </div>
 
         {error && (
-          <div className="rounded-lg bg-red-50 p-4 text-sm text-red-600 dark:bg-red-950/30 dark:text-red-400">
+          <div className="relative z-10 rounded-xl bg-pink-950/30 border border-pink-500/50 p-4 text-sm text-pink-400 neon-glow-pink">
             {error}
           </div>
         )}
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+        <form className="mt-8 space-y-6 relative z-10" onSubmit={handleSubmit}>
           <div className="space-y-4 rounded-md">
             <div>
-              <label htmlFor="email-address" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
+              <label htmlFor="email-address" className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">
                 Email Address
               </label>
               <input
@@ -93,12 +107,12 @@ const Login = () => {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="relative block w-full px-3.5 py-2.5 bg-zinc-50 border border-zinc-200 dark:bg-zinc-800 dark:border-zinc-700 text-zinc-900 dark:text-white rounded-lg focus:outline-none focus:border-teal-500 transition-colors placeholder-zinc-400"
+                className="relative block w-full px-4 py-3 bg-[#050505] border border-cyan-500/30 text-white rounded-xl text-sm focus:outline-none focus:border-cyan-400 focus:neon-glow-cyan transition-all placeholder-zinc-600"
                 placeholder="you@example.com"
               />
             </div>
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
+              <label htmlFor="password" className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">
                 Password
               </label>
               <input
@@ -108,7 +122,7 @@ const Login = () => {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="relative block w-full px-3.5 py-2.5 bg-zinc-50 border border-zinc-200 dark:bg-zinc-800 dark:border-zinc-700 text-zinc-900 dark:text-white rounded-lg focus:outline-none focus:border-teal-500 transition-colors placeholder-zinc-400"
+                className="relative block w-full px-4 py-3 bg-[#050505] border border-cyan-500/30 text-white rounded-xl text-sm focus:outline-none focus:border-cyan-400 focus:neon-glow-cyan transition-all placeholder-zinc-600"
                 placeholder="••••••••"
               />
             </div>
@@ -118,16 +132,16 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="group relative flex w-full justify-center rounded-xl bg-gradient-to-r from-teal-500 to-emerald-400 py-3 px-4 text-sm font-semibold text-white hover:from-teal-600 hover:to-emerald-500 shadow-md shadow-teal-500/10 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 disabled:opacity-50 transition-all cursor-pointer"
+              className="group relative flex w-full justify-center rounded-xl bg-cyan-500 hover:bg-cyan-400 py-3.5 px-4 text-sm font-bold text-black neon-glow-cyan focus:outline-none disabled:opacity-50 transition-all cursor-pointer uppercase tracking-wider"
             >
               {loading ? "Signing in..." : "Sign in"}
             </button>
           </div>
         </form>
 
-        <div className="mt-6">
+        <div className="mt-6 relative z-10">
           <div className="relative flex justify-center text-sm">
-            <span className="bg-white px-2 text-zinc-500 dark:bg-zinc-900">
+            <span className="bg-[#0a0a0a] px-4 text-zinc-500 text-xs font-bold uppercase tracking-widest">
               Or continue with
             </span>
           </div>
@@ -136,7 +150,7 @@ const Login = () => {
             <button
               onClick={handleGoogleLogin}
               disabled={loading}
-              className="flex w-full items-center justify-center gap-3 rounded-xl border border-zinc-200 bg-white py-3 px-4 text-sm font-medium text-zinc-700 hover:bg-zinc-50 focus:outline-none dark:border-zinc-700 dark:bg-zinc-850 dark:text-zinc-200 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+              className="flex w-full items-center justify-center gap-3 rounded-xl border border-zinc-800 bg-[#050505] py-3.5 px-4 text-sm font-bold text-white hover:border-pink-500/50 hover:bg-pink-500/10 hover:neon-glow-pink focus:outline-none transition-all cursor-pointer"
             >
               <svg className="h-5 w-5" viewBox="0 0 24 24">
                 <path
