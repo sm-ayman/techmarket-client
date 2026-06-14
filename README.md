@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Tech Market - Premium Tech & Gadget Marketplace
 
-## Getting Started
+Tech Market is a premium e-commerce tech showcase built using Next.js (App Router), styled with TailwindCSS, and secured using Firebase Authentication.
 
-First, run the development server:
+## Key Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- 🔐 **Firebase Authentication**: Integrated secure Sign-In, Sign-Up (Email/Password), and Google Auth provider.
+- ⚙️ **State Persistence**: Custom react state synchronized with local storage, enabling creation, deletion, and editing of products without database overhead.
+- 📱 **Fully Responsive Layout**: Premium theme styling with dark mode elements, sticky responsive navigations, uniform styling cards, and micro-hover states.
+- 🔍 **Interactive Search & Filtering**: Multi-field sorting by Keyword Search, Category, Price Limit slider, and Rating.
+- 📁 **Protected Routes**: Add Product (`/items/add`) and Manage Products (`/items/manage`) routes redirect unauthorized visitors to the Login screen.
+- 🛠️ **Production Ready**: Zero linting warnings/errors and builds successfully under production configurations.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Setup & Installation Instructions
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Follow these steps to run the application locally:
 
-## Learn More
+1. **Clone the repository**:
+   ```bash
+   git clone <repository-url>
+   cd techmarket
+   ```
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+3. **Environment Setup**:
+   Ensure the `.env.local` file contains valid Firebase configurations:
+   ```env
+   NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
+   NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_auth_domain
+   NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
+   NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+   NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
+   NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
+   ```
+4. **Run development server**:
+   ```bash
+   npm run dev
+   ```
+   Open `http://localhost:3000` on your browser.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Route Summary
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Route | Type | Description |
+| :--- | :--- | :--- |
+| `/` | **Public** | Home Landing Page (includes Hero, Category Grids, Featured Items, testimonials, promo banner, features). |
+| `/about` | **Public** | App Mission, core values description, and team showcase. |
+| `/items` | **Public** | Browse tech items catalog with search inputs and multi-faceted filtering. |
+| `/items/[id]` | **Public** | Dynamic segment details page, specifications table, and related products. |
+| `/login` | **Public** | Firebase credentials sign-in & Google authentication. |
+| `/register` | **Public** | Firebase credentials signup page. |
+| `/items/add` | **Protected** | Product creation form. Redirects unauthorized users to `/login`. |
+| `/items/manage` | **Protected** | Administrative dashboard with product inventory table and Delete actions. |
