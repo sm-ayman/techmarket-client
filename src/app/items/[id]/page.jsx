@@ -1,14 +1,30 @@
 "use client";
 
-import React, { use, useState } from "react";
+import React, { use, useState, useContext } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useProducts } from "../../../hooks/useProducts";
+import { CartContext } from "../../../context/CartContext";
 
 const ItemDetails = ({ params }) => {
   const { id } = use(params);
   const { products, loading } = useProducts();
+  const { addToCart } = useContext(CartContext);
+  const router = useRouter();
   const [selectedImageIdx, setSelectedImageIdx] = useState(0);
   const [backgroundPos, setBackgroundPos] = useState("50% 50%");
+  const [cartAdded, setCartAdded] = useState(false);
+
+  const handleAddToCart = () => {
+    addToCart(product);
+    setCartAdded(true);
+    setTimeout(() => setCartAdded(false), 1500);
+  };
+
+  const handleBuyNow = () => {
+    addToCart(product);
+    router.push("/checkout");
+  };
 
   const handleMouseMove = (e) => {
     const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
@@ -204,10 +220,24 @@ const ItemDetails = ({ params }) => {
 
               {/* Action Buttons */}
               <div className="space-y-4 pt-2">
-                <button className="w-full py-4 bg-transparent border-2 border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-black font-black text-sm uppercase tracking-wider rounded-xl transition-all shadow-[0_0_10px_rgba(0,243,255,0.3)] hover:shadow-[0_0_20px_rgba(0,243,255,0.6)] flex items-center justify-center gap-2 cursor-pointer">
-                  🛒 Add to Cart
+                <button
+                  onClick={handleAddToCart}
+                  className={`w-full py-4 font-black text-sm uppercase tracking-wider rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer border-2 ${
+                    cartAdded
+                      ? "bg-cyan-500/20 border-cyan-400 text-cyan-400 shadow-[0_0_20px_rgba(0,243,255,0.5)]"
+                      : "bg-transparent border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-black shadow-[0_0_10px_rgba(0,243,255,0.3)] hover:shadow-[0_0_20px_rgba(0,243,255,0.6)]"
+                  }`}
+                >
+                  {cartAdded ? (
+                    <><span className="text-lg">✓</span> Added to Cart!</>
+                  ) : (
+                    <>🛒 Add to Cart</>
+                  )}
                 </button>
-                <button className="w-full py-4 bg-pink-500 hover:bg-pink-400 text-white font-black text-sm uppercase tracking-wider rounded-xl transition-all shadow-[0_0_10px_rgba(255,0,255,0.4)] hover:shadow-[0_0_20px_rgba(255,0,255,0.6)] cursor-pointer">
+                <button
+                  onClick={handleBuyNow}
+                  className="w-full py-4 bg-pink-500 hover:bg-pink-400 text-white font-black text-sm uppercase tracking-wider rounded-xl transition-all shadow-[0_0_10px_rgba(255,0,255,0.4)] hover:shadow-[0_0_20px_rgba(255,0,255,0.6)] cursor-pointer"
+                >
                   Buy Now
                 </button>
               </div>

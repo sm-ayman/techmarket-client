@@ -1,16 +1,66 @@
 "use client";
 
-import React from "react";
+import React, { useContext, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useProducts } from "../hooks/useProducts";
+import { CartContext } from "../context/CartContext";
+
+// Reusable "Add to Cart" button with success flash
+function AddToCartBtn({ product, className = "", iconOnly = false }) {
+  const { addToCart } = useContext(CartContext);
+  const [added, setAdded] = useState(false);
+
+  const handleAdd = (e) => {
+    e.preventDefault();
+    addToCart(product);
+    setAdded(true);
+    setTimeout(() => setAdded(false), 1200);
+  };
+
+  if (iconOnly) {
+    return (
+      <button
+        onClick={handleAdd}
+        title="Add to Cart"
+        className={`rounded-lg bg-transparent border p-2 transition-all cursor-pointer ${
+          added
+            ? "border-cyan-400 bg-cyan-500/20 text-cyan-400 shadow-[0_0_10px_rgba(0,243,255,0.5)]"
+            : "border-pink-500 text-pink-400 hover:bg-pink-500 hover:text-white shadow-[0_0_5px_rgba(255,0,255,0.2)] hover:shadow-[0_0_15px_rgba(255,0,255,0.6)]"
+        } ${className}`}
+      >
+        {added ? (
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+          </svg>
+        ) : (
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+        )}
+      </button>
+    );
+  }
+
+  return (
+    <button onClick={handleAdd} className={className}>
+      {added ? "✓ Added!" : "🛒 Add to Cart"}
+    </button>
+  );
+}
 
 export default function Home() {
   const { products, loading } = useProducts();
+  const { addToCart } = useContext(CartContext);
+  const router = useRouter();
 
-  // Get first 3 products for featured section
   const featuredProducts = products.slice(0, 3);
-  // Get next 8 products for more products section
   const moreProducts = products.slice(3, 11);
+
+  const handleBuyNow = (product) => {
+    addToCart(product);
+    router.push("/checkout");
+  };
 
   const categories = [
     { name: "Phones", icon: "📱", count: "12+ Items" },
@@ -21,9 +71,8 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      {/* 2. Hero Section */}
+      {/* Hero Section */}
       <section className="relative overflow-hidden py-24 sm:py-32 bg-[#020202]">
-        {/* Background Image & Gradients */}
         <div className="absolute inset-0 -z-20">
           <img
             src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1920&auto=format&fit=crop&q=80"
@@ -40,10 +89,14 @@ export default function Home() {
             🚀 NEON OVERDRIVE ACTIVATED
           </div>
           <h1 className="mx-auto max-w-4xl text-3xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl leading-tight">
-            Welcome to the Future of <span className="bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 bg-clip-text text-transparent neon-text-cyan">High-Tech Hardware</span>
+            Welcome to the Future of{" "}
+            <span className="bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 bg-clip-text text-transparent neon-text-cyan">
+              High-Tech Hardware
+            </span>
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-zinc-300">
-            Discover a handpicked collection of high-performance smartphones, powerful workstations, immersive sound gear, and cutting-edge tech accessories.
+            Discover a handpicked collection of high-performance smartphones, powerful
+            workstations, immersive sound gear, and cutting-edge tech accessories.
           </p>
           <div className="mt-10 flex items-center justify-center gap-x-6">
             <Link
@@ -62,7 +115,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 3. Categories Grid Section */}
+      {/* Categories */}
       <section className="py-20 bg-[#050505] transition-colors border-t border-zinc-900">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16">
@@ -73,7 +126,6 @@ export default function Home() {
               Find exactly what you need with our carefully categorized inventory of devices and components.
             </p>
           </div>
-
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
             {categories.map((cat, idx) => (
               <Link
@@ -82,34 +134,23 @@ export default function Home() {
                 className="group relative overflow-hidden rounded-2xl bg-[#0a0a0a] border border-zinc-800 p-6 shadow-sm hover:neon-glow-purple transition-all hover:-translate-y-1"
               >
                 <div className="text-4xl mb-4 grayscale group-hover:grayscale-0 transition-all">{cat.icon}</div>
-                <h3 className="font-semibold text-white group-hover:text-purple-400 transition-colors">
-                  {cat.name}
-                </h3>
-                <p className="text-xs text-zinc-500 mt-1">
-                  {cat.count}
-                </p>
+                <h3 className="font-semibold text-white group-hover:text-purple-400 transition-colors">{cat.name}</h3>
+                <p className="text-xs text-zinc-500 mt-1">{cat.count}</p>
               </Link>
             ))}
           </div>
         </div>
       </section>
 
-      {/* 4. Featured Products Section */}
+      {/* Featured Products */}
       <section className="py-20 bg-[#020202] border-t border-zinc-900 transition-colors">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
             <div>
-              <h2 className="text-3xl font-bold tracking-tight text-white neon-text-cyan">
-                Featured Highlights
-              </h2>
-              <p className="mt-2 text-zinc-400">
-                Top picks from our community, renowned for quality and peak performance.
-              </p>
+              <h2 className="text-3xl font-bold tracking-tight text-white neon-text-cyan">Featured Highlights</h2>
+              <p className="mt-2 text-zinc-400">Top picks from our community, renowned for quality and peak performance.</p>
             </div>
-            <Link
-              href="/items"
-              className="mt-4 md:mt-0 font-bold text-cyan-400 hover:text-cyan-300 hover:neon-text-cyan transition-colors text-sm flex items-center gap-1 uppercase tracking-wider"
-            >
+            <Link href="/items" className="mt-4 md:mt-0 font-bold text-cyan-400 hover:text-cyan-300 hover:neon-text-cyan transition-colors text-sm flex items-center gap-1 uppercase tracking-wider">
               View All Products <span>→</span>
             </Link>
           </div>
@@ -138,28 +179,18 @@ export default function Home() {
                     </span>
                   </div>
                   <div className="flex flex-1 flex-col p-6">
-                    <h3 className="font-bold text-lg text-white line-clamp-1 group-hover:text-cyan-400 transition-colors">
-                      {p.title}
-                    </h3>
-                    <p className="mt-2 text-sm text-zinc-400 line-clamp-2 leading-relaxed">
-                      {p.shortDescription}
-                    </p>
+                    <h3 className="font-bold text-lg text-white line-clamp-1 group-hover:text-cyan-400 transition-colors">{p.title}</h3>
+                    <p className="mt-2 text-sm text-zinc-400 line-clamp-2 leading-relaxed">{p.shortDescription}</p>
                     <div className="mt-auto pt-6 flex items-center justify-between border-t border-zinc-800/80">
-                      <span className="font-mono font-bold text-xl text-white">
-                        ৳{p.price}
-                      </span>
+                      <span className="font-mono font-bold text-xl text-white">৳{p.price}</span>
                       <div className="flex items-center gap-2">
-                        <button className="rounded-lg bg-transparent border border-pink-500 p-2 text-pink-400 hover:bg-pink-500 hover:text-white transition-all cursor-pointer shadow-[0_0_5px_rgba(255,0,255,0.2)] hover:shadow-[0_0_15px_rgba(255,0,255,0.6)]" title="Add to Cart">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                          </svg>
-                        </button>
-                        <Link
-                          href={`/items/${p.id}`}
+                        <AddToCartBtn product={p} iconOnly />
+                        <button
+                          onClick={() => handleBuyNow(p)}
                           className="rounded-lg bg-cyan-500 px-4 py-2 text-[10px] font-black tracking-widest text-black hover:bg-cyan-400 transition-all cursor-pointer shadow-[0_0_10px_rgba(0,243,255,0.4)] hover:shadow-[0_0_20px_rgba(0,243,255,0.8)] uppercase"
                         >
                           Buy Now
-                        </Link>
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -170,24 +201,20 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 4.5 More Products Section */}
+      {/* More Products */}
       <section className="py-20 bg-[#050505] transition-colors">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
             <div>
-              <h2 className="text-3xl font-bold tracking-tight text-white neon-text-purple">
-                More Products to Explore
-              </h2>
-              <p className="mt-2 text-zinc-600 dark:text-zinc-400">
-                Discover more of our highly rated gadgets and accessories.
-              </p>
+              <h2 className="text-3xl font-bold tracking-tight text-white neon-text-purple">More Products to Explore</h2>
+              <p className="mt-2 text-zinc-400">Discover more of our highly rated gadgets and accessories.</p>
             </div>
           </div>
 
           {loading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
               {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
-                <div key={n} className="h-80 rounded-2xl bg-zinc-200 dark:bg-zinc-800 animate-pulse" />
+                <div key={n} className="h-80 rounded-2xl bg-zinc-800 animate-pulse" />
               ))}
             </div>
           ) : (
@@ -208,25 +235,21 @@ export default function Home() {
                     </span>
                   </div>
                   <div className="flex flex-1 flex-col p-4">
-                    <h3 className="font-bold text-base text-white line-clamp-1 group-hover:text-purple-400 transition-colors">
-                      {p.title}
-                    </h3>
+                    <h3 className="font-bold text-base text-white line-clamp-1 group-hover:text-purple-400 transition-colors">{p.title}</h3>
                     <div className="mt-auto pt-4 flex items-center justify-between border-t border-zinc-800/80 mt-4">
-                      <span className="font-mono font-bold text-lg text-white">
-                        ৳{p.price}
-                      </span>
+                      <span className="font-mono font-bold text-lg text-white">৳{p.price}</span>
                       <div className="flex items-center gap-1.5">
-                        <button className="rounded-lg bg-transparent border border-cyan-500 p-1.5 text-cyan-400 hover:bg-cyan-500 hover:text-white transition-all cursor-pointer shadow-[0_0_5px_rgba(0,243,255,0.2)] hover:shadow-[0_0_15px_rgba(0,243,255,0.6)]" title="Add to Cart">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                          </svg>
-                        </button>
-                        <Link
-                          href={`/items/${p.id}`}
+                        <AddToCartBtn
+                          product={p}
+                          iconOnly
+                          className="rounded-lg bg-transparent border border-cyan-500 p-1.5 text-cyan-400 hover:bg-cyan-500 hover:text-white transition-all cursor-pointer shadow-[0_0_5px_rgba(0,243,255,0.2)] hover:shadow-[0_0_15px_rgba(0,243,255,0.6)]"
+                        />
+                        <button
+                          onClick={() => handleBuyNow(p)}
                           className="rounded-lg bg-purple-600 px-3 py-1.5 text-[10px] font-black text-white hover:bg-purple-500 transition-all cursor-pointer shadow-[0_0_10px_rgba(176,38,255,0.4)] hover:shadow-[0_0_20px_rgba(176,38,255,0.8)] uppercase tracking-wider"
                         >
                           Buy Now
-                        </Link>
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -235,7 +258,6 @@ export default function Home() {
             </div>
           )}
 
-          {/* Show More Button */}
           <div className="flex justify-center mt-4">
             <Link
               href="/items"
@@ -247,102 +269,69 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 5. Special Promo Banner Section */}
+      {/* Promo Banner */}
       <section className="py-16 bg-[#020202] border-t border-b border-cyan-500/30 text-white relative overflow-hidden shadow-[0_0_30px_rgba(0,243,255,0.1)]">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,theme(colors.cyan.900),transparent)] opacity-40 mix-blend-screen" />
         <div className="absolute top-0 right-0 h-[200px] w-[200px] bg-pink-500/20 blur-[80px]" />
         <div className="absolute bottom-0 left-0 h-[200px] w-[200px] bg-purple-500/20 blur-[80px]" />
-        
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative flex flex-col md:flex-row items-center justify-between gap-8 z-10">
           <div className="max-w-2xl text-center md:text-left">
             <span className="rounded-full border border-pink-500/50 bg-pink-500/10 px-3 py-1 text-xs font-black text-pink-400 uppercase tracking-widest neon-glow-pink">
               Limited Time Upgrade
             </span>
-            <h2 className="text-3xl font-extrabold mt-6 sm:text-4xl neon-text-cyan">
-              Unleash Peak Tech Performance
-            </h2>
+            <h2 className="text-3xl font-extrabold mt-6 sm:text-4xl neon-text-cyan">Unleash Peak Tech Performance</h2>
             <p className="mt-4 text-zinc-300 max-w-lg">
               Get an extra 10% off your first checkout. Level up your setup with standard warranties and 24/7 technical customer support.
             </p>
           </div>
           <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto shrink-0 justify-center">
-            <Link
-              href="/items"
-              className="rounded-xl bg-cyan-500 px-8 py-3.5 text-sm font-black text-black hover:bg-cyan-400 shadow-[0_0_15px_rgba(0,243,255,0.5)] transition-all hover:-translate-y-0.5 text-center cursor-pointer uppercase tracking-wider"
-            >
+            <Link href="/items" className="rounded-xl bg-cyan-500 px-8 py-3.5 text-sm font-black text-black hover:bg-cyan-400 shadow-[0_0_15px_rgba(0,243,255,0.5)] transition-all hover:-translate-y-0.5 text-center cursor-pointer uppercase tracking-wider">
               Shop Deals
             </Link>
-            <Link
-              href="/about"
-              className="rounded-xl border border-pink-500 px-8 py-3.5 text-sm font-black text-pink-400 hover:bg-pink-500 hover:text-white shadow-[0_0_10px_rgba(255,0,255,0.3)] hover:shadow-[0_0_20px_rgba(255,0,255,0.6)] transition-all text-center cursor-pointer uppercase tracking-wider"
-            >
+            <Link href="/about" className="rounded-xl border border-pink-500 px-8 py-3.5 text-sm font-black text-pink-400 hover:bg-pink-500 hover:text-white shadow-[0_0_10px_rgba(255,0,255,0.3)] hover:shadow-[0_0_20px_rgba(255,0,255,0.6)] transition-all text-center cursor-pointer uppercase tracking-wider">
               Contact Agent
             </Link>
           </div>
         </div>
       </section>
 
-      {/* 6. Why Choose Us / Features Section */}
+      {/* Why Choose Us */}
       <section className="py-20 bg-[#050505] transition-colors">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl neon-text-pink">
-              Why Professionals Choose Us
-            </h2>
-            <p className="mt-4 text-zinc-400">
-              We focus on absolute product quality, swift shipping logistics, and full client satisfaction.
-            </p>
+            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl neon-text-pink">Why Professionals Choose Us</h2>
+            <p className="mt-4 text-zinc-400">We focus on absolute product quality, swift shipping logistics, and full client satisfaction.</p>
           </div>
-
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-[#0a0a0a] border border-zinc-800 p-8 rounded-2xl hover:neon-glow-pink transition-all">
-              <div className="h-12 w-12 rounded-xl bg-pink-500/10 text-pink-400 flex items-center justify-center text-2xl font-bold mb-6 border border-pink-500/30 neon-glow-pink">
-                ⚡
-              </div>
+              <div className="h-12 w-12 rounded-xl bg-pink-500/10 text-pink-400 flex items-center justify-center text-2xl font-bold mb-6 border border-pink-500/30 neon-glow-pink">⚡</div>
               <h3 className="text-lg font-bold text-white mb-2">Blazing Fast Dispatch</h3>
-              <p className="text-sm text-zinc-400 leading-relaxed">
-                Your orders are packed immediately and dispatched via standard express delivery networks within 24 hours.
-              </p>
+              <p className="text-sm text-zinc-400 leading-relaxed">Your orders are packed immediately and dispatched via standard express delivery networks within 24 hours.</p>
             </div>
             <div className="bg-[#0a0a0a] border border-zinc-800 p-8 rounded-2xl hover:neon-glow-cyan transition-all">
-              <div className="h-12 w-12 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center text-2xl font-bold mb-6 border border-cyan-500/30 neon-glow-cyan">
-                🛡️
-              </div>
+              <div className="h-12 w-12 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center text-2xl font-bold mb-6 border border-cyan-500/30 neon-glow-cyan">🛡️</div>
               <h3 className="text-lg font-bold text-white mb-2">Verified Warranty</h3>
-              <p className="text-sm text-zinc-400 leading-relaxed">
-                Every single electronics purchase is covered by our comprehensive manufacturer warranty program.
-              </p>
+              <p className="text-sm text-zinc-400 leading-relaxed">Every single electronics purchase is covered by our comprehensive manufacturer warranty program.</p>
             </div>
             <div className="bg-[#0a0a0a] border border-zinc-800 p-8 rounded-2xl hover:neon-glow-purple transition-all">
-              <div className="h-12 w-12 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center text-2xl font-bold mb-6 border border-purple-500/30 neon-glow-purple">
-                💬
-              </div>
+              <div className="h-12 w-12 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center text-2xl font-bold mb-6 border border-purple-500/30 neon-glow-purple">💬</div>
               <h3 className="text-lg font-bold text-white mb-2">24/7 Expert Support</h3>
-              <p className="text-sm text-zinc-400 leading-relaxed">
-                Have setup questions? Our dedicated engineering support staff is available around the clock to assist.
-              </p>
+              <p className="text-sm text-zinc-400 leading-relaxed">Have setup questions? Our dedicated engineering support staff is available around the clock to assist.</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 7. Customer Reviews Section */}
+      {/* Customer Reviews */}
       <section className="py-20 bg-[#020202] border-t border-zinc-900 transition-colors">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl neon-text-cyan">
-              Customer Reviews
-            </h2>
-            <p className="mt-4 text-zinc-400">
-              See what our customers say about their gear and shopping experience.
-            </p>
+            <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl neon-text-cyan">Customer Reviews</h2>
+            <p className="mt-4 text-zinc-400">See what our customers say about their gear and shopping experience.</p>
           </div>
-
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div className="bg-[#0a0a0a] border border-cyan-500/30 p-8 rounded-2xl flex flex-col justify-between hover:neon-glow-cyan transition-all">
-              <p className="text-sm text-zinc-300 italic leading-relaxed">
-                &ldquo;The MacBook Pro I purchased from TechMarket arrived within 24 hours. The packaging was pristine, and their customer service guided me through warranty setup immediately.&rdquo;
-              </p>
+              <p className="text-sm text-zinc-300 italic leading-relaxed">&ldquo;The MacBook Pro I purchased from TechMarket arrived within 24 hours. The packaging was pristine, and their customer service guided me through warranty setup immediately.&rdquo;</p>
               <div className="mt-6 flex items-center gap-3">
                 <div className="h-10 w-10 rounded-full border border-cyan-400 bg-cyan-500/10 text-cyan-400 font-bold flex items-center justify-center shadow-[0_0_10px_rgba(0,243,255,0.3)]">AS</div>
                 <div>
@@ -352,9 +341,7 @@ export default function Home() {
               </div>
             </div>
             <div className="bg-[#0a0a0a] border border-pink-500/30 p-8 rounded-2xl flex flex-col justify-between hover:neon-glow-pink transition-all">
-              <p className="text-sm text-zinc-300 italic leading-relaxed">
-                &ldquo;TechMarket&rsquo;s selection is unmatched. I got my Keychron keyboard and Sony headphones here. Exceptional pricing, verified products, and fast delivery.&rdquo;
-              </p>
+              <p className="text-sm text-zinc-300 italic leading-relaxed">&ldquo;TechMarket&rsquo;s selection is unmatched. I got my Keychron keyboard and Sony headphones here. Exceptional pricing, verified products, and fast delivery.&rdquo;</p>
               <div className="mt-6 flex items-center gap-3">
                 <div className="h-10 w-10 rounded-full border border-pink-400 bg-pink-500/10 text-pink-400 font-bold flex items-center justify-center shadow-[0_0_10px_rgba(255,0,255,0.3)]">MH</div>
                 <div>
@@ -364,9 +351,7 @@ export default function Home() {
               </div>
             </div>
             <div className="bg-[#0a0a0a] border border-purple-500/30 p-8 rounded-2xl flex flex-col justify-between hover:neon-glow-purple transition-all">
-              <p className="text-sm text-zinc-300 italic leading-relaxed">
-                &ldquo;The iPad Pro M4 is an absolute beast. Ordering was simple, payment was secure, and I was up and running with my new digital sketchpad the next morning.&rdquo;
-              </p>
+              <p className="text-sm text-zinc-300 italic leading-relaxed">&ldquo;The iPad Pro M4 is an absolute beast. Ordering was simple, payment was secure, and I was up and running with my new digital sketchpad the next morning.&rdquo;</p>
               <div className="mt-6 flex items-center gap-3">
                 <div className="h-10 w-10 rounded-full border border-purple-400 bg-purple-500/10 text-purple-400 font-bold flex items-center justify-center shadow-[0_0_10px_rgba(176,38,255,0.3)]">DK</div>
                 <div>

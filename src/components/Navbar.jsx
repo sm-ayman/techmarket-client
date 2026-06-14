@@ -4,10 +4,12 @@ import React, { useContext, useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AuthContext } from "../context/AuthContext";
+import { CartContext } from "../context/CartContext";
 import { ThemeContext } from "../context/ThemeContext";
 
 const Navbar = () => {
   const { user, logoutUser } = useContext(AuthContext);
+  const { cartCount } = useContext(CartContext);
   const { theme, toggleTheme } = useContext(ThemeContext);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -93,14 +95,16 @@ const Navbar = () => {
               </svg>
             </button>
             <div className="relative">
-              <button className="p-2 text-zinc-300 hover:text-pink-400 hover:neon-text-pink hover:bg-pink-500/10 rounded-full transition-all group cursor-pointer">
+              <Link href="/cart" className="relative p-2 text-zinc-300 hover:text-pink-400 hover:neon-text-pink hover:bg-pink-500/10 rounded-full transition-all group inline-flex items-center justify-center cursor-pointer">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
-                <span className="absolute top-0 right-0 inline-flex items-center justify-center px-1.5 py-0.5 text-[9px] font-bold leading-none text-white bg-pink-500 rounded-full neon-glow-pink">
-                  3
-                </span>
-              </button>
+                {cartCount > 0 && (
+                  <span className="absolute -top-1 -right-1 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[9px] font-bold leading-none text-white bg-pink-500 rounded-full neon-glow-pink animate-pulse">
+                    {cartCount > 99 ? "99+" : cartCount}
+                  </span>
+                )}
+              </Link>
             </div>
 
             {user ? (
