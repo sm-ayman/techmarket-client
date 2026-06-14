@@ -95,8 +95,7 @@ export default function Home() {
             </span>
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-zinc-300">
-            Discover a handpicked collection of high-performance smartphones, powerful
-            workstations, immersive sound gear, and cutting-edge tech accessories.
+            Premium smartphones, laptops, audio gear, and accessories — all in one place.
           </p>
           <div className="mt-10 flex items-center justify-center gap-x-6">
             <Link
