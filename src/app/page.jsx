@@ -72,7 +72,7 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
-      <section className="relative overflow-hidden py-24 sm:py-32 bg-[#020202]">
+      <section className="relative overflow-hidden py-24 sm:py-32">
         <div className="absolute inset-0 -z-20">
           <img
             src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1920&auto=format&fit=crop&q=80"
