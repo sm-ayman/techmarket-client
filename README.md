@@ -5,11 +5,28 @@ Tech Market is a premium e-commerce tech showcase built using Next.js (App Route
 ## Key Features
 
 - 🔐 **Firebase Authentication**: Integrated secure Sign-In, Sign-Up (Email/Password), and Google Auth provider.
+- 👥 **Role-Based Access**: Distinct Admin and Customer views.
+- 🛒 **Cart & Checkout**: Full cart management and checkout workflow.
+- 📦 **Order Tracking**: View past orders and order history.
 - ⚙️ **State Persistence**: Custom react state synchronized with local storage, enabling creation, deletion, and editing of products without database overhead.
 - 📱 **Fully Responsive Layout**: Premium theme styling with dark mode elements, sticky responsive navigations, uniform styling cards, and micro-hover states.
 - 🔍 **Interactive Search & Filtering**: Multi-field sorting by Keyword Search, Category, Price Limit slider, and Rating.
 - 📁 **Protected Routes**: Add Product (`/items/add`) and Manage Products (`/items/manage`) routes redirect unauthorized visitors to the Login screen.
 - 🛠️ **Production Ready**: Zero linting warnings/errors and builds successfully under production configurations.
+
+---
+
+## Demo Credentials
+
+You can use the following credentials to test out the different roles in the application:
+
+**Admin Demo:**
+- **Email:** `admin@techmarket.com`
+- **Password:** `admin123`
+
+**Customer Demo:**
+- **Email:** `customer@techmarket.com`
+- **Password:** `customer123`
 
 ---
 
@@ -52,7 +69,18 @@ Follow these steps to run the application locally:
 | `/about` | **Public** | App Mission, core values description, and team showcase. |
 | `/items` | **Public** | Browse tech items catalog with search inputs and multi-faceted filtering. |
 | `/items/[id]` | **Public** | Dynamic segment details page, specifications table, and related products. |
+| `/cart` | **Public/Protected** | View items added to the cart. |
+| `/checkout` | **Protected** | Secure checkout process. |
+| `/orders` | **Protected** | View user's past orders. |
+| `/profile` | **Protected** | User profile and settings. |
 | `/login` | **Public** | Firebase credentials sign-in & Google authentication. |
 | `/register` | **Public** | Firebase credentials signup page. |
 | `/items/add` | **Protected** | Product creation form. Redirects unauthorized users to `/login`. |
 | `/items/manage` | **Protected** | Administrative dashboard with product inventory table and Delete actions. |
+
+---
+
+## Developer Info
+
+- **Developer**: SM Ayman
+- **Portfolio**: [https://sm-ayman.netlify.app/](https://sm-ayman.netlify.app/)
