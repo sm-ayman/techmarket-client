@@ -57,8 +57,15 @@ export default function Home() {
   const router = useRouter();
   const isAdmin = user?.email === "admin@techmarket.com";
 
-  const featuredProducts = products.slice(0, 3);
-  const moreProducts = products.slice(3, 11);
+  const explicitFeatured = products.filter(p => p.isFeatured);
+  const otherProducts = products.filter(p => !p.isFeatured);
+  
+  // Fill up to 3 slots with explicit featured products, then fallback to others if needed
+  const featuredProducts = [...explicitFeatured, ...otherProducts].slice(0, 3);
+  
+  // Show 8 other products in the more section
+  const displayedFeaturedIds = new Set(featuredProducts.map(p => p.id));
+  const moreProducts = products.filter(p => !displayedFeaturedIds.has(p.id)).slice(0, 8);
 
   const handleBuyNow = (product) => {
     addToCart(product);

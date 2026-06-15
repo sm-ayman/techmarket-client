@@ -110,6 +110,7 @@ const ManageItems = () => {
       title: editingProduct.title,
       price: editingProduct.price,
       category: editingProduct.category,
+      isFeatured: editingProduct.isFeatured || false,
       stock: editingProduct.stock !== undefined ? editingProduct.stock : getStockInfo(editingProduct).units,
       image: finalImage,
       images: uploadedUrls,
@@ -440,6 +441,18 @@ const ManageItems = () => {
                   onChange={(e) => setEditingProduct({...editingProduct, stock: Number(e.target.value)})}
                   className="w-full px-4 py-2 bg-[#050505] border border-pink-500/30 text-white rounded-xl text-sm focus:outline-none focus:border-pink-500 focus:neon-glow-pink transition-all"
                 />
+              </div>
+              <div className="flex items-center pt-2">
+                <input
+                  id="editIsFeatured"
+                  type="checkbox"
+                  checked={editingProduct.isFeatured || false}
+                  onChange={(e) => setEditingProduct({...editingProduct, isFeatured: e.target.checked})}
+                  className="h-4 w-4 rounded border-zinc-500 bg-zinc-800 text-pink-500 focus:ring-pink-500"
+                />
+                <label htmlFor="editIsFeatured" className="ml-2 block text-sm font-medium text-zinc-300">
+                  Featured Product
+                </label>
               </div>
               <div>
                 <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">Update Images (Optional)</label>

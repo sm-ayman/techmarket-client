@@ -19,6 +19,7 @@ const AddItem = () => {
   const [images, setImages] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
   const [specsList, setSpecsList] = useState([{ key: "Category", value: "Phones" }]);
+  const [isFeatured, setIsFeatured] = useState(false);
   const [success, setSuccess] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
@@ -95,6 +96,7 @@ const AddItem = () => {
       description: fullDesc,
       price: Number(price),
       category,
+      isFeatured,
       image: finalImage,
       images: uploadedUrls,
       specs: Object.keys(specsObj).length > 0 ? specsObj : {
@@ -202,6 +204,20 @@ const AddItem = () => {
                 <option value="Wearables">Wearables</option>
                 <option value="Accessories">Accessories</option>
               </select>
+            </div>
+
+            {/* Featured Product */}
+            <div className="flex items-center mt-8">
+              <input
+                id="isFeatured"
+                type="checkbox"
+                checked={isFeatured}
+                onChange={(e) => setIsFeatured(e.target.checked)}
+                className="h-5 w-5 rounded border-zinc-300 text-teal-600 focus:ring-teal-500 dark:border-zinc-600 dark:bg-zinc-700 dark:ring-offset-zinc-800"
+              />
+              <label htmlFor="isFeatured" className="ml-3 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                Featured Product (Shows on Homepage)
+              </label>
             </div>
 
             {/* Image Upload */}

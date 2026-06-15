@@ -62,26 +62,39 @@ const Navbar = () => {
 
           {/* Desktop Navigation Links */}
           <div className="hidden md:flex items-center gap-2">
-            <Link href="/" className={linkClass("/")}>
-              Home
-            </Link>
-            <Link href="/items" className={linkClass("/items")}>
-              Shop
-            </Link>
-            <Link href="/about" className={linkClass("/about")}>
-              About
-            </Link>
-            {user?.email === "admin@techmarket.com" && (
+            {authLoading ? (
+              <div className="flex items-center gap-2">
+                {[...Array(6)].map((_, i) => (
+                  <div key={i} className="relative h-9 w-20 rounded-lg overflow-hidden border border-cyan-500/10">
+                    <div className="absolute inset-0 bg-zinc-900/50" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-500/10 to-transparent animate-[shimmer_1.2s_infinite]" style={{backgroundSize: "200% 100%", animation: "shimmer 1.2s infinite linear"}} />
+                  </div>
+                ))}
+              </div>
+            ) : (
               <>
-                <Link href="/items/add" className={linkClass("/items/add")}>
-                  Add Product
+                <Link href="/" className={linkClass("/")}>
+                  Home
                 </Link>
-                <Link href="/items/manage" className={linkClass("/items/manage")}>
-                  Manage Products
+                <Link href="/items" className={linkClass("/items")}>
+                  Shop
                 </Link>
-                <Link href="/orders" className={linkClass("/orders")}>
-                  Orders
+                <Link href="/about" className={linkClass("/about")}>
+                  About
                 </Link>
+                {user?.email === "admin@techmarket.com" && (
+                  <>
+                    <Link href="/items/add" className={linkClass("/items/add")}>
+                      Add Product
+                    </Link>
+                    <Link href="/items/manage" className={linkClass("/items/manage")}>
+                      Manage Products
+                    </Link>
+                    <Link href="/orders" className={linkClass("/orders")}>
+                      Orders
+                    </Link>
+                  </>
+                )}
               </>
             )}
           </div>
@@ -251,89 +264,102 @@ const Navbar = () => {
       {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="md:hidden border-t border-cyan-500/20 bg-[#050505] py-3 px-4 flex flex-col gap-2 shadow-inner">
-          <Link
-            href="/"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block px-3 py-2 rounded-lg text-base font-medium text-white hover:text-cyan-400"
-          >
-            Home
-          </Link>
-          <Link
-            href="/items"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block px-3 py-2 rounded-lg text-base font-medium text-white hover:text-cyan-400"
-          >
-            Shop
-          </Link>
-          <Link
-            href="/about"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block px-3 py-2 rounded-lg text-base font-medium text-white hover:text-cyan-400"
-          >
-            About
-          </Link>
-          {user ? (
-            <>
-              {user?.email === "admin@techmarket.com" && (
-                <>
-                  <Link href="/items/add" onClick={() => setMobileMenuOpen(false)}
-                    className="block px-3 py-2 rounded-lg text-base font-medium text-white hover:text-cyan-400">
-                    Add Product
-                  </Link>
-                  <Link href="/items/manage" onClick={() => setMobileMenuOpen(false)}
-                    className="block px-3 py-2 rounded-lg text-base font-medium text-white hover:text-cyan-400">
-                    Manage Products
-                  </Link>
-                  <Link href="/orders" onClick={() => setMobileMenuOpen(false)}
-                    className="block px-3 py-2 rounded-lg text-base font-medium text-white hover:text-purple-400">
-                    Orders
-                  </Link>
-                </>
-              )}
-              {user?.email !== "admin@techmarket.com" && (
-                <Link href="/profile" onClick={() => setMobileMenuOpen(false)}
-                  className="block px-3 py-2 rounded-lg text-base font-medium text-white hover:text-cyan-400">
-                  👤 My Profile & Orders
-                </Link>
-              )}
-              <div className="mt-4 border-t border-cyan-500/20 pt-4">
-                <div className="flex items-center gap-3 px-3 mb-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-tr from-cyan-500 to-pink-500 font-bold text-white shadow-[0_0_10px_rgba(0,243,255,0.5)]">
-                    {user.displayName ? user.displayName.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase()}
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-white">{user.displayName || "User Account"}</p>
-                    <p className="text-xs text-zinc-500 truncate max-w-[200px]">{user.email}</p>
-                  </div>
+          {authLoading ? (
+            <div className="flex flex-col gap-2">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="relative h-10 w-full rounded-lg overflow-hidden border border-cyan-500/10">
+                  <div className="absolute inset-0 bg-zinc-900/50" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-500/10 to-transparent animate-[shimmer_1.2s_infinite]" style={{backgroundSize: "200% 100%", animation: "shimmer 1.2s infinite linear"}} />
                 </div>
-                <button
-                  onClick={() => {
-                    handleLogout();
-                    setMobileMenuOpen(false);
-                  }}
-                  className="w-full text-left block px-3 py-2 rounded-lg text-base font-medium text-pink-400 hover:bg-pink-500/10 cursor-pointer transition-colors"
-                >
-                  Sign out
-                </button>
-              </div>
-            </>
-          ) : (
-            <div className="mt-4 flex flex-col gap-2 pt-4 border-t border-cyan-500/20">
-              <Link
-                href="/login"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex w-full items-center justify-center px-4 py-2.5 text-base font-medium text-cyan-400 hover:bg-cyan-500/10 rounded-lg transition-colors border border-cyan-500/30"
-              >
-                Log in
-              </Link>
-              <Link
-                href="/register"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex w-full items-center justify-center px-4 py-2.5 text-base font-medium text-black bg-cyan-500 hover:bg-cyan-400 rounded-lg shadow-[0_0_10px_rgba(0,243,255,0.4)] transition-colors"
-              >
-                Sign up
-              </Link>
+              ))}
             </div>
+          ) : (
+            <>
+              <Link
+                href="/"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block px-3 py-2 rounded-lg text-base font-medium text-white hover:text-cyan-400"
+              >
+                Home
+              </Link>
+              <Link
+                href="/items"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block px-3 py-2 rounded-lg text-base font-medium text-white hover:text-cyan-400"
+              >
+                Shop
+              </Link>
+              <Link
+                href="/about"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block px-3 py-2 rounded-lg text-base font-medium text-white hover:text-cyan-400"
+              >
+                About
+              </Link>
+              {user ? (
+                <>
+                  {user?.email === "admin@techmarket.com" && (
+                    <>
+                      <Link href="/items/add" onClick={() => setMobileMenuOpen(false)}
+                        className="block px-3 py-2 rounded-lg text-base font-medium text-white hover:text-cyan-400">
+                        Add Product
+                      </Link>
+                      <Link href="/items/manage" onClick={() => setMobileMenuOpen(false)}
+                        className="block px-3 py-2 rounded-lg text-base font-medium text-white hover:text-cyan-400">
+                        Manage Products
+                      </Link>
+                      <Link href="/orders" onClick={() => setMobileMenuOpen(false)}
+                        className="block px-3 py-2 rounded-lg text-base font-medium text-white hover:text-purple-400">
+                        Orders
+                      </Link>
+                    </>
+                  )}
+                  {user?.email !== "admin@techmarket.com" && (
+                    <Link href="/profile" onClick={() => setMobileMenuOpen(false)}
+                      className="block px-3 py-2 rounded-lg text-base font-medium text-white hover:text-cyan-400">
+                      👤 My Profile & Orders
+                    </Link>
+                  )}
+                  <div className="mt-4 border-t border-cyan-500/20 pt-4">
+                    <div className="flex items-center gap-3 px-3 mb-3">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-tr from-cyan-500 to-pink-500 font-bold text-white shadow-[0_0_10px_rgba(0,243,255,0.5)]">
+                        {user.displayName ? user.displayName.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase()}
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-white">{user.displayName || "User Account"}</p>
+                        <p className="text-xs text-zinc-500 truncate max-w-[200px]">{user.email}</p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => {
+                        handleLogout();
+                        setMobileMenuOpen(false);
+                      }}
+                      className="w-full text-left block px-3 py-2 rounded-lg text-base font-medium text-pink-400 hover:bg-pink-500/10 cursor-pointer transition-colors"
+                    >
+                      Sign out
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <div className="mt-4 flex flex-col gap-2 pt-4 border-t border-cyan-500/20">
+                  <Link
+                    href="/login"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex w-full items-center justify-center px-4 py-2.5 text-base font-medium text-cyan-400 hover:bg-cyan-500/10 rounded-lg transition-colors border border-cyan-500/30"
+                  >
+                    Log in
+                  </Link>
+                  <Link
+                    href="/register"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex w-full items-center justify-center px-4 py-2.5 text-base font-medium text-black bg-cyan-500 hover:bg-cyan-400 rounded-lg shadow-[0_0_10px_rgba(0,243,255,0.4)] transition-colors"
+                  >
+                    Sign up
+                  </Link>
+                </div>
+              )}
+            </>
           )}
         </div>
       )}
