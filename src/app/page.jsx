@@ -12,10 +12,21 @@ import { ToastContext } from "../context/ToastContext";
 function AddToCartBtn({ product, className = "", iconOnly = false }) {
   const { addToCart } = useContext(CartContext);
   const { toast } = useContext(ToastContext);
+  const { user } = useContext(AuthContext);
+  const router = useRouter();
   const [added, setAdded] = useState(false);
 
   const handleAdd = (e) => {
     e.preventDefault();
+    if (!user) {
+      toast({
+        type: "error",
+        title: "Authentication Required",
+        message: "Please login to add to cart",
+      });
+      router.push("/login");
+      return;
+    }
     addToCart(product);
     setAdded(true);
     setTimeout(() => setAdded(false), 1200);
@@ -61,6 +72,7 @@ export default function Home() {
   const { products, loading } = useProducts();
   const { addToCart } = useContext(CartContext);
   const { user } = useContext(AuthContext);
+  const { toast } = useContext(ToastContext);
   const router = useRouter();
   const isAdmin = user?.email === "admin@techmarket.com";
 
@@ -75,6 +87,15 @@ export default function Home() {
   const moreProducts = products.filter(p => !displayedFeaturedIds.has(p.id)).slice(0, 8);
 
   const handleBuyNow = (product) => {
+    if (!user) {
+      toast({
+        type: "error",
+        title: "Authentication Required",
+        message: "Please login to buy product",
+      });
+      router.push("/login");
+      return;
+    }
     addToCart(product);
     router.push("/checkout");
   };

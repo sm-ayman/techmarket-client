@@ -97,8 +97,8 @@ const CustomersPage = () => {
   });
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white p-6 sm:p-12 font-sans border-t border-zinc-900">
-      <div className="max-w-7xl mx-auto space-y-8">
+    <div className="min-h-screen bg-[#050505] text-white p-4 sm:p-12 font-sans border-t border-zinc-900">
+      <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8">
         
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">

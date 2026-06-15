@@ -7,14 +7,27 @@ import { useSearchParams } from "next/navigation";
 import { useProducts } from "../../hooks/useProducts";
 import { CartContext } from "../../context/CartContext";
 import { AuthContext } from "../../context/AuthContext";
+import { ToastContext } from "../../context/ToastContext";
 
 // Reusable icon-only Add to Cart button with success flash
 function AddToCartBtn({ product }) {
   const { addToCart } = useContext(CartContext);
+  const { user } = useContext(AuthContext);
+  const { toast } = useContext(ToastContext);
+  const router = useRouter();
   const [added, setAdded] = useState(false);
 
   const handleAdd = (e) => {
     e.preventDefault();
+    if (!user) {
+      toast({
+        type: "error",
+        title: "Authentication Required",
+        message: "Please login to add to cart",
+      });
+      router.push("/login");
+      return;
+    }
     addToCart(product);
     setAdded(true);
     setTimeout(() => setAdded(false), 1200);
@@ -47,6 +60,7 @@ const ItemsContent = () => {
   const { products, loading } = useProducts();
   const { addToCart } = useContext(CartContext);
   const { user } = useContext(AuthContext);
+  const { toast } = useContext(ToastContext);
   const searchParams = useSearchParams();
   const router = useRouter();
   const isAdmin = user?.email === "admin@techmarket.com";
@@ -71,6 +85,15 @@ const ItemsContent = () => {
   });
 
   const handleBuyNow = (product) => {
+    if (!user) {
+      toast({
+        type: "error",
+        title: "Authentication Required",
+        message: "Please login to buy product",
+      });
+      router.push("/login");
+      return;
+    }
     addToCart(product);
     router.push("/checkout");
   };

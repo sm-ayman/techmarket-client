@@ -6,24 +6,44 @@ import { useRouter } from "next/navigation";
 import { useProducts } from "../../../hooks/useProducts";
 import { CartContext } from "../../../context/CartContext";
 import { AuthContext } from "../../../context/AuthContext";
+import { ToastContext } from "../../../context/ToastContext";
 
 const ItemDetails = ({ params }) => {
   const { id } = use(params);
   const { products, loading } = useProducts();
   const { addToCart } = useContext(CartContext);
   const { user } = useContext(AuthContext);
+  const { toast } = useContext(ToastContext);
   const router = useRouter();
   const [selectedImageIdx, setSelectedImageIdx] = useState(0);
   const [backgroundPos, setBackgroundPos] = useState("50% 50%");
   const [cartAdded, setCartAdded] = useState(false);
 
   const handleAddToCart = () => {
+    if (!user) {
+      toast({
+        type: "error",
+        title: "Authentication Required",
+        message: "Please login to add to cart",
+      });
+      router.push("/login");
+      return;
+    }
     addToCart(product);
     setCartAdded(true);
     setTimeout(() => setCartAdded(false), 1500);
   };
 
   const handleBuyNow = () => {
+    if (!user) {
+      toast({
+        type: "error",
+        title: "Authentication Required",
+        message: "Please login to buy product",
+      });
+      router.push("/login");
+      return;
+    }
     addToCart(product);
     router.push("/checkout");
   };

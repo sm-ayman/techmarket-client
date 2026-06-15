@@ -111,7 +111,7 @@ const OrdersPage = () => {
 
   return (
     <div className="bg-[#050505] text-white min-h-screen font-sans border-t border-zinc-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-6 sm:space-y-10">
 
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -152,7 +152,7 @@ const OrdersPage = () => {
         </div>
 
         {/* Filters + Table */}
-        <div className="bg-[#020202] border border-zinc-800 rounded-3xl overflow-hidden p-6 space-y-6 shadow-[0_0_30px_rgba(0,0,0,0.8)]">
+        <div className="bg-[#020202] border border-zinc-800 rounded-3xl overflow-hidden p-4 sm:p-6 space-y-4 sm:space-y-6 shadow-[0_0_30px_rgba(0,0,0,0.8)]">
 
           {/* Search & Filter Bar */}
           <div className="flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between">

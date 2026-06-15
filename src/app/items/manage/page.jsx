@@ -195,21 +195,21 @@ const ManageItems = () => {
       <div className="flex flex-col lg:flex-row">
         
         {/* Left Sidebar Filters */}
-        <aside className="w-full lg:w-72 bg-[#0a0a0a] border-b lg:border-b-0 lg:border-r border-zinc-900 p-8 flex flex-col justify-between shrink-0 shadow-[0_0_20px_rgba(0,0,0,0.5)]">
-          <div className="space-y-8">
+        <aside className="w-full lg:w-72 bg-[#0a0a0a] border-b lg:border-b-0 lg:border-r border-zinc-900 p-4 lg:p-8 flex flex-col justify-between shrink-0 shadow-[0_0_20px_rgba(0,0,0,0.5)]">
+          <div className="space-y-4 lg:space-y-8">
             <div>
-              <h2 className="text-2xl font-bold tracking-tight text-white neon-text-purple">Filters</h2>
+              <h2 className="text-xl lg:text-2xl font-bold tracking-tight text-white neon-text-purple">Filters</h2>
               <p className="text-xs text-zinc-500 mt-1">Refine your tech inventory views.</p>
             </div>
 
-            <nav className="flex flex-col gap-2">
+            <nav className="flex flex-row lg:flex-col gap-2 overflow-x-auto pb-4 lg:pb-0 scrollbar-hide">
               {filterCategories.map((cat) => {
                 const isActive = selectedCategoryFilter === cat;
                 return (
                   <button
                     key={cat}
                     onClick={() => setSelectedCategoryFilter(cat)}
-                    className={`flex items-center w-full px-4 py-3 rounded-xl text-sm font-bold transition-all text-left cursor-pointer ${
+                    className={`flex items-center shrink-0 lg:w-full px-4 py-3 rounded-xl text-sm font-bold transition-all text-left cursor-pointer ${
                       isActive
                         ? "bg-cyan-500/20 text-cyan-400 border border-cyan-500 neon-glow-cyan shadow-[0_0_15px_rgba(0,243,255,0.2)]"
                         : "text-zinc-400 hover:bg-zinc-900/50 hover:text-white border border-transparent"
@@ -227,7 +227,7 @@ const ManageItems = () => {
         </aside>
 
         {/* Right Dashboard Area */}
-        <main className="flex-1 p-8 sm:p-12 space-y-10">
+        <main className="flex-1 p-4 lg:p-12 space-y-6 lg:space-y-10 w-full overflow-hidden">
           
           {/* Header Action Bar */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
