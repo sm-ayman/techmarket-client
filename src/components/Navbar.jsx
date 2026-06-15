@@ -93,6 +93,9 @@ const Navbar = () => {
                     <Link href="/orders" className={linkClass("/orders")}>
                       Orders
                     </Link>
+                    <Link href="/customers" className={linkClass("/customers")}>
+                      Customers
+                    </Link>
                   </>
                 )}
               </>
@@ -311,6 +314,10 @@ const Navbar = () => {
                       <Link href="/orders" onClick={() => setMobileMenuOpen(false)}
                         className="block px-3 py-2 rounded-lg text-base font-medium text-white hover:text-purple-400">
                         Orders
+                      </Link>
+                      <Link href="/customers" onClick={() => setMobileMenuOpen(false)}
+                        className="block px-3 py-2 rounded-lg text-base font-medium text-white hover:text-purple-400">
+                        Customers
                       </Link>
                     </>
                   )}
