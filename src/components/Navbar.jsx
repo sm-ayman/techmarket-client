@@ -8,7 +8,7 @@ import { CartContext } from "../context/CartContext";
 import { ThemeContext } from "../context/ThemeContext";
 
 const Navbar = () => {
-  const { user, logoutUser } = useContext(AuthContext);
+  const { user, logoutUser, loading: authLoading } = useContext(AuthContext);
   const { cartCount } = useContext(CartContext);
   const { theme, toggleTheme } = useContext(ThemeContext);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -79,6 +79,9 @@ const Navbar = () => {
                 <Link href="/items/manage" className={linkClass("/items/manage")}>
                   Manage Products
                 </Link>
+                <Link href="/orders" className={linkClass("/orders")}>
+                  Orders
+                </Link>
               </>
             )}
           </div>
@@ -107,7 +110,20 @@ const Navbar = () => {
               </Link>
             </div>
 
-            {user ? (
+            {/* Auth area — show techy skeleton while Firebase resolves */}
+            {authLoading ? (
+              <div className="flex items-center gap-2">
+                <div className="relative h-9 w-28 rounded-xl overflow-hidden">
+                  <div className="absolute inset-0 bg-zinc-900 border border-cyan-500/20 rounded-xl" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-500/10 to-transparent animate-[shimmer_1.2s_infinite]" style={{backgroundSize: "200% 100%", animation: "shimmer 1.2s infinite linear"}} />
+                  <div className="absolute inset-0 flex items-center justify-center gap-1.5">
+                    <span className="h-1.5 w-1.5 rounded-full bg-cyan-500/60 animate-bounce" style={{animationDelay:"0ms"}} />
+                    <span className="h-1.5 w-1.5 rounded-full bg-cyan-500/60 animate-bounce" style={{animationDelay:"150ms"}} />
+                    <span className="h-1.5 w-1.5 rounded-full bg-cyan-500/60 animate-bounce" style={{animationDelay:"300ms"}} />
+                  </div>
+                </div>
+              </div>
+            ) : user ? (
               <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setDropdownOpen(!dropdownOpen)}
@@ -153,6 +169,24 @@ const Navbar = () => {
                           className="block w-full text-left px-3 py-2 text-sm font-bold text-zinc-300 hover:text-cyan-400 hover:bg-cyan-500/10 rounded-lg transition-colors cursor-pointer mt-1"
                         >
                           ⚙️ Manage Products
+                        </Link>
+                        <Link
+                          href="/orders"
+                          onClick={() => setDropdownOpen(false)}
+                          className="block w-full text-left px-3 py-2 text-sm font-bold text-zinc-300 hover:text-purple-400 hover:bg-purple-500/10 rounded-lg transition-colors cursor-pointer mt-1"
+                        >
+                          📦 Orders
+                        </Link>
+                      </div>
+                    )}
+                    {user?.email !== "admin@techmarket.com" && (
+                      <div className="px-2 py-2 border-b border-zinc-800/50 mb-2">
+                        <Link
+                          href="/profile"
+                          onClick={() => setDropdownOpen(false)}
+                          className="block w-full text-left px-3 py-2 text-sm font-bold text-zinc-300 hover:text-cyan-400 hover:bg-cyan-500/10 rounded-lg transition-colors cursor-pointer"
+                        >
+                          👤 My Profile & Orders
                         </Link>
                       </div>
                     )}
@@ -242,21 +276,25 @@ const Navbar = () => {
             <>
               {user?.email === "admin@techmarket.com" && (
                 <>
-                  <Link
-                    href="/items/add"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="block px-3 py-2 rounded-lg text-base font-medium text-white hover:text-cyan-400"
-                  >
+                  <Link href="/items/add" onClick={() => setMobileMenuOpen(false)}
+                    className="block px-3 py-2 rounded-lg text-base font-medium text-white hover:text-cyan-400">
                     Add Product
                   </Link>
-                  <Link
-                    href="/items/manage"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="block px-3 py-2 rounded-lg text-base font-medium text-white hover:text-cyan-400"
-                  >
+                  <Link href="/items/manage" onClick={() => setMobileMenuOpen(false)}
+                    className="block px-3 py-2 rounded-lg text-base font-medium text-white hover:text-cyan-400">
                     Manage Products
                   </Link>
+                  <Link href="/orders" onClick={() => setMobileMenuOpen(false)}
+                    className="block px-3 py-2 rounded-lg text-base font-medium text-white hover:text-purple-400">
+                    Orders
+                  </Link>
                 </>
+              )}
+              {user?.email !== "admin@techmarket.com" && (
+                <Link href="/profile" onClick={() => setMobileMenuOpen(false)}
+                  className="block px-3 py-2 rounded-lg text-base font-medium text-white hover:text-cyan-400">
+                  👤 My Profile & Orders
+                </Link>
               )}
               <div className="mt-4 border-t border-cyan-500/20 pt-4">
                 <div className="flex items-center gap-3 px-3 mb-3">

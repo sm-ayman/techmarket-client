@@ -16,9 +16,20 @@ const AddItem = () => {
   const [fullDesc, setFullDesc] = useState("");
   const [price, setPrice] = useState("");
   const [category, setCategory] = useState("Phones");
-  const [imageUrl, setImageUrl] = useState("");
+  const [images, setImages] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]);
+  const [specsList, setSpecsList] = useState([{ key: "Category", value: "Phones" }]);
   const [success, setSuccess] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+
+  // Specs handling
+  const handleAddSpec = () => setSpecsList([...specsList, { key: "", value: "" }]);
+  const handleRemoveSpec = (index) => setSpecsList(specsList.filter((_, i) => i !== index));
+  const handleSpecChange = (index, field, val) => {
+    const newSpecs = [...specsList];
+    newSpecs[index][field] = val;
+    setSpecsList(newSpecs);
+  };
 
   // Protected route check
   useEffect(() => {
@@ -36,9 +47,47 @@ const AddItem = () => {
     );
   }
 
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    setImages(files);
+    const previews = files.map(file => URL.createObjectURL(file));
+    setImagePreviews(previews);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
+
+    const uploadedUrls = [];
+    try {
+      const apiKey = process.env.NEXT_PUBLIC_IMGBB_API_KEY || "c6b66c9f85a5aaf4843cc838735bd9c2";
+      
+      for (const file of images) {
+        const formData = new FormData();
+        formData.append("image", file);
+        
+        const res = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
+          method: "POST",
+          body: formData,
+        });
+        
+        const data = await res.json();
+        if (data.success) {
+          uploadedUrls.push(data.data.url);
+        }
+      }
+    } catch (error) {
+      console.error("Image upload failed:", error);
+    }
+
+    const finalImage = uploadedUrls.length > 0 ? uploadedUrls[0] : "https://images.unsplash.com/photo-1526738549149-8e07eca6c147?w=600&auto=format&fit=crop&q=80";
+
+    const specsObj = {};
+    specsList.forEach(s => {
+      if (s.key.trim() && s.value.trim()) {
+        specsObj[s.key.trim()] = s.value.trim();
+      }
+    });
 
     const newProduct = {
       title,
@@ -46,8 +95,9 @@ const AddItem = () => {
       description: fullDesc,
       price: Number(price),
       category,
-      image: imageUrl || "https://images.unsplash.com/photo-1526738549149-8e07eca6c147?w=600&auto=format&fit=crop&q=80",
-      specs: {
+      image: finalImage,
+      images: uploadedUrls,
+      specs: Object.keys(specsObj).length > 0 ? specsObj : {
         "Category": category,
         "Warranty": "1 Year Brand Warranty",
         "Availability": "In Stock"
@@ -55,16 +105,16 @@ const AddItem = () => {
     };
 
     try {
-      // Simulate slight network lag for better UX loading indicator
-      await new Promise((resolve) => setTimeout(resolve, 800));
-      addProduct(newProduct);
+      await addProduct(newProduct);
       setSuccess(true);
       // Reset form
       setTitle("");
       setShortDesc("");
       setFullDesc("");
       setPrice("");
-      setImageUrl("");
+      setImages([]);
+      setImagePreviews([]);
+      setSpecsList([{ key: "Category", value: category }]);
 
       // Automatically hide success notification after 4 seconds
       setTimeout(() => setSuccess(false), 4000);
@@ -154,18 +204,25 @@ const AddItem = () => {
               </select>
             </div>
 
-            {/* Image URL */}
+            {/* Image Upload */}
             <div className="sm:col-span-2">
               <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
-                Image URL (Optional)
+                Product Images
               </label>
               <input
-                type="url"
-                value={imageUrl}
-                onChange={(e) => setImageUrl(e.target.value)}
-                placeholder="https://images.unsplash.com/... or leave blank for placeholder"
-                className="w-full px-3.5 py-2.5 bg-zinc-50 border border-zinc-200 dark:bg-zinc-800 dark:border-zinc-700 text-zinc-900 dark:text-white rounded-lg focus:outline-none focus:border-teal-500 transition-colors"
+                type="file"
+                multiple
+                accept="image/*"
+                onChange={handleImageChange}
+                className="w-full px-3.5 py-2.5 bg-zinc-50 border border-zinc-200 dark:bg-zinc-800 dark:border-zinc-700 text-zinc-900 dark:text-white rounded-lg focus:outline-none focus:border-teal-500 transition-colors file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 dark:file:bg-zinc-700 dark:file:text-white"
               />
+              {imagePreviews.length > 0 && (
+                <div className="mt-4 flex gap-4 overflow-x-auto pb-2">
+                  {imagePreviews.map((src, idx) => (
+                    <img key={idx} src={src} alt="Preview" className="h-24 w-24 object-cover rounded-lg border border-zinc-200 dark:border-zinc-700" />
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Short Description */}
@@ -197,6 +254,54 @@ const AddItem = () => {
                 placeholder="Provide a deep dive breakdown of product specifications, build quality, compatibility, etc."
                 className="w-full px-3.5 py-2.5 bg-zinc-50 border border-zinc-200 dark:bg-zinc-800 dark:border-zinc-700 text-zinc-900 dark:text-white rounded-lg focus:outline-none focus:border-teal-500 transition-colors resize-y"
               />
+            </div>
+
+            {/* Dynamic Specs Builder */}
+            <div className="sm:col-span-2 border-t border-zinc-200 dark:border-zinc-800 pt-6 mt-2">
+              <div className="flex items-center justify-between mb-4">
+                <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                  Detailed Specifications
+                </label>
+                <button
+                  type="button"
+                  onClick={handleAddSpec}
+                  className="text-xs font-bold bg-teal-50 text-teal-600 px-3 py-1.5 rounded-lg hover:bg-teal-100 dark:bg-zinc-800 dark:text-teal-400 dark:hover:bg-zinc-700 transition-colors"
+                >
+                  + Add Spec
+                </button>
+              </div>
+              
+              <div className="space-y-3">
+                {specsList.map((spec, index) => (
+                  <div key={index} className="flex gap-3 items-center">
+                    <input
+                      type="text"
+                      placeholder="e.g. Refresh Rate"
+                      value={spec.key}
+                      onChange={(e) => handleSpecChange(index, "key", e.target.value)}
+                      className="flex-1 px-3 py-2 text-sm bg-zinc-50 border border-zinc-200 dark:bg-zinc-800 dark:border-zinc-700 text-zinc-900 dark:text-white rounded-lg focus:outline-none focus:border-teal-500 transition-colors"
+                    />
+                    <input
+                      type="text"
+                      placeholder="e.g. 120Hz"
+                      value={spec.value}
+                      onChange={(e) => handleSpecChange(index, "value", e.target.value)}
+                      className="flex-1 px-3 py-2 text-sm bg-zinc-50 border border-zinc-200 dark:bg-zinc-800 dark:border-zinc-700 text-zinc-900 dark:text-white rounded-lg focus:outline-none focus:border-teal-500 transition-colors"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveSpec(index)}
+                      className="p-2 text-zinc-400 hover:text-red-500 transition-colors"
+                      title="Remove Spec"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
+                {specsList.length === 0 && (
+                  <p className="text-xs text-zinc-500">No specs added. Click "+ Add Spec" to include specifications.</p>
+                )}
+              </div>
             </div>
           </div>
 

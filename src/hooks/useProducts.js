@@ -184,32 +184,27 @@ const INITIAL_PRODUCTS = [
 export function useProducts() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
   useEffect(() => {
-    const stored = localStorage.getItem("techmarket_products");
-    let data = stored ? JSON.parse(stored) : INITIAL_PRODUCTS;
-    
-    // Auto-update localStorage if it's missing the new products
-    if (!stored || data.length < 11) {
-      // Merge initial products that might be missing
-      const existingIds = new Set(data.map(p => p.id));
-      const missingProducts = INITIAL_PRODUCTS.filter(p => !existingIds.has(p.id));
-      if (missingProducts.length > 0) {
-        data = [...data, ...missingProducts];
-        localStorage.setItem("techmarket_products", JSON.stringify(data));
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch(`${API_URL}/products`);
+        if (!res.ok) throw new Error("Failed to fetch");
+        const data = await res.json();
+        setProducts(data);
+      } catch (err) {
+        console.error("Failed to fetch products:", err);
+      } finally {
+        setLoading(false);
       }
-    }
+    };
+    fetchProducts();
+  }, [API_URL]);
 
-    setTimeout(() => {
-      setProducts(data);
-      setLoading(false);
-    }, 0);
-  }, []);
-
-  const addProduct = (newProduct) => {
-    const updated = [
-      ...products,
-      {
+  const addProduct = async (newProduct) => {
+    try {
+      const payload = {
         ...newProduct,
         id: newProduct.title.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
         rating: 5.0, // default rating
@@ -217,22 +212,57 @@ export function useProducts() {
           "Category": newProduct.category,
           "Price": `৳${newProduct.price}`
         }
-      }
-    ];
-    localStorage.setItem("techmarket_products", JSON.stringify(updated));
-    setProducts(updated);
+      };
+
+      const res = await fetch(`${API_URL}/products`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) throw new Error("Failed to add product");
+      
+      const addedProduct = await res.json();
+      setProducts([...products, addedProduct]);
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
   };
 
-  const deleteProduct = (id) => {
-    const updated = products.filter((p) => p.id !== id);
-    localStorage.setItem("techmarket_products", JSON.stringify(updated));
-    setProducts(updated);
+  const deleteProduct = async (id) => {
+    try {
+      const res = await fetch(`${API_URL}/products/${id}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) throw new Error("Failed to delete product");
+      setProducts(products.filter((p) => p.id !== id));
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
   };
 
-  const updateProduct = (id, updatedData) => {
-    const updated = products.map((p) => (p.id === id ? { ...p, ...updatedData } : p));
-    localStorage.setItem("techmarket_products", JSON.stringify(updated));
-    setProducts(updated);
+  const updateProduct = async (id, updatedData) => {
+    try {
+      const res = await fetch(`${API_URL}/products/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedData),
+      });
+      if (!res.ok) throw new Error("Failed to update product");
+      const updated = await res.json();
+      // Handle MongoDB returning `value` from findOneAndUpdate if not standard
+      const updatedItem = updated.value || updated;
+      setProducts(products.map((p) => (p.id === id ? updatedItem : p)));
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
   };
 
   return { products, loading, addProduct, deleteProduct, updateProduct };

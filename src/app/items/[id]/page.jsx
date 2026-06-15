@@ -5,11 +5,13 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useProducts } from "../../../hooks/useProducts";
 import { CartContext } from "../../../context/CartContext";
+import { AuthContext } from "../../../context/AuthContext";
 
 const ItemDetails = ({ params }) => {
   const { id } = use(params);
   const { products, loading } = useProducts();
   const { addToCart } = useContext(CartContext);
+  const { user } = useContext(AuthContext);
   const router = useRouter();
   const [selectedImageIdx, setSelectedImageIdx] = useState(0);
   const [backgroundPos, setBackgroundPos] = useState("50% 50%");
@@ -61,8 +63,8 @@ const ItemDetails = ({ params }) => {
     );
   }
 
-  // Predefined thumbnail mocks based on the main product image
-  const images = [
+  // Use product images if available, otherwise fallback to predefined mocks
+  const images = (product.images && product.images.length > 0) ? product.images : [
     product.image,
     "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=600&auto=format&fit=crop&q=80",
     "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=600&auto=format&fit=crop&q=80",
@@ -70,27 +72,30 @@ const ItemDetails = ({ params }) => {
   ];
 
   // Specific spec mapping for the 2x2 grid based on product metadata
-  const gridSpecs = [
-    {
-      label: "NOISE CONTROL",
-      value: product.specs?.["Noise Cancelling"] || product.specs?.["Processor"] || "Active NC",
-      icon: "🎧"
-    },
-    {
-      label: "BATTERY LIFE",
-      value: product.specs?.["Battery Life"] || product.specs?.["Battery"] || "30 Hours",
-      icon: "🔋"
-    },
-    {
-      label: "BLUETOOTH",
-      value: product.specs?.["Connectivity"]?.split("|")[0] || "v5.2",
-      icon: "📶"
-    },
-    {
-      label: "SPEED & POWER",
-      value: product.specs?.["Type"] || product.specs?.["Thickness"] || "Premium",
-      icon: "⚡"
-    }
+  const getIconForSpec = (key) => {
+    const k = key.toLowerCase();
+    if (k.includes('battery') || k.includes('power')) return '🔋';
+    if (k.includes('bluetooth') || k.includes('connect') || k.includes('wifi') || k.includes('network')) return '📶';
+    if (k.includes('noise') || k.includes('audio') || k.includes('sound')) return '🎧';
+    if (k.includes('processor') || k.includes('chip') || k.includes('speed') || k.includes('cpu') || k.includes('gpu')) return '⚡';
+    if (k.includes('display') || k.includes('screen') || k.includes('resolution')) return '🖥️';
+    if (k.includes('camera') || k.includes('lens') || k.includes('video')) return '📸';
+    if (k.includes('storage') || k.includes('ram') || k.includes('memory') || k.includes('capacity')) return '💾';
+    if (k.includes('weight') || k.includes('mass') || k.includes('size') || k.includes('dimensions')) return '📏';
+    if (k.includes('warranty') || k.includes('guarantee')) return '🛡️';
+    if (k.includes('category') || k.includes('type')) return '🏷️';
+    if (k.includes('color')) return '🎨';
+    return '✨';
+  };
+
+  const specEntries = Object.entries(product.specs || {});
+  
+  const gridSpecs = specEntries.length > 0 ? specEntries.map(([key, value]) => ({
+    label: key.toUpperCase(),
+    value: value,
+    icon: getIconForSpec(key)
+  })) : [
+    { label: "CATEGORY", value: product.category, icon: "🏷️" }
   ];
 
   // Mocked related items as requested by UI design
@@ -131,7 +136,7 @@ const ItemDetails = ({ params }) => {
           {/* Left: Image Canvas */}
           <div className="space-y-6">
             <div 
-              className="relative aspect-square w-full rounded-3xl bg-radial-[circle_at_center,rgba(0,243,255,0.05)_0%,rgba(5,5,5,1)_100%] border border-cyan-500/30 shadow-[0_0_20px_rgba(0,243,255,0.1)] flex items-center justify-center overflow-hidden group cursor-zoom-in hover:neon-glow-cyan transition-all"
+              className="relative aspect-[4/3] w-full rounded-3xl bg-radial-[circle_at_center,rgba(0,243,255,0.05)_0%,rgba(5,5,5,1)_100%] border border-cyan-500/30 shadow-[0_0_20px_rgba(0,243,255,0.1)] flex items-center justify-center overflow-hidden group cursor-zoom-in hover:neon-glow-cyan transition-all"
               onMouseMove={handleMouseMove}
             >
               {/* Featured Badge */}
@@ -220,12 +225,22 @@ const ItemDetails = ({ params }) => {
 
               {/* Action Buttons */}
               <div className="space-y-4 pt-2">
+                {!!user && (
+                  <div className="bg-orange-500/10 border border-orange-500/50 rounded-xl p-3 text-center">
+                    <p className="text-orange-400 text-xs font-bold uppercase tracking-wider">
+                      ⚠️ Purchasing disabled for admins
+                    </p>
+                  </div>
+                )}
                 <button
                   onClick={handleAddToCart}
-                  className={`w-full py-4 font-black text-sm uppercase tracking-wider rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer border-2 ${
-                    cartAdded
-                      ? "bg-cyan-500/20 border-cyan-400 text-cyan-400 shadow-[0_0_20px_rgba(0,243,255,0.5)]"
-                      : "bg-transparent border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-black shadow-[0_0_10px_rgba(0,243,255,0.3)] hover:shadow-[0_0_20px_rgba(0,243,255,0.6)]"
+                  disabled={!!user}
+                  className={`w-full py-4 font-black text-sm uppercase tracking-wider rounded-xl transition-all flex items-center justify-center gap-2 border-2 ${
+                    !!user 
+                      ? "opacity-50 cursor-not-allowed border-zinc-700 text-zinc-500 bg-zinc-900"
+                      : cartAdded
+                        ? "bg-cyan-500/20 border-cyan-400 text-cyan-400 shadow-[0_0_20px_rgba(0,243,255,0.5)] cursor-pointer"
+                        : "bg-transparent border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-black shadow-[0_0_10px_rgba(0,243,255,0.3)] hover:shadow-[0_0_20px_rgba(0,243,255,0.6)] cursor-pointer"
                   }`}
                 >
                   {cartAdded ? (
@@ -236,7 +251,12 @@ const ItemDetails = ({ params }) => {
                 </button>
                 <button
                   onClick={handleBuyNow}
-                  className="w-full py-4 bg-pink-500 hover:bg-pink-400 text-white font-black text-sm uppercase tracking-wider rounded-xl transition-all shadow-[0_0_10px_rgba(255,0,255,0.4)] hover:shadow-[0_0_20px_rgba(255,0,255,0.6)] cursor-pointer"
+                  disabled={!!user}
+                  className={`w-full py-4 font-black text-sm uppercase tracking-wider rounded-xl transition-all ${
+                    !!user
+                      ? "bg-zinc-800 text-zinc-500 opacity-50 cursor-not-allowed"
+                      : "bg-pink-500 hover:bg-pink-400 text-white shadow-[0_0_10px_rgba(255,0,255,0.4)] hover:shadow-[0_0_20px_rgba(255,0,255,0.6)] cursor-pointer"
+                  }`}
                 >
                   Buy Now
                 </button>

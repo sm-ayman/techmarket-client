@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useProducts } from "../hooks/useProducts";
 import { CartContext } from "../context/CartContext";
+import { AuthContext } from "../context/AuthContext";
 
 // Reusable "Add to Cart" button with success flash
 function AddToCartBtn({ product, className = "", iconOnly = false }) {
@@ -52,7 +53,9 @@ function AddToCartBtn({ product, className = "", iconOnly = false }) {
 export default function Home() {
   const { products, loading } = useProducts();
   const { addToCart } = useContext(CartContext);
+  const { user } = useContext(AuthContext);
   const router = useRouter();
+  const isAdmin = user?.email === "admin@techmarket.com";
 
   const featuredProducts = products.slice(0, 3);
   const moreProducts = products.slice(3, 11);
@@ -182,15 +185,25 @@ export default function Home() {
                     <p className="mt-2 text-sm text-zinc-400 line-clamp-2 leading-relaxed">{p.shortDescription}</p>
                     <div className="mt-auto pt-6 flex items-center justify-between border-t border-zinc-800/80">
                       <span className="font-mono font-bold text-xl text-white">৳{p.price}</span>
-                      <div className="flex items-center gap-2">
-                        <AddToCartBtn product={p} iconOnly />
-                        <button
-                          onClick={() => handleBuyNow(p)}
-                          className="rounded-lg bg-cyan-500 px-4 py-2 text-[10px] font-black tracking-widest text-black hover:bg-cyan-400 transition-all cursor-pointer shadow-[0_0_10px_rgba(0,243,255,0.4)] hover:shadow-[0_0_20px_rgba(0,243,255,0.8)] uppercase"
+                      {!isAdmin && (
+                        <div className="flex items-center gap-2">
+                          <AddToCartBtn product={p} iconOnly />
+                          <button
+                            onClick={() => handleBuyNow(p)}
+                            className="rounded-lg bg-cyan-500 px-4 py-2 text-[10px] font-black tracking-widest text-black hover:bg-cyan-400 transition-all cursor-pointer shadow-[0_0_10px_rgba(0,243,255,0.4)] hover:shadow-[0_0_20px_rgba(0,243,255,0.8)] uppercase"
+                          >
+                            Buy Now
+                          </button>
+                        </div>
+                      )}
+                      {isAdmin && (
+                        <Link
+                          href={`/items/${p.id}`}
+                          className="rounded-lg bg-pink-500 px-4 py-2 text-[10px] font-black tracking-widest text-white hover:bg-pink-400 transition-all cursor-pointer shadow-[0_0_10px_rgba(255,0,255,0.4)] hover:shadow-[0_0_20px_rgba(255,0,255,0.8)] uppercase"
                         >
-                          Buy Now
-                        </button>
-                      </div>
+                          View Details
+                        </Link>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -237,19 +250,29 @@ export default function Home() {
                     <h3 className="font-bold text-base text-white line-clamp-1 group-hover:text-purple-400 transition-colors">{p.title}</h3>
                     <div className="mt-auto pt-4 flex items-center justify-between border-t border-zinc-800/80 mt-4">
                       <span className="font-mono font-bold text-lg text-white">৳{p.price}</span>
-                      <div className="flex items-center gap-1.5">
-                        <AddToCartBtn
-                          product={p}
-                          iconOnly
-                          className="rounded-lg bg-transparent border border-cyan-500 p-1.5 text-cyan-400 hover:bg-cyan-500 hover:text-white transition-all cursor-pointer shadow-[0_0_5px_rgba(0,243,255,0.2)] hover:shadow-[0_0_15px_rgba(0,243,255,0.6)]"
-                        />
-                        <button
-                          onClick={() => handleBuyNow(p)}
-                          className="rounded-lg bg-purple-600 px-3 py-1.5 text-[10px] font-black text-white hover:bg-purple-500 transition-all cursor-pointer shadow-[0_0_10px_rgba(176,38,255,0.4)] hover:shadow-[0_0_20px_rgba(176,38,255,0.8)] uppercase tracking-wider"
+                      {!isAdmin && (
+                        <div className="flex items-center gap-1.5">
+                          <AddToCartBtn
+                            product={p}
+                            iconOnly
+                            className="rounded-lg bg-transparent border border-cyan-500 p-1.5 text-cyan-400 hover:bg-cyan-500 hover:text-white transition-all cursor-pointer shadow-[0_0_5px_rgba(0,243,255,0.2)] hover:shadow-[0_0_15px_rgba(0,243,255,0.6)]"
+                          />
+                          <button
+                            onClick={() => handleBuyNow(p)}
+                            className="rounded-lg bg-purple-600 px-3 py-1.5 text-[10px] font-black text-white hover:bg-purple-500 transition-all cursor-pointer shadow-[0_0_10px_rgba(176,38,255,0.4)] hover:shadow-[0_0_20px_rgba(176,38,255,0.8)] uppercase tracking-wider"
+                          >
+                            Buy Now
+                          </button>
+                        </div>
+                      )}
+                      {isAdmin && (
+                        <Link
+                          href={`/items/${p.id}`}
+                          className="rounded-lg bg-pink-500 px-3 py-1.5 text-[10px] font-black tracking-widest text-white hover:bg-pink-400 transition-all cursor-pointer shadow-[0_0_10px_rgba(255,0,255,0.4)] hover:shadow-[0_0_20px_rgba(255,0,255,0.8)] uppercase"
                         >
-                          Buy Now
-                        </button>
-                      </div>
+                          View Details
+                        </Link>
+                      )}
                     </div>
                   </div>
                 </div>

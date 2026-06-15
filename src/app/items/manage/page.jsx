@@ -15,6 +15,83 @@ const ManageItems = () => {
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [editingProduct, setEditingProduct] = useState(null);
+  const [editImages, setEditImages] = useState([]);
+  const [editImagePreviews, setEditImagePreviews] = useState([]);
+  const [editSpecsList, setEditSpecsList] = useState([]);
+  const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    if (editingProduct) {
+      setEditImages([]);
+      setEditImagePreviews(editingProduct.images || (editingProduct.image ? [editingProduct.image] : []));
+      const specs = editingProduct.specs || {};
+      const initialSpecs = Object.entries(specs).map(([key, value]) => ({ key, value }));
+      setEditSpecsList(initialSpecs);
+    }
+  }, [editingProduct]);
+
+  const handleAddEditSpec = () => setEditSpecsList([...editSpecsList, { key: "", value: "" }]);
+  const handleRemoveEditSpec = (index) => setEditSpecsList(editSpecsList.filter((_, i) => i !== index));
+  const handleEditSpecChange = (index, field, val) => {
+    const newSpecs = [...editSpecsList];
+    newSpecs[index][field] = val;
+    setEditSpecsList(newSpecs);
+  };
+
+  const handleEditImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    setEditImages(files);
+    const previews = files.map(file => URL.createObjectURL(file));
+    setEditImagePreviews(previews);
+  };
+
+  const handleSaveChanges = async () => {
+    setIsSaving(true);
+    let uploadedUrls = editingProduct.images || [];
+
+    if (editImages.length > 0) {
+      uploadedUrls = [];
+      try {
+        const apiKey = process.env.NEXT_PUBLIC_IMGBB_API_KEY || "c6b66c9f85a5aaf4843cc838735bd9c2";
+        for (const file of editImages) {
+          const formData = new FormData();
+          formData.append("image", file);
+          const res = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
+            method: "POST",
+            body: formData,
+          });
+          const data = await res.json();
+          if (data.success) {
+            uploadedUrls.push(data.data.url);
+          }
+        }
+      } catch (error) {
+        console.error("Image upload failed:", error);
+      }
+    }
+
+    const finalImage = uploadedUrls.length > 0 ? uploadedUrls[0] : editingProduct.image;
+
+    const specsObj = {};
+    editSpecsList.forEach(s => {
+      if (s.key.trim() && s.value.trim()) {
+        specsObj[s.key.trim()] = s.value.trim();
+      }
+    });
+
+    await updateProduct(editingProduct.id, {
+      title: editingProduct.title,
+      price: editingProduct.price,
+      category: editingProduct.category,
+      stock: editingProduct.stock !== undefined ? editingProduct.stock : getStockInfo(editingProduct).units,
+      image: finalImage,
+      images: uploadedUrls,
+      specs: specsObj
+    });
+    
+    setIsSaving(false);
+    setEditingProduct(null);
+  };
 
   // Route protection
   useEffect(() => {
@@ -295,10 +372,10 @@ const ManageItems = () => {
 
       {/* Edit Modal */}
       {editingProduct && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-          <div className="bg-[#0a0a0a] border border-pink-500/50 rounded-2xl w-full max-w-md p-6 shadow-[0_0_30px_rgba(255,0,255,0.2)]">
-            <h3 className="text-xl font-bold text-white mb-4 neon-text-pink">Edit Product</h3>
-            <div className="space-y-4">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 sm:p-6 overflow-y-auto">
+          <div className="bg-[#0a0a0a] border border-pink-500/50 rounded-2xl w-full max-w-md p-5 sm:p-6 shadow-[0_0_30px_rgba(255,0,255,0.2)] my-auto max-h-[90vh] flex flex-col">
+            <h3 className="text-xl font-bold text-white mb-4 neon-text-pink shrink-0">Edit Product</h3>
+            <div className="space-y-4 overflow-y-auto pr-2 custom-scrollbar">
               <div>
                 <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">Title</label>
                 <input 
@@ -318,6 +395,18 @@ const ManageItems = () => {
                 />
               </div>
               <div>
+                <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">Category</label>
+                <select
+                  value={editingProduct.category}
+                  onChange={(e) => setEditingProduct({...editingProduct, category: e.target.value})}
+                  className="w-full px-4 py-2 bg-[#050505] border border-pink-500/30 text-white rounded-xl text-sm focus:outline-none focus:border-pink-500 focus:neon-glow-pink transition-all"
+                >
+                  {["Phones", "Laptops", "Audio", "Tablets", "Wearables", "Accessories", "Gaming", "Displays", "Drones", "Other"].map(cat => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
                 <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">Stock Units</label>
                 <input 
                   type="number" 
@@ -325,6 +414,63 @@ const ManageItems = () => {
                   onChange={(e) => setEditingProduct({...editingProduct, stock: Number(e.target.value)})}
                   className="w-full px-4 py-2 bg-[#050505] border border-pink-500/30 text-white rounded-xl text-sm focus:outline-none focus:border-pink-500 focus:neon-glow-pink transition-all"
                 />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">Update Images (Optional)</label>
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={handleEditImageChange}
+                  className="w-full px-4 py-2 bg-[#050505] border border-pink-500/30 text-white rounded-xl text-sm focus:outline-none focus:border-pink-500 transition-all file:mr-4 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-pink-500/20 file:text-pink-400 hover:file:bg-pink-500/30"
+                />
+                {editImagePreviews.length > 0 && (
+                  <div className="mt-3 flex gap-2 overflow-x-auto pb-2">
+                    {editImagePreviews.map((src, idx) => (
+                      <img key={idx} src={src} alt="Preview" className="h-16 w-16 object-cover rounded-lg border border-pink-500/30" />
+                    ))}
+                  </div>
+                )}
+              </div>
+              <div className="border-t border-pink-500/20 pt-4 mt-2">
+                <div className="flex items-center justify-between mb-3">
+                  <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider">Specifications</label>
+                  <button
+                    type="button"
+                    onClick={handleAddEditSpec}
+                    className="text-[10px] font-bold text-pink-400 bg-pink-500/10 px-2 py-1 rounded hover:bg-pink-500/20 transition-colors"
+                  >
+                    + Add Spec
+                  </button>
+                </div>
+                <div className="space-y-2 max-h-32 overflow-y-auto pr-2 custom-scrollbar">
+                  {editSpecsList.map((spec, index) => (
+                    <div key={index} className="flex gap-2 items-center">
+                      <input
+                        type="text"
+                        placeholder="Key"
+                        value={spec.key}
+                        onChange={(e) => handleEditSpecChange(index, "key", e.target.value)}
+                        className="flex-1 px-3 py-1.5 bg-[#050505] border border-pink-500/30 text-white rounded-lg text-xs focus:outline-none focus:border-pink-500 transition-all"
+                      />
+                      <input
+                        type="text"
+                        placeholder="Value"
+                        value={spec.value}
+                        onChange={(e) => handleEditSpecChange(index, "value", e.target.value)}
+                        className="flex-1 px-3 py-1.5 bg-[#050505] border border-pink-500/30 text-white rounded-lg text-xs focus:outline-none focus:border-pink-500 transition-all"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveEditSpec(index)}
+                        className="text-zinc-500 hover:text-red-500 transition-colors text-xs p-1"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                  {editSpecsList.length === 0 && <p className="text-[10px] text-zinc-600">No specifications.</p>}
+                </div>
               </div>
             </div>
             <div className="flex justify-end gap-3 mt-8">
@@ -335,17 +481,11 @@ const ManageItems = () => {
                 Cancel
               </button>
               <button 
-                onClick={() => {
-                  updateProduct(editingProduct.id, {
-                    title: editingProduct.title,
-                    price: editingProduct.price,
-                    stock: editingProduct.stock !== undefined ? editingProduct.stock : getStockInfo(editingProduct).units
-                  });
-                  setEditingProduct(null);
-                }}
-                className="px-4 py-2 bg-pink-500 hover:bg-pink-400 text-white text-sm font-bold rounded-xl transition-all neon-glow-pink cursor-pointer uppercase tracking-wider"
+                onClick={handleSaveChanges}
+                disabled={isSaving}
+                className="px-4 py-2 bg-pink-500 hover:bg-pink-400 disabled:opacity-50 text-white text-sm font-bold rounded-xl transition-all neon-glow-pink cursor-pointer uppercase tracking-wider flex items-center justify-center gap-2"
               >
-                Save Changes
+                {isSaving ? "Saving..." : "Save Changes"}
               </button>
             </div>
           </div>

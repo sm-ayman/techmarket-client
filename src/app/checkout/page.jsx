@@ -36,11 +36,51 @@ export default function CheckoutPage() {
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
     setLoading(true);
-    // Simulate API delay
-    await new Promise((res) => setTimeout(res, 1800));
-    clearCart();
-    setOrderPlaced(true);
-    setLoading(false);
+
+    try {
+      const orderPayload = {
+        contact: {
+          name: form.name,
+          email: form.email,
+          phone: form.phone,
+        },
+        shipping: {
+          address: form.address,
+          city: form.city,
+          zip: form.zip,
+        },
+        payment: form.payment,
+        items: cartItems.map((item) => ({
+          productId: item.id,
+          title: item.title,
+          price: item.price,
+          quantity: item.quantity,
+          image: item.image,
+        })),
+        subtotal: cartTotal,
+        tax: tax,
+        total: grandTotal,
+      };
+
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+      const res = await fetch(`${API_URL}/orders`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(orderPayload),
+      });
+
+      if (!res.ok) throw new Error("Failed to place order");
+
+      clearCart();
+      setOrderPlaced(true);
+    } catch (error) {
+      console.error("Order failed:", error);
+      alert("Failed to place order. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   // ── Order Success Screen ──────────────────────────────────────────────────

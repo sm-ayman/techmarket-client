@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import { useProducts } from "../../hooks/useProducts";
 import { CartContext } from "../../context/CartContext";
+import { AuthContext } from "../../context/AuthContext";
 
 // Reusable icon-only Add to Cart button with success flash
 function AddToCartBtn({ product }) {
@@ -45,8 +46,10 @@ function AddToCartBtn({ product }) {
 const ItemsContent = () => {
   const { products, loading } = useProducts();
   const { addToCart } = useContext(CartContext);
+  const { user } = useContext(AuthContext);
   const searchParams = useSearchParams();
   const router = useRouter();
+  const isAdmin = user?.email === "admin@techmarket.com";
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(
@@ -182,15 +185,25 @@ const ItemsContent = () => {
                     <p className="mt-2 text-xs text-zinc-400 line-clamp-2 leading-relaxed">{p.shortDescription}</p>
                     <div className="mt-auto pt-4 flex items-center justify-between border-t border-zinc-800/80 mt-4">
                       <span className="font-mono font-bold text-lg text-white">৳{p.price}</span>
-                      <div className="flex items-center gap-2">
-                        <AddToCartBtn product={p} />
-                        <button
-                          onClick={() => handleBuyNow(p)}
-                          className="rounded-lg bg-cyan-500 px-3.5 py-1.5 text-[10px] font-black tracking-widest text-black hover:bg-cyan-400 transition-all cursor-pointer shadow-[0_0_10px_rgba(0,243,255,0.4)] hover:shadow-[0_0_20px_rgba(0,243,255,0.8)] uppercase"
+                      {!isAdmin && (
+                        <div className="flex items-center gap-2">
+                          <AddToCartBtn product={p} />
+                          <button
+                            onClick={() => handleBuyNow(p)}
+                            className="rounded-lg bg-cyan-500 px-3.5 py-1.5 text-[10px] font-black tracking-widest text-black hover:bg-cyan-400 transition-all cursor-pointer shadow-[0_0_10px_rgba(0,243,255,0.4)] hover:shadow-[0_0_20px_rgba(0,243,255,0.8)] uppercase"
+                          >
+                            Buy Now
+                          </button>
+                        </div>
+                      )}
+                      {isAdmin && (
+                        <Link
+                          href={`/items/${p.id}`}
+                          className="rounded-lg bg-pink-500 px-3.5 py-1.5 text-[10px] font-black tracking-widest text-white hover:bg-pink-400 transition-all cursor-pointer shadow-[0_0_10px_rgba(255,0,255,0.4)] hover:shadow-[0_0_20px_rgba(255,0,255,0.8)] uppercase"
                         >
-                          Buy Now
-                        </button>
-                      </div>
+                          View Details
+                        </Link>
+                      )}
                     </div>
                   </div>
                 </div>
