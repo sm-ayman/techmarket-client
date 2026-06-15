@@ -24,6 +24,8 @@ const OrdersPage = () => {
   const [updatingId, setUpdatingId] = useState(null);
   const [filterStatus, setFilterStatus] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+  // Confirmation modal state
+  const [confirmModal, setConfirmModal] = useState(null); // { orderId, currentStatus, newStatus }
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
@@ -52,6 +54,7 @@ const OrdersPage = () => {
 
   const handleStatusChange = async (orderId, newStatus) => {
     setUpdatingId(orderId);
+    setConfirmModal(null);
     try {
       const res = await fetch(`${API_URL}/orders/${orderId}/status`, {
         method: "PATCH",
@@ -68,6 +71,10 @@ const OrdersPage = () => {
     } finally {
       setUpdatingId(null);
     }
+  };
+
+  const requestStatusChange = (orderId, currentStatus, newStatus) => {
+    setConfirmModal({ orderId, currentStatus, newStatus });
   };
 
   if (authLoading || !user) {
@@ -270,7 +277,7 @@ const OrdersPage = () => {
                             <button
                               key={s}
                               disabled={order.status === s || updatingId === order.orderId}
-                              onClick={() => handleStatusChange(order.orderId, s)}
+                              onClick={() => requestStatusChange(order.orderId, order.status, s)}
                               className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer capitalize ${
                                 order.status === s
                                   ? `${STATUS_COLORS[s]} opacity-100`
@@ -290,6 +297,55 @@ const OrdersPage = () => {
           )}
         </div>
       </div>
+
+      {/* ── Status Confirmation Modal ───────────────────────────── */}
+      {confirmModal && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+          <div className="bg-[#0a0a0a] border border-purple-500/50 rounded-2xl w-full max-w-sm p-6 shadow-[0_0_40px_rgba(176,38,255,0.3)] animate-in fade-in zoom-in duration-200">
+            
+            {/* Icon */}
+            <div className="flex items-center justify-center w-14 h-14 mx-auto mb-5 rounded-full bg-purple-500/10 border border-purple-500/30">
+              <span className="text-2xl">⚠️</span>
+            </div>
+
+            {/* Title */}
+            <h3 className="text-lg font-extrabold text-white text-center neon-text-purple mb-1">
+              Confirm Status Update
+            </h3>
+            <p className="text-zinc-500 text-xs text-center mb-6">
+              Order <span className="font-mono text-purple-400 font-bold">#{confirmModal.orderId}</span>
+            </p>
+
+            {/* Status Change Arrow */}
+            <div className="flex items-center justify-center gap-4 mb-6">
+              <span className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-wider ${STATUS_COLORS[confirmModal.currentStatus] || "bg-zinc-800 text-zinc-400"}`}>
+                {confirmModal.currentStatus}
+              </span>
+              <span className="text-purple-400 font-black text-lg">→</span>
+              <span className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-wider ${STATUS_COLORS[confirmModal.newStatus] || "bg-zinc-800 text-zinc-400"}`}>
+                {confirmModal.newStatus}
+              </span>
+            </div>
+
+            {/* Buttons */}
+            <div className="flex gap-3">
+              <button
+                onClick={() => setConfirmModal(null)}
+                className="flex-1 px-4 py-2.5 bg-zinc-900 border border-zinc-700 text-zinc-300 hover:text-white hover:bg-zinc-800 rounded-xl text-sm font-bold transition-all cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => handleStatusChange(confirmModal.orderId, confirmModal.newStatus)}
+                disabled={updatingId === confirmModal.orderId}
+                className="flex-1 px-4 py-2.5 bg-purple-500 hover:bg-purple-400 disabled:opacity-50 text-white rounded-xl text-sm font-bold transition-all shadow-[0_0_15px_rgba(176,38,255,0.4)] cursor-pointer uppercase tracking-wider"
+              >
+                {updatingId === confirmModal.orderId ? "Updating..." : "Confirm"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
