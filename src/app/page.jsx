@@ -6,10 +6,12 @@ import { useRouter } from "next/navigation";
 import { useProducts } from "../hooks/useProducts";
 import { CartContext } from "../context/CartContext";
 import { AuthContext } from "../context/AuthContext";
+import { ToastContext } from "../context/ToastContext";
 
 // Reusable "Add to Cart" button with success flash
 function AddToCartBtn({ product, className = "", iconOnly = false }) {
   const { addToCart } = useContext(CartContext);
+  const { toast } = useContext(ToastContext);
   const [added, setAdded] = useState(false);
 
   const handleAdd = (e) => {
@@ -17,6 +19,11 @@ function AddToCartBtn({ product, className = "", iconOnly = false }) {
     addToCart(product);
     setAdded(true);
     setTimeout(() => setAdded(false), 1200);
+    toast({
+      type: "cart",
+      title: "Added to Cart",
+      message: `${product.title} \u2014 $${product.price}`,
+    });
   };
 
   if (iconOnly) {

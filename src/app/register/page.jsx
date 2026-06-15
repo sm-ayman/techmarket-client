@@ -4,9 +4,11 @@ import React, { useState, useContext, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AuthContext } from "../../context/AuthContext";
+import { ToastContext } from "../../context/ToastContext";
 
 const Register = () => {
   const { user, createUser, updateUserProfile } = useContext(AuthContext);
+  const { toast } = useContext(ToastContext);
   const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -40,12 +42,18 @@ const Register = () => {
 
     try {
       await createUser(email, password);
-      // Wait for auth to finish, then update displayName
       await updateUserProfile(name, "");
+      toast({
+        type: "success",
+        title: "Account Created!",
+        message: `Welcome aboard, ${name}. Your identity is now registered.`,
+      });
       router.push("/");
     } catch (err) {
       console.error(err);
-      setError(err.message.replace("Firebase: ", ""));
+      const msg = err.message.replace("Firebase: ", "");
+      setError(msg);
+      toast({ type: "error", title: "Registration Failed", message: msg });
     } finally {
       setLoading(false);
     }

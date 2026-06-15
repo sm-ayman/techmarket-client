@@ -4,10 +4,12 @@ import React, { useState, useContext, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { AuthContext } from "../../../context/AuthContext";
 import { useProducts } from "../../../hooks/useProducts";
+import { ToastContext } from "../../../context/ToastContext";
 
 const AddItem = () => {
   const { user, loading: authLoading } = useContext(AuthContext);
   const { addProduct } = useProducts();
+  const { toast } = useContext(ToastContext);
   const router = useRouter();
 
   // Form State
@@ -109,19 +111,25 @@ const AddItem = () => {
     try {
       await addProduct(newProduct);
       setSuccess(true);
+      toast({
+        type: "success",
+        title: "Product Deployed",
+        message: `"${title}" is now live in the inventory.`,
+      });
       // Reset form
       setTitle("");
       setShortDesc("");
       setFullDesc("");
       setPrice("");
+      setIsFeatured(false);
       setImages([]);
       setImagePreviews([]);
       setSpecsList([{ key: "Category", value: category }]);
 
-      // Automatically hide success notification after 4 seconds
       setTimeout(() => setSuccess(false), 4000);
     } catch (err) {
       console.error(err);
+      toast({ type: "error", title: "Upload Failed", message: "Product could not be added. Check your connection." });
     } finally {
       setSubmitting(false);
     }

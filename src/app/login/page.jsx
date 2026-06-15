@@ -4,9 +4,11 @@ import React, { useState, useContext, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AuthContext } from "../../context/AuthContext";
+import { ToastContext } from "../../context/ToastContext";
 
 const Login = () => {
   const { user, loginUser, loginWithGoogle } = useContext(AuthContext);
+  const { toast } = useContext(ToastContext);
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -26,11 +28,20 @@ const Login = () => {
     setLoading(true);
 
     try {
-      await loginUser(email, password);
+      const result = await loginUser(email, password);
+      const name = result?.displayName || result?.email || email;
+      const isAdmin = (result?.email || email) === "admin@techmarket.com";
+      toast({
+        type: "success",
+        title: isAdmin ? "Admin Access Granted" : "Welcome Back!",
+        message: isAdmin ? "System access authenticated. Hello, Admin." : `Logged in as ${name}`,
+      });
       router.push("/");
     } catch (err) {
       console.error(err);
-      setError(err.message.replace("Firebase: ", ""));
+      const msg = err.message.replace("Firebase: ", "");
+      setError(msg);
+      toast({ type: "error", title: "Auth Failed", message: msg });
     } finally {
       setLoading(false);
     }
@@ -40,11 +51,18 @@ const Login = () => {
     setError("");
     setLoading(true);
     try {
-      await loginWithGoogle();
+      const result = await loginWithGoogle();
+      toast({
+        type: "success",
+        title: "Google Auth Successful",
+        message: `Welcome, ${result?.user?.displayName || "User"}!`,
+      });
       router.push("/");
     } catch (err) {
       console.error(err);
-      setError(err.message.replace("Firebase: ", ""));
+      const msg = err.message.replace("Firebase: ", "");
+      setError(msg);
+      toast({ type: "error", title: "Google Auth Failed", message: msg });
     } finally {
       setLoading(false);
     }

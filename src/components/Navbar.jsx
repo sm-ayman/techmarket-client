@@ -6,11 +6,13 @@ import { usePathname } from "next/navigation";
 import { AuthContext } from "../context/AuthContext";
 import { CartContext } from "../context/CartContext";
 import { ThemeContext } from "../context/ThemeContext";
+import { ToastContext } from "../context/ToastContext";
 
 const Navbar = () => {
   const { user, logoutUser, loading: authLoading } = useContext(AuthContext);
   const { cartCount } = useContext(CartContext);
   const { theme, toggleTheme } = useContext(ThemeContext);
+  const { toast } = useContext(ToastContext);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -33,8 +35,10 @@ const Navbar = () => {
     try {
       await logoutUser();
       setDropdownOpen(false);
+      toast({ type: "info", title: "Session Terminated", message: "You have been signed out securely." });
     } catch (error) {
       console.error("Logout failed:", error);
+      toast({ type: "error", title: "Logout Error", message: "Could not sign out. Please try again." });
     }
   };
 

@@ -3,6 +3,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AuthContext } from "../../context/AuthContext";
+import { ToastContext } from "../../context/ToastContext";
 
 const STATUS_COLORS = {
   pending:   "bg-yellow-500/10 text-yellow-400 border border-yellow-500/30",
@@ -16,6 +17,7 @@ const STATUS_OPTIONS = ["pending", "confirmed", "shipped", "delivered", "cancell
 
 const OrdersPage = () => {
   const { user, loading: authLoading } = useContext(AuthContext);
+  const { toast } = useContext(ToastContext);
   const router = useRouter();
 
   const [orders, setOrders] = useState([]);
@@ -65,9 +67,14 @@ const OrdersPage = () => {
       setOrders((prev) =>
         prev.map((o) => (o.orderId === orderId ? { ...o, status: newStatus } : o))
       );
+      toast({
+        type: "success",
+        title: "Status Updated",
+        message: `Order #${orderId} → ${newStatus.toUpperCase()}`,
+      });
     } catch (err) {
       console.error(err);
-      alert("Failed to update order status.");
+      toast({ type: "error", title: "Update Failed", message: "Could not update order status. Try again." });
     } finally {
       setUpdatingId(null);
     }

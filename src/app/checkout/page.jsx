@@ -5,10 +5,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { CartContext } from "../../context/CartContext";
 import { AuthContext } from "../../context/AuthContext";
+import { ToastContext } from "../../context/ToastContext";
 
 export default function CheckoutPage() {
   const { cartItems, cartTotal, cartCount, clearCart } = useContext(CartContext);
   const { user } = useContext(AuthContext);
+  const { toast } = useContext(ToastContext);
   const router = useRouter();
 
   const [form, setForm] = useState({
@@ -75,9 +77,15 @@ export default function CheckoutPage() {
 
       clearCart();
       setOrderPlaced(true);
+      toast({
+        type: "success",
+        title: "Order Confirmed!",
+        message: "Your order has been placed. Check your email for confirmation.",
+        duration: 5000,
+      });
     } catch (error) {
       console.error("Order failed:", error);
-      alert("Failed to place order. Please try again.");
+      toast({ type: "error", title: "Order Failed", message: "Could not place your order. Please try again." });
     } finally {
       setLoading(false);
     }

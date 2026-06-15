@@ -3,6 +3,7 @@ import "./globals.css";
 import AuthProvider from "../context/AuthProvider";
 import CartProvider from "../context/CartProvider";
 import ThemeProvider from "../context/ThemeProvider";
+import ToastProvider from "../context/ToastProvider";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
@@ -32,11 +33,13 @@ export default function RootLayout({ children }) {
         <ThemeProvider>
           <AuthProvider>
             <CartProvider>
-              <Navbar />
-              <main className="flex-grow">
-                {children}
-              </main>
-              <Footer />
+              <ToastProvider>
+                <Navbar />
+                <main className="flex-grow">
+                  {children}
+                </main>
+                <Footer />
+              </ToastProvider>
             </CartProvider>
           </AuthProvider>
         </ThemeProvider>

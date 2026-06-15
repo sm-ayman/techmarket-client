@@ -5,10 +5,13 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AuthContext } from "../../../context/AuthContext";
 import { useProducts } from "../../../hooks/useProducts";
+import { ToastContext } from "../../../context/ToastContext";
+import ConfirmModal from "../../../components/ConfirmModal";
 
 const ManageItems = () => {
   const { user, loading: authLoading } = useContext(AuthContext);
   const { products, loading: productsLoading, deleteProduct, updateProduct } = useProducts();
+  const { toast } = useContext(ToastContext);
   const router = useRouter();
 
   // Selected filter states
@@ -21,6 +24,10 @@ const ManageItems = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [inTransitCount, setInTransitCount] = useState(0);
   const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+
+  // Confirmation modal state
+  const [confirmDelete, setConfirmDelete] = useState(null); // product to delete
+  const [confirmSave, setConfirmSave] = useState(false);    // save changes confirm
 
   useEffect(() => {
     if (editingProduct) {
@@ -106,16 +113,21 @@ const ManageItems = () => {
       }
     });
 
-    await updateProduct(editingProduct.id, {
-      title: editingProduct.title,
-      price: editingProduct.price,
-      category: editingProduct.category,
-      isFeatured: editingProduct.isFeatured || false,
-      stock: editingProduct.stock !== undefined ? editingProduct.stock : getStockInfo(editingProduct).units,
-      image: finalImage,
-      images: uploadedUrls,
-      specs: specsObj
-    });
+    try {
+      await updateProduct(editingProduct.id, {
+        title: editingProduct.title,
+        price: editingProduct.price,
+        category: editingProduct.category,
+        isFeatured: editingProduct.isFeatured || false,
+        stock: editingProduct.stock !== undefined ? editingProduct.stock : getStockInfo(editingProduct).units,
+        image: finalImage,
+        images: uploadedUrls,
+        specs: specsObj
+      });
+      toast({ type: "success", title: "Product Updated", message: `"${editingProduct.title}" has been saved successfully.` });
+    } catch {
+      toast({ type: "error", title: "Update Failed", message: "Could not save product changes. Try again." });
+    }
     
     setIsSaving(false);
     setEditingProduct(null);
@@ -361,11 +373,7 @@ const ManageItems = () => {
                                 Edit
                               </button>
                               <button
-                                onClick={() => {
-                                  if (confirm(`Are you sure you want to remove "${p.title}"?`)) {
-                                    deleteProduct(p.id);
-                                  }
-                                }}
+                                onClick={() => setConfirmDelete(p)}
                                 className="px-3 py-1.5 bg-transparent border border-pink-500 text-pink-400 hover:bg-pink-500 hover:text-white hover:neon-glow-pink text-xs font-bold rounded-xl transition-all cursor-pointer"
                               >
                                 Delete
@@ -520,7 +528,7 @@ const ManageItems = () => {
                 Cancel
               </button>
               <button 
-                onClick={handleSaveChanges}
+                onClick={() => setConfirmSave(true)}
                 disabled={isSaving}
                 className="px-4 py-2 bg-pink-500 hover:bg-pink-400 disabled:opacity-50 text-white text-sm font-bold rounded-xl transition-all neon-glow-pink cursor-pointer uppercase tracking-wider flex items-center justify-center gap-2"
               >
@@ -530,6 +538,46 @@ const ManageItems = () => {
           </div>
         </div>
       )}
+
+      {/* ── Delete Confirmation Modal ──────────────────────── */}
+      <ConfirmModal
+        isOpen={!!confirmDelete}
+        variant="danger"
+        icon="🗑️"
+        title="Delete Product?"
+        message={`"${confirmDelete?.title}" will be permanently removed from the inventory. This cannot be undone.`}
+        detail={`ID: ${confirmDelete?.id || "—"}`}
+        confirmLabel="Yes, Delete"
+        cancelLabel="Cancel"
+        onCancel={() => setConfirmDelete(null)}
+        onConfirm={async () => {
+          const p = confirmDelete;
+          setConfirmDelete(null);
+          try {
+            await deleteProduct(p.id);
+            toast({ type: "warning", title: "Product Deleted", message: `"${p.title}" has been removed from inventory.` });
+          } catch {
+            toast({ type: "error", title: "Delete Failed", message: "Could not delete product. Please try again." });
+          }
+        }}
+      />
+
+      {/* ── Save Changes Confirmation Modal ───────────────── */}
+      <ConfirmModal
+        isOpen={confirmSave}
+        variant="warning"
+        icon="💾"
+        title="Save Changes?"
+        message={`You are about to update "${editingProduct?.title}". This will overwrite the existing product data.`}
+        detail={`Category: ${editingProduct?.category} · Price: $${editingProduct?.price}`}
+        confirmLabel="Save Now"
+        cancelLabel="Go Back"
+        onCancel={() => setConfirmSave(false)}
+        onConfirm={() => {
+          setConfirmSave(false);
+          handleSaveChanges();
+        }}
+      />
     </div>
   );
 };
