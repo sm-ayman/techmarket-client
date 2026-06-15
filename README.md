@@ -82,5 +82,5 @@ Follow these steps to run the application locally:
 
 ## Developer Info
 
-- **Developer**: SM Ayman
+- **Developer**: Sultan Md. Ayman
 - **Portfolio**: [https://sm-ayman.netlify.app/](https://sm-ayman.netlify.app/)
