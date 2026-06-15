@@ -19,6 +19,8 @@ const ManageItems = () => {
   const [editImagePreviews, setEditImagePreviews] = useState([]);
   const [editSpecsList, setEditSpecsList] = useState([]);
   const [isSaving, setIsSaving] = useState(false);
+  const [inTransitCount, setInTransitCount] = useState(0);
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
   useEffect(() => {
     if (editingProduct) {
@@ -29,6 +31,31 @@ const ManageItems = () => {
       setEditSpecsList(initialSpecs);
     }
   }, [editingProduct]);
+
+  useEffect(() => {
+    const fetchInTransit = async () => {
+      try {
+        const res = await fetch(`${API_URL}/orders`);
+        if (!res.ok) return;
+        const orders = await res.json();
+        
+        let transitCount = 0;
+        orders.forEach(order => {
+          if (order.status === "shipped") {
+            order.items?.forEach(item => {
+              transitCount += item.quantity || 1;
+            });
+          }
+        });
+        setInTransitCount(transitCount);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    if (user) {
+      fetchInTransit();
+    }
+  }, [user]);
 
   const handleAddEditSpec = () => setEditSpecsList([...editSpecsList, { key: "", value: "" }]);
   const handleRemoveEditSpec = (index) => setEditSpecsList(editSpecsList.filter((_, i) => i !== index));
@@ -132,7 +159,6 @@ const ManageItems = () => {
   // Stats
   const totalItems = products.length;
   const lowStockCount = products.filter((p) => getStockInfo(p).isLow).length;
-  const inTransitCount = Math.round(totalItems * 0.15) + 2;
 
   // Category badges color mapping
   const badgeColor = (cat) => {
