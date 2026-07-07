@@ -18,6 +18,7 @@ function AddToCartBtn({ product, className = "", iconOnly = false }) {
 
   const handleAdd = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     if (!user) {
       toast({
         type: "error",
@@ -86,7 +87,8 @@ export default function Home() {
   const displayedFeaturedIds = new Set(featuredProducts.map(p => p.id));
   const moreProducts = products.filter(p => !displayedFeaturedIds.has(p.id)).slice(0, 8);
 
-  const handleBuyNow = (product) => {
+  const handleBuyNow = (e, product) => {
+    e.stopPropagation();
     if (!user) {
       toast({
         type: "error",
@@ -203,7 +205,8 @@ export default function Home() {
               {featuredProducts.map((p) => (
                 <div
                   key={p.id}
-                  className="group flex flex-col overflow-hidden rounded-2xl border border-zinc-800 bg-[#0a0a0a] transition-all hover:neon-glow-cyan hover:-translate-y-1"
+                  onClick={() => router.push(`/items/${p.id}`)}
+                  className="group flex flex-col overflow-hidden rounded-2xl border border-zinc-800 bg-[#0a0a0a] transition-all hover:neon-glow-cyan hover:-translate-y-1 cursor-pointer"
                 >
                   <div className="relative aspect-video overflow-hidden bg-[#050505]">
                     <img
@@ -224,7 +227,7 @@ export default function Home() {
                         <div className="flex items-center gap-2">
                           <AddToCartBtn product={p} iconOnly />
                           <button
-                            onClick={() => handleBuyNow(p)}
+                            onClick={(e) => handleBuyNow(e, p)}
                             className="rounded-lg bg-cyan-500 px-4 py-2 text-[10px] font-black tracking-widest text-black hover:bg-cyan-400 transition-all cursor-pointer shadow-[0_0_10px_rgba(0,243,255,0.4)] hover:shadow-[0_0_20px_rgba(0,243,255,0.8)] uppercase"
                           >
                             Buy Now
@@ -234,6 +237,7 @@ export default function Home() {
                       {isAdmin && (
                         <Link
                           href={`/items/${p.id}`}
+                          onClick={(e) => e.stopPropagation()}
                           className="rounded-lg bg-pink-500 px-4 py-2 text-[10px] font-black tracking-widest text-white hover:bg-pink-400 transition-all cursor-pointer shadow-[0_0_10px_rgba(255,0,255,0.4)] hover:shadow-[0_0_20px_rgba(255,0,255,0.8)] uppercase"
                         >
                           View Details
@@ -269,7 +273,8 @@ export default function Home() {
               {moreProducts.map((p) => (
                 <div
                   key={p.id}
-                  className="group flex flex-col overflow-hidden rounded-2xl border border-zinc-800 bg-[#0a0a0a] transition-all hover:neon-glow-purple hover:-translate-y-1"
+                  onClick={() => router.push(`/items/${p.id}`)}
+                  className="group flex flex-col overflow-hidden rounded-2xl border border-zinc-800 bg-[#0a0a0a] transition-all hover:neon-glow-purple hover:-translate-y-1 cursor-pointer"
                 >
                   <div className="relative aspect-square overflow-hidden bg-[#020202]">
                     <img
@@ -293,7 +298,7 @@ export default function Home() {
                             className="rounded-lg bg-transparent border border-cyan-500 p-1.5 text-cyan-400 hover:bg-cyan-500 hover:text-white transition-all cursor-pointer shadow-[0_0_5px_rgba(0,243,255,0.2)] hover:shadow-[0_0_15px_rgba(0,243,255,0.6)]"
                           />
                           <button
-                            onClick={() => handleBuyNow(p)}
+                            onClick={(e) => handleBuyNow(e, p)}
                             className="rounded-lg bg-purple-600 px-3 py-1.5 text-[10px] font-black text-white hover:bg-purple-500 transition-all cursor-pointer shadow-[0_0_10px_rgba(176,38,255,0.4)] hover:shadow-[0_0_20px_rgba(176,38,255,0.8)] uppercase tracking-wider"
                           >
                             Buy Now
@@ -303,6 +308,7 @@ export default function Home() {
                       {isAdmin && (
                         <Link
                           href={`/items/${p.id}`}
+                          onClick={(e) => e.stopPropagation()}
                           className="rounded-lg bg-pink-500 px-3 py-1.5 text-[10px] font-black tracking-widest text-white hover:bg-pink-400 transition-all cursor-pointer shadow-[0_0_10px_rgba(255,0,255,0.4)] hover:shadow-[0_0_20px_rgba(255,0,255,0.8)] uppercase"
                         >
                           View Details
