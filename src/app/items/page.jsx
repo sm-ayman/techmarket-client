@@ -8,6 +8,7 @@ import { useProducts } from "../../hooks/useProducts";
 import { CartContext } from "../../context/CartContext";
 import { AuthContext } from "../../context/AuthContext";
 import { ToastContext } from "../../context/ToastContext";
+import { motion, AnimatePresence } from "framer-motion";
 
 // Reusable icon-only Add to Cart button with success flash
 function AddToCartBtn({ product }) {
@@ -57,6 +58,21 @@ function AddToCartBtn({ product }) {
   );
 }
 
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const fadeInUp = {
+  hidden: { opacity: 0, y: 30 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
+};
+
 const ItemsContent = () => {
   const { products, loading } = useProducts();
   const { addToCart } = useContext(CartContext);
@@ -101,16 +117,21 @@ const ItemsContent = () => {
   };
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+    <motion.div 
+      initial="hidden"
+      animate="show"
+      variants={staggerContainer}
+      className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8"
+    >
       {/* Title */}
-      <div className="text-center md:text-left mb-10">
+      <motion.div variants={fadeInUp} className="text-center md:text-left mb-10">
         <h1 className="text-3xl font-extrabold text-white neon-text-cyan sm:text-4xl">Browse Tech Products</h1>
         <p className="mt-2 text-sm text-zinc-400">Find, search and filter through our latest catalog of high-end gadgets.</p>
-      </div>
+      </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 mb-12">
         {/* Sidebar Filters */}
-        <div className="bg-[#0a0a0a] border border-cyan-500/30 p-6 rounded-2xl shadow-[0_0_15px_rgba(0,243,255,0.1)] space-y-6">
+        <motion.div variants={fadeInUp} className="bg-[#0a0a0a] border border-cyan-500/30 p-6 rounded-2xl shadow-[0_0_15px_rgba(0,243,255,0.1)] space-y-6 h-fit">
           <h2 className="font-bold text-lg text-cyan-400 mb-4 flex items-center gap-2">
             <span>⚙️</span> Filters
           </h2>
@@ -168,7 +189,7 @@ const ItemsContent = () => {
               <option value="4.8">4.8+ Stars</option>
             </select>
           </div>
-        </div>
+        </motion.div>
 
         {/* Products Grid */}
         <div className="lg:col-span-3">
@@ -179,67 +200,82 @@ const ItemsContent = () => {
               ))}
             </div>
           ) : filteredProducts.length === 0 ? (
-            <div className="text-center py-20 bg-[#0a0a0a] border border-pink-500/30 rounded-2xl shadow-[0_0_15px_rgba(255,0,255,0.1)]">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="text-center py-20 bg-[#0a0a0a] border border-pink-500/30 rounded-2xl shadow-[0_0_15px_rgba(255,0,255,0.1)]"
+            >
               <div className="text-4xl mb-4">🔍</div>
               <h3 className="text-lg font-bold text-pink-400">No Products Found</h3>
               <p className="text-sm text-zinc-400 mt-2">Try adjusting your filters or search keywords.</p>
-            </div>
+            </motion.div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredProducts.map((p) => (
-                <div
-                  key={p.id}
-                  onClick={() => router.push(`/items/${p.id}`)}
-                  className="group flex flex-col overflow-hidden rounded-2xl border border-zinc-800 bg-[#0a0a0a] transition-all hover:neon-glow-cyan hover:-translate-y-1 cursor-pointer"
-                >
-                  <div className="relative aspect-video overflow-hidden bg-[#050505]">
-                    <img
-                      src={p.image} alt={p.title}
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-80 group-hover:opacity-100"
-                    />
-                    <span className="absolute top-3 right-3 rounded-full border border-pink-500 bg-pink-500/20 px-2.5 py-1 text-[10px] font-black text-pink-400 tracking-widest uppercase shadow-[0_0_10px_rgba(255,0,255,0.3)]">
-                      {p.category}
-                    </span>
-                  </div>
-                  <div className="flex flex-1 flex-col p-5">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-[10px] font-black text-zinc-500 uppercase tracking-wider">
-                        Rating: <span className="text-pink-400">{p.rating} ⭐</span>
+            <motion.div 
+              layout
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+            >
+              <AnimatePresence>
+                {filteredProducts.map((p) => (
+                  <motion.div
+                    layout
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.2 }}
+                    whileHover={{ y: -5 }}
+                    key={p.id}
+                    onClick={() => router.push(`/items/${p.id}`)}
+                    className="group flex flex-col overflow-hidden rounded-2xl border border-zinc-800 bg-[#0a0a0a] transition-all hover:neon-glow-cyan cursor-pointer h-full"
+                  >
+                    <div className="relative aspect-video overflow-hidden bg-[#050505]">
+                      <img
+                        src={p.image} alt={p.title}
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-80 group-hover:opacity-100"
+                      />
+                      <span className="absolute top-3 right-3 rounded-full border border-pink-500 bg-pink-500/20 px-2.5 py-1 text-[10px] font-black text-pink-400 tracking-widest uppercase shadow-[0_0_10px_rgba(255,0,255,0.3)]">
+                        {p.category}
                       </span>
                     </div>
-                    <h3 className="font-bold text-white line-clamp-1 group-hover:text-cyan-400 transition-colors">{p.title}</h3>
-                    <p className="mt-2 text-xs text-zinc-400 line-clamp-2 leading-relaxed">{p.shortDescription}</p>
-                    <div className="mt-auto pt-4 flex items-center justify-between border-t border-zinc-800/80 mt-4">
-                      <span className="font-mono font-bold text-lg text-white">৳{p.price}</span>
-                      {!isAdmin && (
-                        <div className="flex items-center gap-2">
-                          <AddToCartBtn product={p} />
-                          <button
-                            onClick={(e) => handleBuyNow(e, p)}
-                            className="rounded-lg bg-cyan-500 px-3.5 py-1.5 text-[10px] font-black tracking-widest text-black hover:bg-cyan-400 transition-all cursor-pointer shadow-[0_0_10px_rgba(0,243,255,0.4)] hover:shadow-[0_0_20px_rgba(0,243,255,0.8)] uppercase"
+                    <div className="flex flex-1 flex-col p-5">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-[10px] font-black text-zinc-500 uppercase tracking-wider">
+                          Rating: <span className="text-pink-400">{p.rating} ⭐</span>
+                        </span>
+                      </div>
+                      <h3 className="font-bold text-white line-clamp-1 group-hover:text-cyan-400 transition-colors">{p.title}</h3>
+                      <p className="mt-2 text-xs text-zinc-400 line-clamp-2 leading-relaxed">{p.shortDescription}</p>
+                      <div className="mt-auto pt-4 flex items-center justify-between border-t border-zinc-800/80 mt-4">
+                        <span className="font-mono font-bold text-lg text-white">৳{p.price}</span>
+                        {!isAdmin && (
+                          <div className="flex items-center gap-2">
+                            <AddToCartBtn product={p} />
+                            <button
+                              onClick={(e) => handleBuyNow(e, p)}
+                              className="rounded-lg bg-cyan-500 px-3.5 py-1.5 text-[10px] font-black tracking-widest text-black hover:bg-cyan-400 transition-all cursor-pointer shadow-[0_0_10px_rgba(0,243,255,0.4)] hover:shadow-[0_0_20px_rgba(0,243,255,0.8)] uppercase"
+                            >
+                              Buy Now
+                            </button>
+                          </div>
+                        )}
+                        {isAdmin && (
+                          <Link
+                            href={`/items/${p.id}`}
+                            onClick={(e) => e.stopPropagation()}
+                            className="rounded-lg bg-pink-500 px-3.5 py-1.5 text-[10px] font-black tracking-widest text-white hover:bg-pink-400 transition-all cursor-pointer shadow-[0_0_10px_rgba(255,0,255,0.4)] hover:shadow-[0_0_20px_rgba(255,0,255,0.8)] uppercase"
                           >
-                            Buy Now
-                          </button>
-                        </div>
-                      )}
-                      {isAdmin && (
-                        <Link
-                          href={`/items/${p.id}`}
-                          onClick={(e) => e.stopPropagation()}
-                          className="rounded-lg bg-pink-500 px-3.5 py-1.5 text-[10px] font-black tracking-widest text-white hover:bg-pink-400 transition-all cursor-pointer shadow-[0_0_10px_rgba(255,0,255,0.4)] hover:shadow-[0_0_20px_rgba(255,0,255,0.8)] uppercase"
-                        >
-                          View Details
-                        </Link>
-                      )}
+                            View Details
+                          </Link>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </motion.div>
           )}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
