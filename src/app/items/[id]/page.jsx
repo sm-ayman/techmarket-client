@@ -7,6 +7,20 @@ import { useProducts } from "../../../hooks/useProducts";
 import { CartContext } from "../../../context/CartContext";
 import { AuthContext } from "../../../context/AuthContext";
 import { ToastContext } from "../../../context/ToastContext";
+import { motion } from "framer-motion";
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 },
+  },
+};
+
+const fadeInUp = {
+  hidden: { opacity: 0, y: 30 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
+};
 
 const ItemDetails = ({ params }) => {
   const { id } = use(params);
@@ -148,13 +162,18 @@ const ItemDetails = ({ params }) => {
 
   return (
     <div className="bg-[#050505] text-white min-h-screen font-sans">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+      <motion.div 
+        initial="hidden"
+        animate="show"
+        variants={staggerContainer}
+        className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8"
+      >
         
         {/* Top Product Hero Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20 items-start">
           
           {/* Left: Image Canvas */}
-          <div className="space-y-6">
+          <motion.div variants={fadeInUp} className="space-y-6">
             <div 
               className="relative aspect-[4/3] w-full rounded-3xl bg-radial-[circle_at_center,rgba(0,243,255,0.05)_0%,rgba(5,5,5,1)_100%] border border-cyan-500/30 shadow-[0_0_20px_rgba(0,243,255,0.1)] flex items-center justify-center overflow-hidden group cursor-zoom-in hover:neon-glow-cyan transition-all"
               onMouseMove={handleMouseMove}
@@ -165,7 +184,11 @@ const ItemDetails = ({ params }) => {
               </div>
               
               {/* Base Image */}
-              <img
+              <motion.img
+                key={selectedImageIdx}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.3 }}
                 src={images[selectedImageIdx]}
                 alt={product.title}
                 className="max-h-[80%] max-w-[80%] object-contain transition-opacity duration-300 group-hover:opacity-0"
@@ -184,7 +207,7 @@ const ItemDetails = ({ params }) => {
             </div>
             
             {/* Thumbnails */}
-            <div className="grid grid-cols-4 gap-4">
+            <motion.div variants={fadeInUp} className="grid grid-cols-4 gap-4">
               {images.map((img, idx) => (
                 <button
                   key={idx}
@@ -196,11 +219,11 @@ const ItemDetails = ({ params }) => {
                   <img src={img} alt="thumbnail" className="max-h-full max-w-full object-contain" />
                 </button>
               ))}
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
           {/* Right: Spec Controls */}
-          <div className="space-y-8">
+          <motion.div variants={fadeInUp} className="space-y-8">
             <div>
               <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
                 {product.title}
@@ -213,9 +236,10 @@ const ItemDetails = ({ params }) => {
             {/* Feature Cards Grid (2x2) */}
             <div className="grid grid-cols-2 gap-4">
               {gridSpecs.map((spec, idx) => (
-                <div
+                <motion.div
                   key={idx}
-                  className="bg-[#0a0a0a] border border-zinc-800 rounded-2xl p-5 hover:border-purple-500/50 hover:neon-glow-purple transition-all"
+                  whileHover={{ scale: 1.02 }}
+                  className="bg-[#0a0a0a] border border-zinc-800 rounded-2xl p-5 hover:border-purple-500/50 hover:neon-glow-purple transition-all cursor-default"
                 >
                   <div className="flex items-center gap-2 text-zinc-500 text-[10px] font-bold tracking-wider uppercase">
                     <span className="text-purple-400">{spec.icon}</span>
@@ -224,12 +248,15 @@ const ItemDetails = ({ params }) => {
                   <div className="text-lg font-bold text-white mt-2 leading-snug">
                     {spec.value}
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
 
             {/* Price Card */}
-            <div className="bg-[#0a0a0a] border border-zinc-800 rounded-2xl p-6 space-y-6 hover:border-cyan-500/30 hover:shadow-[0_0_20px_rgba(0,243,255,0.05)] transition-all">
+            <motion.div 
+              whileHover={{ scale: 1.01 }}
+              className="bg-[#0a0a0a] border border-zinc-800 rounded-2xl p-6 space-y-6 hover:border-cyan-500/30 hover:shadow-[0_0_20px_rgba(0,243,255,0.05)] transition-all"
+            >
               <div className="flex items-center justify-between">
                 <div>
                   <span className="block text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Current Price</span>
@@ -252,7 +279,8 @@ const ItemDetails = ({ params }) => {
                     </p>
                   </div>
                 )}
-                <button
+                <motion.button
+                  whileTap={!user ? { scale: 0.98 } : {}}
                   onClick={handleAddToCart}
                   disabled={!!user}
                   className={`w-full py-4 font-black text-sm uppercase tracking-wider rounded-xl transition-all flex items-center justify-center gap-2 border-2 ${
@@ -268,8 +296,9 @@ const ItemDetails = ({ params }) => {
                   ) : (
                     <>🛒 Add to Cart</>
                   )}
-                </button>
-                <button
+                </motion.button>
+                <motion.button
+                  whileTap={!user ? { scale: 0.98 } : {}}
                   onClick={handleBuyNow}
                   disabled={!!user}
                   className={`w-full py-4 font-black text-sm uppercase tracking-wider rounded-xl transition-all ${
@@ -279,26 +308,32 @@ const ItemDetails = ({ params }) => {
                   }`}
                 >
                   Buy Now
-                </button>
+                </motion.button>
               </div>
 
               {/* Info Label */}
               <div className="text-[10px] text-center text-zinc-500 font-medium">
                 🛡️ Official Brand Warranty Included
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
 
         {/* Mid-section: Experience Pure Silence */}
-        <div className="border-t border-zinc-800/80 pt-20 mb-20">
+        <motion.div 
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={staggerContainer}
+          className="border-t border-zinc-800/80 pt-20 mb-20"
+        >
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start mb-12">
-            <h2 className="text-3xl font-extrabold text-white leading-tight lg:col-span-1">
+            <motion.h2 variants={fadeInUp} className="text-3xl font-extrabold text-white leading-tight lg:col-span-1">
               Experience Pure Silence
-            </h2>
-            <div className="lg:col-span-2 space-y-6">
+            </motion.h2>
+            <motion.div variants={fadeInUp} className="lg:col-span-2 space-y-6">
               <p className="text-zinc-400 text-base leading-relaxed">
-                The {product.title} headphones rewrite the rules for distraction-free listening. From airplane noise to people&apos;s voices, our noise-canceling headphones with multiple microphone technologies keep out more high and mid frequency sounds than ever.
+                The {product.title} headphones rewrite the rules for distraction-free listening. From airplane noise to people's voices, our noise-canceling headphones with multiple microphone technologies keep out more high and mid frequency sounds than ever.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 pt-4">
                 <div>
@@ -314,11 +349,11 @@ const ItemDetails = ({ params }) => {
                   </p>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
 
           {/* Banner Graphic */}
-          <div className="relative rounded-3xl overflow-hidden aspect-video max-h-[380px] border border-zinc-800/80 shadow-2xl">
+          <motion.div variants={fadeInUp} className="relative rounded-3xl overflow-hidden aspect-video max-h-[380px] border border-zinc-800/80 shadow-2xl">
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent z-10" />
             <img
               src="https://images.unsplash.com/photo-1545239351-ef35f43d514b?w=1200&auto=format&fit=crop&q=80"
@@ -328,38 +363,50 @@ const ItemDetails = ({ params }) => {
             <div className="absolute bottom-8 left-8 z-20">
               <h3 className="text-2xl sm:text-3xl font-black text-white">Focus Anywhere.</h3>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
         {/* Bottom Section: You Might Also Like */}
-        <div className="border-t border-zinc-800/80 pt-20">
-          <div className="flex items-center justify-between mb-10">
+        <motion.div 
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={staggerContainer}
+          className="border-t border-zinc-800/80 pt-20"
+        >
+          <motion.div variants={fadeInUp} className="flex items-center justify-between mb-10">
             <h2 className="text-2xl font-bold text-white">You Might Also Like</h2>
             <Link href="/items" className="text-xs font-bold text-zinc-500 hover:text-white transition-colors flex items-center gap-1">
               View All <span>→</span>
             </Link>
-          </div>
+          </motion.div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+          <motion.div variants={staggerContainer} className="grid grid-cols-2 lg:grid-cols-4 gap-6">
             {relatedItems.map((item, idx) => (
               <Link
                 href={`/items/${item.id}`}
                 key={idx}
-                className="group bg-[#0a0a0a] border border-zinc-800 rounded-2xl p-4 flex flex-col justify-between hover:neon-glow-cyan hover:-translate-y-1 transition-all cursor-pointer"
+                className="block"
               >
-                <div className="aspect-square bg-[#020202] rounded-xl overflow-hidden p-4 mb-4 flex items-center justify-center">
-                  <img src={item.image} alt={item.title} className="max-h-full max-w-full object-contain transition-transform duration-500 group-hover:scale-105 opacity-80 group-hover:opacity-100" />
-                </div>
-                <div>
-                  <h4 className="font-bold text-sm text-white line-clamp-1 group-hover:text-cyan-400 transition-colors">{item.title}</h4>
-                  <span className="block font-mono font-bold text-cyan-400 text-xs mt-2">৳{item.price}.00</span>
-                </div>
+                <motion.div
+                  variants={fadeInUp}
+                  whileHover={{ y: -5 }}
+                  className="group h-full bg-[#0a0a0a] border border-zinc-800 rounded-2xl p-4 flex flex-col justify-between hover:neon-glow-cyan transition-all cursor-pointer"
+                >
+                  <div className="aspect-square bg-[#020202] rounded-xl overflow-hidden p-4 mb-4 flex items-center justify-center">
+                    <img src={item.image} alt={item.title} className="max-h-full max-w-full object-contain transition-transform duration-500 group-hover:scale-105 opacity-80 group-hover:opacity-100" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-sm text-white line-clamp-1 group-hover:text-cyan-400 transition-colors">{item.title}</h4>
+                    <span className="block font-mono font-bold text-cyan-400 text-xs mt-2">৳{item.price}.00</span>
+                  </div>
+                </motion.div>
               </Link>
             ))}
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
-      </div>
+      </motion.div>
     </div>
   );
 };
