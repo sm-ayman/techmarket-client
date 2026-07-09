@@ -86,6 +86,9 @@ const Navbar = () => {
                 <Link href="/about" className={linkClass("/about")}>
                   About
                 </Link>
+                <Link href="/contact" className={linkClass("/contact")}>
+                  Contact
+                </Link>
                 {user?.email === "admin@techmarket.com" && (
                   <>
                     <Link href="/items/add" className={linkClass("/items/add")}>
@@ -302,6 +305,13 @@ const Navbar = () => {
                 className="block px-3 py-2 rounded-lg text-base font-medium text-white hover:text-cyan-400"
               >
                 About
+              </Link>
+              <Link
+                href="/contact"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block px-3 py-2 rounded-lg text-base font-medium text-white hover:text-cyan-400"
+              >
+                Contact
               </Link>
               {user ? (
                 <>
