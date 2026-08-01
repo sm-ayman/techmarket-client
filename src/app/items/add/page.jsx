@@ -8,7 +8,7 @@ import { ToastContext } from "../../../context/ToastContext";
 
 const AddItem = () => {
   const { user, loading: authLoading } = useContext(AuthContext);
-  const { addProduct } = useProducts();
+  const { addProduct, categories, fetchCategories, addCategory } = useProducts();
   const { toast } = useContext(ToastContext);
   const router = useRouter();
 
@@ -24,6 +24,8 @@ const AddItem = () => {
   const [isFeatured, setIsFeatured] = useState(false);
   const [success, setSuccess] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [showNewCategory, setShowNewCategory] = useState(false);
+  const [newCategory, setNewCategory] = useState("");
 
   // Specs handling
   const handleAddSpec = () => setSpecsList([...specsList, { key: "", value: "" }]);
@@ -41,6 +43,25 @@ const AddItem = () => {
     }
   }, [user, authLoading, router]);
 
+  // Load categories for the dropdown
+  useEffect(() => {
+    if (user) fetchCategories();
+  }, [user, fetchCategories]);
+
+  const handleCreateCategory = async () => {
+    const name = newCategory.trim();
+    if (!name) return;
+    try {
+      await addCategory(name);
+      toast({ type: "success", title: "Category Created", message: `"${name}" has been added.` });
+      setCategory(name);
+      setNewCategory("");
+      setShowNewCategory(false);
+    } catch {
+      toast({ type: "error", title: "Create Failed", message: "Could not create category. It may already exist." });
+    }
+  };
+
   if (authLoading || !user) {
     return (
       <div className="mx-auto max-w-7xl px-4 py-20 text-center">
@@ -49,6 +70,11 @@ const AddItem = () => {
       </div>
     );
   }
+
+  // Dedupe categories by slug to avoid duplicate keys / options
+  const uniqueCategories = Array.from(
+    new Map(categories.map((c) => [c.slug, c])).values()
+  );
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
@@ -202,16 +228,41 @@ const AddItem = () => {
               </label>
               <select
                 value={category}
-                onChange={(e) => setCategory(e.target.value)}
+                onChange={(e) => {
+                  if (e.target.value === "__new__") {
+                    setShowNewCategory(true);
+                  } else {
+                    setCategory(e.target.value);
+                    setShowNewCategory(false);
+                  }
+                }}
                 className="w-full px-3.5 py-2.5 bg-zinc-50 border border-zinc-200 dark:bg-zinc-800 dark:border-zinc-700 text-zinc-900 dark:text-white rounded-lg focus:outline-none focus:border-teal-500 transition-colors"
               >
-                <option value="Phones">Phones</option>
-                <option value="Laptops">Laptops</option>
-                <option value="Audio">Audio</option>
-                <option value="Tablets">Tablets</option>
-                <option value="Wearables">Wearables</option>
-                <option value="Accessories">Accessories</option>
+                {uniqueCategories.length === 0 && <option value="Phones">Phones</option>}
+                {uniqueCategories.map((cat) => (
+                  <option key={cat.slug} value={cat.name}>{cat.name}</option>
+                ))}
+                <option value="__new__">+ Create new category…</option>
               </select>
+              {showNewCategory && (
+                <div className="mt-2 flex gap-2">
+                  <input
+                    type="text"
+                    value={newCategory}
+                    onChange={(e) => setNewCategory(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && handleCreateCategory()}
+                    placeholder="New category name"
+                    className="flex-1 px-3 py-2 text-sm bg-zinc-50 border border-zinc-200 dark:bg-zinc-800 dark:border-zinc-700 text-zinc-900 dark:text-white rounded-lg focus:outline-none focus:border-teal-500 transition-colors"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleCreateCategory}
+                    className="px-3 py-2 rounded-lg bg-teal-500 text-white text-sm font-bold hover:bg-teal-600 transition-colors"
+                  >
+                    Create
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* Featured Product */}

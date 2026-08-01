@@ -201,54 +201,203 @@ const BrandMarquee = () => {
   );
 };
 
-const Hotspot = ({ top, left, product }) => {
-  return (
-    <div className="absolute z-20" style={{ top, left }}>
-       <motion.div whileHover="hover" initial="initial" className="relative group cursor-pointer">
-          <div className="w-6 h-6 bg-pink-500/40 rounded-full animate-ping absolute -inset-1" />
-          <div className="w-4 h-4 bg-pink-500 rounded-full relative z-10 border-2 border-white shadow-[0_0_15px_rgba(255,0,255,0.8)]" />
-          
-          <motion.div 
-             variants={{ 
-               initial: { opacity: 0, scale: 0.8, y: 10, pointerEvents: 'none' }, 
-               hover: { opacity: 1, scale: 1, y: 0, pointerEvents: 'auto' } 
-             }}
-             className="absolute bottom-full mb-4 left-1/2 -translate-x-1/2 w-56 bg-[#0a0a0a]/90 backdrop-blur-xl border border-zinc-700/50 rounded-2xl p-4 shadow-2xl"
-          >
-             <p className="text-white text-sm font-bold truncate">{product.name}</p>
-             <p className="text-pink-400 text-sm font-mono mt-1">৳{product.price}</p>
-             <div className="w-full h-[1px] bg-zinc-800 my-2" />
-             <Link href="/items" className="text-xs font-bold text-zinc-400 hover:text-cyan-400 transition-colors flex items-center justify-between">
-               View Details <span>→</span>
-             </Link>
-          </motion.div>
-       </motion.div>
-    </div>
-  );
-};
+const SETUP_SLOTS = [
+  {
+    key: "device",
+    label: "Core Device",
+    hint: "The heart of your build",
+    icon: "🖥️",
+    none: "Skip — I'm not adding a device",
+    categories: ["Laptops", "Tablets", "Phones", "Gaming", "Drones", "Wearables"],
+  },
+  {
+    key: "display",
+    label: "Display",
+    hint: "Where everything comes to life",
+    icon: "📺",
+    none: "Skip — I already have a display",
+    categories: ["Displays"],
+  },
+  {
+    key: "keyboard",
+    label: "Keyboard",
+    hint: "Your primary input",
+    icon: "⌨️",
+    none: "Skip — I already have a keyboard",
+    categories: ["Accessories"],
+    filter: (p) => p.title.toLowerCase().includes("keyboard"),
+  },
+  {
+    key: "mouse",
+    label: "Mouse",
+    hint: "Precision control",
+    icon: "🖱️",
+    none: "Skip — I already have a mouse",
+    categories: ["Accessories"],
+    filter: (p) => p.title.toLowerCase().includes("mx master"),
+  },
+  {
+    key: "audio",
+    label: "Audio",
+    hint: "Immerse yourself",
+    icon: "🎧",
+    none: "Skip — I already have headphones",
+    categories: ["Audio"],
+  },
+];
 
-const BuildSetup = () => {
+const BuildSetup = ({ products }) => {
+  const { addToCart } = useContext(CartContext);
+  const { user } = useContext(AuthContext);
+  const { toast } = useContext(ToastContext);
+  const router = useRouter();
+  const [added, setAdded] = useState(false);
+
+  const slots = SETUP_SLOTS.map((slot) => ({
+    ...slot,
+    options: products.filter(
+      (p) =>
+        slot.categories.includes(p.category) &&
+        (!slot.filter || slot.filter(p))
+    ),
+  })).filter((s) => s.options.length > 0);
+
+  const [selection, setSelection] = useState({});
+  const effectiveSelection = Object.fromEntries(
+    slots.map((s) => [
+      s.key,
+      selection[s.key] !== undefined ? selection[s.key] : s.options[0].id,
+    ])
+  );
+
+  const selectedItems = slots
+    .map((s) =>
+      effectiveSelection[s.key]
+        ? products.find((p) => p.id === effectiveSelection[s.key])
+        : null
+    )
+    .filter(Boolean);
+
+  const total = selectedItems.reduce((sum, p) => sum + p.price, 0);
+
+  if (slots.length === 0) return null;
+
+  const handleAddSetup = () => {
+    if (!user) {
+      toast({
+        type: "error",
+        title: "Authentication Required",
+        message: "Please login to add this setup to cart",
+      });
+      router.push("/login");
+      return;
+    }
+    selectedItems.forEach((p) => addToCart(p));
+    setAdded(true);
+    setTimeout(() => setAdded(false), 1500);
+    toast({
+      type: "cart",
+      title: "Setup Added to Cart",
+      message: `${selectedItems.length} items added \u2014 $${total}`,
+    });
+  };
+
   return (
     <section className="py-24 bg-[#020202] border-t border-zinc-900 relative overflow-hidden">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl neon-text-pink">Build Your Dream Setup</h2>
-          <p className="mt-4 text-zinc-400">Hover over the interactive spots to discover the components of a pro battlestation.</p>
+      <div className="absolute inset-0 z-0 opacity-20">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500 rounded-full mix-blend-screen filter blur-[120px]" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500 rounded-full mix-blend-screen filter blur-[120px]" />
+      </div>
+
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="text-center max-w-3xl mx-auto mb-14">
+          <span className="inline-flex items-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-4 py-1.5 text-xs font-black text-cyan-400 uppercase tracking-widest">
+            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" /> Build a Setup
+          </span>
+          <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl neon-text-cyan mt-4">
+            Configure Your Dream Setup
+          </h2>
+          <p className="mt-4 text-zinc-400">
+            Choose a component for each slot and watch your build — and its price — come together live.
+          </p>
         </div>
-        
-        <div className="relative rounded-3xl overflow-hidden border border-zinc-800 shadow-[0_0_40px_rgba(255,0,255,0.1)]">
-          <img 
-            src="https://images.unsplash.com/photo-1616588589676-62b3bd4ff6d2?w=1600&auto=format&fit=crop&q=80" 
-            alt="Gaming Desk Setup" 
-            className="w-full object-cover h-[500px] md:h-[600px] opacity-80"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#020202] via-transparent to-transparent opacity-80" />
-          
-          {/* Interactive Hotspots */}
-          <Hotspot top="30%" left="45%" product={{ name: "Ultrawide Curved Monitor", price: "85,000" }} />
-          <Hotspot top="70%" left="50%" product={{ name: "Mechanical RGB Keyboard", price: "12,500" }} />
-          <Hotspot top="75%" left="65%" product={{ name: "Wireless Pro Mouse", price: "8,900" }} />
-          <Hotspot top="40%" left="80%" product={{ name: "Custom Desktop PC Rig", price: "150,000" }} />
+
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
+          {/* Slot selectors */}
+          <div className="lg:col-span-3 space-y-4">
+            {slots.map((slot) => (
+              <div
+                key={slot.key}
+                className="rounded-2xl border border-zinc-800 bg-[#0a0a0a]/80 p-5 backdrop-blur transition-colors focus-within:border-cyan-500/50"
+              >
+                <div className="flex items-center gap-3 mb-3">
+                  <span className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-lg">
+                    {slot.icon}
+                  </span>
+                  <div>
+                    <h3 className="font-bold text-white text-sm uppercase tracking-wider">{slot.label}</h3>
+                    <p className="text-xs text-zinc-500">{slot.hint}</p>
+                  </div>
+                </div>
+                <select
+                  value={effectiveSelection[slot.key]}
+                  onChange={(e) =>
+                    setSelection((prev) => ({ ...prev, [slot.key]: e.target.value }))
+                  }
+                  className="w-full rounded-xl bg-[#050505] border border-zinc-800 px-4 py-3 text-white text-sm focus:outline-none focus:border-cyan-500/60 transition-colors"
+                >
+                  <option value="" className="bg-[#050505]">
+                    {slot.none}
+                  </option>
+                  {slot.options.map((opt) => (
+                    <option key={opt.id} value={opt.id}>
+                      {opt.title} — ${opt.price}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            ))}
+          </div>
+
+          {/* Summary */}
+          <div className="lg:col-span-2 lg:sticky lg:top-24 rounded-2xl border border-zinc-800 bg-[#0a0a0a]/80 backdrop-blur p-6">
+            <h3 className="font-black text-white uppercase tracking-wider text-sm mb-4">
+              Your Build Summary
+            </h3>
+            <ul className="space-y-3 mb-6">
+              {selectedItems.map((p) => (
+                <li key={p.id} className="flex items-center gap-3">
+                  <img
+                    src={p.image}
+                    alt={p.title}
+                    className="w-12 h-12 rounded-lg object-cover border border-zinc-800"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm text-white truncate">{p.title}</p>
+                    <p className="text-xs text-zinc-500">{p.category}</p>
+                  </div>
+                  <span className="font-mono text-sm text-cyan-400">${p.price}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="flex items-center justify-between border-t border-zinc-800 pt-4 mb-5">
+              <span className="text-zinc-400 text-sm font-bold uppercase tracking-wider">Total</span>
+              <span className="font-mono font-black text-2xl text-white neon-text-pink">${total}</span>
+            </div>
+            <button
+              onClick={handleAddSetup}
+              className={`w-full rounded-xl px-6 py-3.5 text-sm font-black uppercase tracking-wider transition-all cursor-pointer ${
+                added
+                  ? "bg-cyan-500 text-black shadow-[0_0_20px_rgba(0,243,255,0.6)]"
+                  : "bg-pink-500 text-white hover:bg-pink-400 shadow-[0_0_15px_rgba(255,0,255,0.4)] hover:shadow-[0_0_25px_rgba(255,0,255,0.8)]"
+              }`}
+            >
+              {added ? "✓ Added to Cart!" : `🛒 Add Entire Setup (${selectedItems.length} items)`}
+            </button>
+            <p className="text-center text-[11px] text-zinc-600 mt-3">
+              Every component is also available individually in the shop.
+            </p>
+          </div>
         </div>
       </div>
     </section>
@@ -539,7 +688,7 @@ export default function Home() {
       </section>
 
       {/* NEW: Build Your Setup */}
-      <BuildSetup />
+      <BuildSetup products={products} />
 
       {/* More Products */}
       <section className="py-20 bg-[#050505] transition-colors border-t border-zinc-900">

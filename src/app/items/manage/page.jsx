@@ -10,13 +10,14 @@ import ConfirmModal from "../../../components/ConfirmModal";
 
 const ManageItems = () => {
   const { user, loading: authLoading } = useContext(AuthContext);
-  const { products, loading: productsLoading, deleteProduct, updateProduct } = useProducts();
+  const { products, loading: productsLoading, deleteProduct, updateProduct, categories, fetchCategories, addCategory, deleteCategory } = useProducts();
   const { toast } = useContext(ToastContext);
   const router = useRouter();
 
   // Selected filter states
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+  const [newCategory, setNewCategory] = useState("");
   const [editingProduct, setEditingProduct] = useState(null);
   const [editImages, setEditImages] = useState([]);
   const [editImagePreviews, setEditImagePreviews] = useState([]);
@@ -28,6 +29,12 @@ const ManageItems = () => {
   // Confirmation modal state
   const [confirmDelete, setConfirmDelete] = useState(null); // product to delete
   const [confirmSave, setConfirmSave] = useState(false);    // save changes confirm
+
+  useEffect(() => {
+    if (user) {
+      fetchCategories();
+    }
+  }, [user, fetchCategories]);
 
   useEffect(() => {
     if (editingProduct) {
@@ -151,8 +158,37 @@ const ManageItems = () => {
     );
   }
 
-  // Sidebar Filter categories
-  const filterCategories = ["All", "Phones", "Laptops", "Audio", "Tablets", "Wearables", "Accessories"];
+  // Sidebar Filter categories (dynamic from DB + any product categories)
+  const productCategories = [...new Set(products.map((p) => p.category).filter(Boolean))];
+  const uniqueCategories = Array.from(
+    new Map(categories.map((c) => [c.slug, c])).values()
+  );
+  const allCategoryNames = [...new Set([...uniqueCategories.map((c) => c.name), ...productCategories])];
+  const filterCategories = ["All", ...allCategoryNames];
+
+  // Category management handlers
+  const handleAddCategory = async () => {
+    const name = newCategory.trim();
+    if (!name) return;
+    try {
+      await addCategory(name);
+      toast({ type: "success", title: "Category Created", message: `"${name}" has been added.` });
+      setNewCategory("");
+      setSelectedCategoryFilter(name);
+    } catch {
+      toast({ type: "error", title: "Create Failed", message: "Could not create category. It may already exist." });
+    }
+  };
+
+  const handleDeleteCategory = async (slug, name) => {
+    try {
+      await deleteCategory(slug);
+      toast({ type: "warning", title: "Category Deleted", message: `"${name}" removed from inventory.` });
+      if (selectedCategoryFilter === name) setSelectedCategoryFilter("All");
+    } catch {
+      toast({ type: "error", title: "Delete Failed", message: "Could not delete category." });
+    }
+  };
 
   // Apply filters
   const filteredProducts = products.filter((p) => {
@@ -223,6 +259,41 @@ const ManageItems = () => {
                 );
               })}
             </nav>
+
+            {/* Manage Categories */}
+            <div className="pt-6 border-t border-zinc-900">
+              <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-3">Manage Categories</h3>
+              <div className="flex flex-wrap gap-2 mb-4">
+                {uniqueCategories.map((c) => (
+                  <span key={c.slug} className="inline-flex items-center gap-1.5 rounded-full bg-zinc-900 border border-zinc-800 px-2.5 py-1 text-xs font-bold text-zinc-300">
+                    {c.name}
+                    <button
+                      onClick={() => handleDeleteCategory(c.slug, c.name)}
+                      title={`Delete "${c.name}"`}
+                      className="text-zinc-500 hover:text-pink-400 transition-colors text-xs leading-none"
+                    >
+                      ✕
+                    </button>
+                  </span>
+                ))}
+              </div>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={newCategory}
+                  onChange={(e) => setNewCategory(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleAddCategory()}
+                  placeholder="New category name"
+                  className="flex-1 min-w-0 px-3 py-2 bg-[#050505] border border-cyan-500/30 text-white rounded-xl text-xs focus:outline-none focus:border-cyan-400 placeholder-zinc-600 transition-colors"
+                />
+                <button
+                  onClick={handleAddCategory}
+                  className="px-3 py-2 bg-cyan-500/20 border border-cyan-500 text-cyan-400 hover:bg-cyan-500 hover:text-black rounded-xl text-xs font-black transition-all cursor-pointer"
+                >
+                  + Add
+                </button>
+              </div>
+            </div>
           </div>
         </aside>
 
@@ -436,7 +507,7 @@ const ManageItems = () => {
                   onChange={(e) => setEditingProduct({...editingProduct, category: e.target.value})}
                   className="w-full px-4 py-2 bg-[#050505] border border-pink-500/30 text-white rounded-xl text-sm focus:outline-none focus:border-pink-500 focus:neon-glow-pink transition-all"
                 >
-                  {["Phones", "Laptops", "Audio", "Tablets", "Wearables", "Accessories", "Gaming", "Displays", "Drones", "Other"].map(cat => (
+                  {allCategoryNames.map(cat => (
                     <option key={cat} value={cat}>{cat}</option>
                   ))}
                 </select>

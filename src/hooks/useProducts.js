@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 const INITIAL_PRODUCTS = [
   {
@@ -184,6 +184,7 @@ const INITIAL_PRODUCTS = [
 export function useProducts() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [categories, setCategories] = useState([]);
   const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
   useEffect(() => {
@@ -201,6 +202,47 @@ export function useProducts() {
     };
     fetchProducts();
   }, [API_URL]);
+
+  const fetchCategories = useCallback(async () => {
+    try {
+      const res = await fetch(`${API_URL}/categories`);
+      if (!res.ok) throw new Error("Failed to fetch categories");
+      const data = await res.json();
+      setCategories(data);
+    } catch (err) {
+      console.error("Failed to fetch categories:", err);
+    }
+  }, [API_URL]);
+
+  const addCategory = async (name) => {
+    try {
+      const res = await fetch(`${API_URL}/categories`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name }),
+      });
+      if (!res.ok) throw new Error("Failed to create category");
+      const added = await res.json();
+      setCategories([...categories, added]);
+      return added;
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  };
+
+  const deleteCategory = async (slug) => {
+    try {
+      const res = await fetch(`${API_URL}/categories/${slug}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) throw new Error("Failed to delete category");
+      setCategories(categories.filter((c) => c.slug !== slug));
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  };
 
   const addProduct = async (newProduct) => {
     try {
@@ -265,5 +307,5 @@ export function useProducts() {
     }
   };
 
-  return { products, loading, addProduct, deleteProduct, updateProduct };
+  return { products, loading, addProduct, deleteProduct, updateProduct, categories, fetchCategories, addCategory, deleteCategory };
 }

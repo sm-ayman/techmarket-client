@@ -86,17 +86,23 @@ const ItemsContent = () => {
   const [selectedCategory, setSelectedCategory] = useState(
     searchParams.get("category") || "All"
   );
-  const [maxPrice, setMaxPrice] = useState(2000);
+  const [maxPrice, setMaxPrice] = useState(null);
   const [minRating, setMinRating] = useState(0);
 
   const categories = ["All", ...new Set(products.map((p) => p.category))];
+
+  // Dynamic upper bound so expensive items (e.g. RTX 5090) aren't filtered out
+  const priceCeil = products.length
+    ? Math.max(...products.map((p) => p.price), 2000)
+    : 2000;
+  const currentMaxPrice = maxPrice === null ? priceCeil : maxPrice;
 
   const filteredProducts = products.filter((p) => {
     const matchesSearch =
       p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       p.shortDescription.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory === "All" || p.category === selectedCategory;
-    const matchesPrice = p.price <= maxPrice;
+    const matchesPrice = p.price <= currentMaxPrice;
     const matchesRating = p.rating >= minRating;
     return matchesSearch && matchesCategory && matchesPrice && matchesRating;
   });
@@ -163,11 +169,11 @@ const ItemsContent = () => {
           <div>
             <div className="flex justify-between items-center mb-2">
               <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider">Max Price</label>
-              <span className="text-sm font-bold text-cyan-400 neon-text-cyan">৳{maxPrice}</span>
+              <span className="text-sm font-bold text-cyan-400 neon-text-cyan">৳{currentMaxPrice}</span>
             </div>
             <input
-              type="range" min="100" max="2000" step="50"
-              value={maxPrice}
+              type="range" min="100" max={priceCeil} step="50"
+              value={currentMaxPrice}
               onChange={(e) => setMaxPrice(Number(e.target.value))}
               className="w-full accent-cyan-500 bg-zinc-800 rounded-lg h-2"
             />
