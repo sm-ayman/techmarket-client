@@ -494,10 +494,38 @@ export default function Home() {
   };
 
   const categories = [
-    { name: "Phones", icon: "📱", count: "12+ Items" },
-    { name: "Laptops", icon: "💻", count: "8+ Items" },
-    { name: "Audio", icon: "🎧", count: "15+ Items" },
-    { name: "Tablets", icon: "📟", count: "6+ Items" },
+    {
+      name: "Phones",
+      icon: "📱",
+      tagline: "Flagship & budget mobiles",
+      badge: "bg-cyan-400/10 border-cyan-400/40 text-cyan-300",
+      gradient: "from-cyan-500/20 via-transparent to-transparent",
+      glow: "group-hover:shadow-[0_0_30px_rgba(0,243,255,0.25)]",
+    },
+    {
+      name: "Laptops",
+      icon: "💻",
+      tagline: "Ultrabooks & gaming rigs",
+      badge: "bg-purple-400/10 border-purple-400/40 text-purple-300",
+      gradient: "from-purple-500/20 via-transparent to-transparent",
+      glow: "group-hover:shadow-[0_0_30px_rgba(176,38,255,0.25)]",
+    },
+    {
+      name: "Audio",
+      icon: "🎧",
+      tagline: "Headphones & speakers",
+      badge: "bg-pink-400/10 border-pink-400/40 text-pink-300",
+      gradient: "from-pink-500/20 via-transparent to-transparent",
+      glow: "group-hover:shadow-[0_0_30px_rgba(255,0,255,0.25)]",
+    },
+    {
+      name: "Tablets",
+      icon: "📟",
+      tagline: "Portable productivity",
+      badge: "bg-emerald-400/10 border-emerald-400/40 text-emerald-300",
+      gradient: "from-emerald-500/20 via-transparent to-transparent",
+      glow: "group-hover:shadow-[0_0_30px_rgba(52,211,153,0.25)]",
+    },
   ];
 
   return (
@@ -569,34 +597,73 @@ export default function Home() {
             whileInView="show" 
             viewport={{ once: true, margin: "-100px" }}
             variants={staggerContainer}
-            className="text-center max-w-3xl mx-auto mb-16"
+            className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-16"
           >
-            <motion.h2 variants={fadeInUp} className="text-3xl font-bold tracking-tight text-white sm:text-4xl neon-text-purple">
-              Explore Popular Categories
-            </motion.h2>
-            <motion.p variants={fadeInUp} className="mt-4 text-zinc-400">
-              Find exactly what you need with our carefully categorized inventory of devices and components.
-            </motion.p>
+            <motion.div variants={fadeInUp} className="max-w-2xl">
+              <span className="inline-flex items-center gap-2 rounded-full border border-purple-400/30 bg-purple-400/10 px-3 py-1 text-xs font-bold tracking-widest text-purple-300 uppercase neon-text-purple">
+                <span className="h-1.5 w-1.5 rounded-full bg-purple-400 animate-pulse" />
+                Shop by Category
+              </span>
+              <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                Explore{" "}
+                <span className="neon-text-purple">Popular Categories</span>
+              </h2>
+              <p className="mt-4 text-zinc-400">
+                Find exactly what you need with our carefully curated inventory of devices and components.
+              </p>
+            </motion.div>
+            <motion.div variants={fadeInUp}>
+              <Link
+                href="/items"
+                className="inline-flex items-center gap-2 rounded-xl border border-zinc-800 bg-[#0a0a0a] px-5 py-2.5 text-sm font-bold text-zinc-300 transition-all hover:border-purple-400/60 hover:text-purple-300 hover:neon-glow-purple group"
+              >
+                Browse All
+                <span className="transition-transform group-hover:translate-x-1" aria-hidden="true">→</span>
+              </Link>
+            </motion.div>
           </motion.div>
           <motion.div 
             initial="hidden" 
             whileInView="show" 
             viewport={{ once: true, margin: "-100px" }}
             variants={staggerContainer}
-            className="grid grid-cols-2 lg:grid-cols-4 gap-6"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
           >
-            {categories.map((cat, idx) => (
-              <motion.div key={idx} variants={scaleUp}>
-                <Link
-                  href={`/items?category=${cat.name}`}
-                  className="block group relative overflow-hidden rounded-2xl bg-[#0a0a0a] border border-zinc-800 p-6 shadow-sm hover:neon-glow-purple transition-all hover:-translate-y-1 h-full"
-                >
-                  <div className="text-4xl mb-4 grayscale group-hover:grayscale-0 transition-all">{cat.icon}</div>
-                  <h3 className="font-semibold text-white group-hover:text-purple-400 transition-colors">{cat.name}</h3>
-                  <p className="text-xs text-zinc-500 mt-1">{cat.count}</p>
-                </Link>
-              </motion.div>
-            ))}
+            {categories.map((cat, idx) => {
+              const itemCount = products.filter((p) => p.category === cat.name).length;
+              return (
+                <motion.div key={idx} variants={scaleUp} className="h-full">
+                  <Link
+                    href={`/items?category=${cat.name}`}
+                    className={`group relative block h-full overflow-hidden rounded-2xl border border-zinc-800 bg-[#0a0a0a] p-6 transition-all duration-300 hover:-translate-y-1.5 ${cat.glow}`}
+                  >
+                    <div className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${cat.gradient} opacity-0 transition-opacity duration-300 group-hover:opacity-100`} />
+                    <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-white/5 blur-2xl transition-opacity duration-300 group-hover:opacity-100 opacity-0" />
+
+                    <div className="relative flex items-start justify-between">
+                      <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-zinc-800 bg-[#101010] text-3xl transition-all duration-300 group-hover:border-zinc-600 group-hover:scale-110 group-hover:shadow-lg">
+                        {cat.icon}
+                      </div>
+                      <span className={`rounded-full border px-2.5 py-1 text-[11px] font-bold ${cat.badge}`}>
+                        {itemCount} {itemCount === 1 ? "Item" : "Items"}
+                      </span>
+                    </div>
+
+                    <div className="relative mt-6">
+                      <h3 className="text-lg font-bold text-white transition-colors duration-300 group-hover:text-white">
+                        {cat.name}
+                      </h3>
+                      <p className="mt-1 text-sm text-zinc-500">{cat.tagline}</p>
+                    </div>
+
+                    <div className="relative mt-6 flex items-center gap-1.5 text-xs font-bold tracking-wider uppercase text-zinc-500 transition-colors duration-300 group-hover:text-white">
+                      Shop Now
+                      <span className="transition-transform duration-300 group-hover:translate-x-1.5" aria-hidden="true">→</span>
+                    </div>
+                  </Link>
+                </motion.div>
+              );
+            })}
           </motion.div>
         </div>
       </section>
