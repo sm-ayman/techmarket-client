@@ -149,7 +149,7 @@ const ManageItems = () => {
 
   if (authLoading || !user) {
     return (
-      <div className="min-h-screen bg-[#0A0A0C] text-zinc-400 flex items-center justify-center">
+      <div className="min-h-screen bg-surface text-ink-2 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-purple-500 mx-auto" />
           <p className="mt-4">Verifying admin access...</p>
@@ -214,28 +214,28 @@ const ManageItems = () => {
     switch (cat.toLowerCase()) {
       case "phones":
       case "smartphones":
-        return "bg-pink-500/10 text-pink-400 border border-pink-500/20";
+        return "bg-pink-500/10 text-pink-600 dark:text-pink-400 border border-pink-500/20";
       case "laptops":
-        return "bg-indigo-500/10 text-indigo-400 border border-indigo-500/20";
+        return "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20";
       case "audio":
-        return "bg-teal-500/10 text-teal-400 border border-teal-500/20";
+        return "bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20";
       case "gaming":
-        return "bg-purple-500/10 text-purple-400 border border-purple-500/20";
+        return "bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20";
       default:
-        return "bg-zinc-800 text-zinc-400 border border-zinc-700/50";
+        return "bg-surface-3 text-ink-2 border border-line-strong";
     }
   };
 
   return (
-    <div className="bg-[#050505] text-white min-h-screen font-sans border-t border-zinc-900">
+    <div className="bg-surface text-ink min-h-screen font-sans border-t border-line">
       <div className="flex flex-col lg:flex-row">
         
         {/* Left Sidebar Filters */}
-        <aside className="w-full lg:w-72 bg-[#0a0a0a] border-b lg:border-b-0 lg:border-r border-zinc-900 p-4 lg:p-8 flex flex-col justify-between shrink-0 shadow-[0_0_20px_rgba(0,0,0,0.5)]">
+        <aside className="w-full lg:w-72 bg-surface-2 border-b lg:border-b-0 lg:border-r border-line p-4 lg:p-8 flex flex-col justify-between shrink-0 shadow-[0_0_20px_rgba(0,0,0,0.1)]">
           <div className="space-y-4 lg:space-y-8">
             <div>
-              <h2 className="text-xl lg:text-2xl font-bold tracking-tight text-white neon-text-purple">Filters</h2>
-              <p className="text-xs text-zinc-500 mt-1">Refine your tech inventory views.</p>
+              <h2 className="text-xl lg:text-2xl font-bold tracking-tight text-ink">Filters</h2>
+              <p className="text-xs text-ink-3 mt-1">Refine your tech inventory views.</p>
             </div>
 
             <nav className="flex flex-row lg:flex-col gap-2 overflow-x-auto pb-4 lg:pb-0 scrollbar-hide">
@@ -247,8 +247,8 @@ const ManageItems = () => {
                     onClick={() => setSelectedCategoryFilter(cat)}
                     className={`flex items-center shrink-0 lg:w-full px-4 py-3 rounded-xl text-sm font-bold transition-all text-left cursor-pointer ${
                       isActive
-                        ? "bg-cyan-500/20 text-cyan-400 border border-cyan-500 neon-glow-cyan shadow-[0_0_15px_rgba(0,243,255,0.2)]"
-                        : "text-zinc-400 hover:bg-zinc-900/50 hover:text-white border border-transparent"
+                        ? "bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 border border-cyan-500 shadow-[0_0_15px_rgba(0,243,255,0.2)]"
+                        : "text-ink-3 hover:bg-surface-3 hover:text-ink border border-transparent"
                     }`}
                   >
                     <span className="mr-3 text-base">
@@ -261,16 +261,16 @@ const ManageItems = () => {
             </nav>
 
             {/* Manage Categories */}
-            <div className="pt-6 border-t border-zinc-900">
-              <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-3">Manage Categories</h3>
+            <div className="pt-6 border-t border-line">
+              <h3 className="text-xs font-bold text-ink-3 uppercase tracking-widest mb-3">Manage Categories</h3>
               <div className="flex flex-wrap gap-2 mb-4">
                 {uniqueCategories.map((c) => (
-                  <span key={c.slug} className="inline-flex items-center gap-1.5 rounded-full bg-zinc-900 border border-zinc-800 px-2.5 py-1 text-xs font-bold text-zinc-300">
+                  <span key={c.slug} className="inline-flex items-center gap-1.5 rounded-full bg-surface-3 border border-line px-2.5 py-1 text-xs font-bold text-ink-2">
                     {c.name}
                     <button
                       onClick={() => handleDeleteCategory(c.slug, c.name)}
                       title={`Delete "${c.name}"`}
-                      className="text-zinc-500 hover:text-pink-400 transition-colors text-xs leading-none"
+                      className="text-ink-3 hover:text-pink-500 transition-colors text-xs leading-none"
                     >
                       ✕
                     </button>
@@ -284,11 +284,11 @@ const ManageItems = () => {
                   onChange={(e) => setNewCategory(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleAddCategory()}
                   placeholder="New category name"
-                  className="flex-1 min-w-0 px-3 py-2 bg-[#050505] border border-cyan-500/30 text-white rounded-xl text-xs focus:outline-none focus:border-cyan-400 placeholder-zinc-600 transition-colors"
+                  className="flex-1 min-w-0 px-3 py-2 bg-surface-3 border border-cyan-500/30 text-ink rounded-xl text-xs focus:outline-none focus:border-cyan-500 dark:focus:border-cyan-400 placeholder-ink-3 transition-colors"
                 />
                 <button
                   onClick={handleAddCategory}
-                  className="px-3 py-2 bg-cyan-500/20 border border-cyan-500 text-cyan-400 hover:bg-cyan-500 hover:text-black rounded-xl text-xs font-black transition-all cursor-pointer"
+                  className="px-3 py-2 bg-cyan-500/20 border border-cyan-500 text-cyan-600 dark:text-cyan-400 hover:bg-cyan-500 hover:text-black rounded-xl text-xs font-black transition-all cursor-pointer"
                 >
                   + Add
                 </button>
@@ -303,14 +303,14 @@ const ManageItems = () => {
           {/* Header Action Bar */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
-              <h1 className="text-3xl font-extrabold tracking-tight text-cyan-400 neon-text-cyan">Manage Inventory</h1>
-              <p className="text-zinc-500 text-xs mt-1">
+              <h1 className="text-3xl font-extrabold tracking-tight text-cyan-600 dark:text-cyan-400">Manage Inventory</h1>
+              <p className="text-ink-3 text-xs mt-1">
                 Track and control your high-performance hardware stocks.
               </p>
             </div>
             <Link
               href="/items/add"
-              className="px-5 py-3 bg-pink-500 hover:bg-pink-400 text-white font-black text-xs rounded-xl transition-all flex items-center gap-2 cursor-pointer neon-glow-pink uppercase tracking-widest"
+              className="px-5 py-3 bg-pink-500 hover:bg-pink-400 text-white font-black text-xs rounded-xl transition-all flex items-center gap-2 cursor-pointer uppercase tracking-widest"
             >
               ➕ Add New Product
             </Link>
@@ -318,46 +318,46 @@ const ManageItems = () => {
 
           {/* Stats Grid Cards Row */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            <div className="bg-[#0a0a0a] border border-cyan-500/30 p-6 rounded-2xl hover:neon-glow-cyan transition-all">
-              <span className="block text-[10px] font-bold text-cyan-500 uppercase tracking-widest">TOTAL ITEMS</span>
-              <span className="text-4xl font-black text-white mt-2 block neon-text-cyan">
+            <div className="bg-surface-2 border border-cyan-500/30 p-6 rounded-2xl hover:shadow-[0_0_20px_rgba(0,243,255,0.2)] transition-all">
+              <span className="block text-[10px] font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-widest">TOTAL ITEMS</span>
+              <span className="text-4xl font-black text-ink mt-2 block">
                 {productsLoading ? "..." : totalItems.toLocaleString()}
               </span>
             </div>
-            <div className="bg-[#0a0a0a] border border-pink-500/30 p-6 rounded-2xl hover:neon-glow-pink transition-all">
+            <div className="bg-surface-2 border border-pink-500/30 p-6 rounded-2xl hover:shadow-[0_0_20px_rgba(255,0,255,0.2)] transition-all">
               <span className="block text-[10px] font-bold text-pink-500 uppercase tracking-widest">LOW STOCK</span>
-              <span className="text-4xl font-black text-pink-400 mt-2 block neon-text-pink">
+              <span className="text-4xl font-black text-pink-600 dark:text-pink-400 mt-2 block">
                 {productsLoading ? "..." : lowStockCount}
               </span>
             </div>
-            <div className="bg-[#0a0a0a] border border-purple-500/30 p-6 rounded-2xl hover:neon-glow-purple transition-all">
-              <span className="block text-[10px] font-bold text-purple-500 uppercase tracking-widest">IN TRANSIT</span>
-              <span className="text-4xl font-black text-purple-400 mt-2 block neon-text-purple">
+            <div className="bg-surface-2 border border-purple-500/30 p-6 rounded-2xl hover:shadow-[0_0_20px_rgba(176,38,255,0.2)] transition-all">
+              <span className="block text-[10px] font-bold text-purple-600 dark:text-purple-400 uppercase tracking-widest">IN TRANSIT</span>
+              <span className="text-4xl font-black text-purple-600 dark:text-purple-400 mt-2 block">
                 {productsLoading ? "..." : inTransitCount}
               </span>
             </div>
           </div>
 
           {/* Inventory Table Container */}
-          <div className="bg-[#020202] border border-zinc-800 rounded-3xl overflow-hidden p-6 space-y-6 shadow-[0_0_30px_rgba(0,0,0,0.8)]">
+          <div className="bg-surface-2 border border-line rounded-3xl overflow-hidden p-6 space-y-6 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
             
             {/* Table Search Actions */}
             <div className="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4">
               <div className="relative flex-1 max-w-md">
-                <span className="absolute inset-y-0 left-3.5 flex items-center text-zinc-500 text-sm">🔍</span>
+                <span className="absolute inset-y-0 left-3.5 flex items-center text-ink-3 text-sm">🔍</span>
                 <input
                   type="text"
                   placeholder="Search inventory by name, SKU, or category..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 bg-[#050505] border border-cyan-500/30 text-white rounded-xl text-xs focus:outline-none focus:border-cyan-400 focus:neon-glow-cyan transition-colors placeholder-zinc-500"
+                  className="w-full pl-10 pr-4 py-2.5 bg-surface-3 border border-cyan-500/30 text-ink rounded-xl text-xs focus:outline-none focus:border-cyan-500 dark:focus:border-cyan-400 transition-colors placeholder-ink-3"
                 />
               </div>
               <div className="flex gap-2.5">
-                <button className="px-4 py-2.5 bg-zinc-900/60 border border-zinc-800 text-zinc-400 rounded-xl text-xs font-bold hover:text-white transition-colors cursor-pointer">
+                <button className="px-4 py-2.5 bg-surface-3 border border-line text-ink-3 rounded-xl text-xs font-bold hover:text-ink transition-colors cursor-pointer">
                   🎛️ Columns
                 </button>
-                <button className="px-4 py-2.5 bg-zinc-900/60 border border-zinc-800 text-zinc-400 rounded-xl text-xs font-bold hover:text-white transition-colors cursor-pointer">
+                <button className="px-4 py-2.5 bg-surface-3 border border-line text-ink-3 rounded-xl text-xs font-bold hover:text-ink transition-colors cursor-pointer">
                   📤 Export
                 </button>
               </div>
@@ -365,19 +365,19 @@ const ManageItems = () => {
 
             {/* Main Table */}
             {productsLoading ? (
-              <div className="py-20 text-center text-zinc-500">
+              <div className="py-20 text-center text-ink-3">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500 mx-auto mb-4" />
                 <span>Loading catalog items...</span>
               </div>
             ) : filteredProducts.length === 0 ? (
-              <div className="py-20 text-center text-zinc-500 border border-dashed border-zinc-800 rounded-2xl">
+              <div className="py-20 text-center text-ink-3 border border-dashed border-line-strong rounded-2xl">
                 <span>No products matching your search criteria.</span>
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="border-b border-zinc-900 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+                    <tr className="border-b border-line text-[10px] font-bold text-ink-3 uppercase tracking-widest">
                       <th className="pb-4 pt-2">PRODUCT NAME</th>
                       <th className="pb-4 pt-2">CATEGORY</th>
                       <th className="pb-4 pt-2">PRICE</th>
@@ -385,24 +385,24 @@ const ManageItems = () => {
                       <th className="pb-4 pt-2 text-right">ACTIONS</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-zinc-900 text-sm">
+                  <tbody className="divide-y divide-line text-sm">
                     {filteredProducts.map((p) => {
                       const sku = `TM-${p.id.toUpperCase().slice(0, 8)}`;
                       const { units, progress, isLow } = getStockInfo(p);
 
                       return (
-                        <tr key={p.id} className="hover:bg-zinc-900/20 transition-all">
+                        <tr key={p.id} className="hover:bg-surface-4 transition-all">
                           {/* Name */}
                           <td className="py-4">
                             <div className="flex items-center gap-4">
                               <img
                                 src={p.image}
                                 alt={p.title}
-                                className="h-12 w-12 rounded-xl object-cover bg-zinc-900/80 border border-zinc-800/80"
+                                className="h-12 w-12 rounded-xl object-cover bg-surface-3 border border-line"
                               />
                               <div>
-                                <span className="font-bold text-white block">{p.title}</span>
-                                <span className="text-[10px] text-zinc-500 block mt-0.5">SKU: {sku}</span>
+                                <span className="font-bold text-ink block">{p.title}</span>
+                                <span className="text-[10px] text-ink-3 block mt-0.5">SKU: {sku}</span>
                               </div>
                             </div>
                           </td>
@@ -415,17 +415,17 @@ const ManageItems = () => {
                           </td>
 
                           {/* Price */}
-                          <td className="py-4 font-mono text-zinc-900 dark:text-white font-bold tracking-tight">
+                          <td className="py-4 font-mono text-ink font-bold tracking-tight">
                             ৳{p.price.toLocaleString()}.00
                           </td>
 
                           {/* Stock progress bar */}
                           <td className="py-4">
                             <div className="max-w-[120px]">
-                              <span className={`text-xs font-bold block ${isLow ? "text-orange-400" : "text-white"}`}>
+                              <span className={`text-xs font-bold block ${isLow ? "text-orange-600 dark:text-orange-400" : "text-ink"}`}>
                                 {units} Units
                               </span>
-                              <div className="w-full bg-zinc-850 h-1 rounded-full mt-2 overflow-hidden">
+                              <div className="w-full bg-surface-3 h-1 rounded-full mt-2 overflow-hidden">
                                 <div
                                   style={{ width: `${progress}%` }}
                                   className={`h-full rounded-full ${isLow ? "bg-orange-500" : "bg-purple-500"}`}
@@ -439,13 +439,13 @@ const ManageItems = () => {
                             <div className="flex items-center justify-end gap-2">
                               <button
                                 onClick={() => setEditingProduct(p)}
-                                className="px-3 py-1.5 bg-transparent border border-cyan-500 text-cyan-400 hover:bg-cyan-500 hover:text-black hover:neon-glow-cyan text-xs font-bold rounded-xl transition-all cursor-pointer"
+                                className="px-3 py-1.5 bg-transparent border border-cyan-500 text-cyan-600 dark:text-cyan-400 hover:bg-cyan-500 hover:text-black text-xs font-bold rounded-xl transition-all cursor-pointer"
                               >
                                 Edit
                               </button>
                               <button
                                 onClick={() => setConfirmDelete(p)}
-                                className="px-3 py-1.5 bg-transparent border border-pink-500 text-pink-400 hover:bg-pink-500 hover:text-white hover:neon-glow-pink text-xs font-bold rounded-xl transition-all cursor-pointer"
+                                className="px-3 py-1.5 bg-transparent border border-pink-500 text-pink-500 dark:text-pink-400 hover:bg-pink-500 hover:text-white text-xs font-bold rounded-xl transition-all cursor-pointer"
                               >
                                 Delete
                               </button>
@@ -460,14 +460,14 @@ const ManageItems = () => {
             )}
 
             {/* Pagination footer bar */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-zinc-900 text-xs text-zinc-500">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-line text-xs text-ink-3">
               <div>
                 Showing 1 to {filteredProducts.length} of {filteredProducts.length} results
               </div>
               <div className="flex items-center gap-1">
-                <button className="p-2 border border-zinc-850 bg-zinc-950/50 rounded-xl hover:text-white transition-colors cursor-pointer">◀</button>
+                <button className="p-2 border border-line-strong bg-surface-3 rounded-xl hover:text-ink transition-colors cursor-pointer">◀</button>
                 <button className="w-8 h-8 flex items-center justify-center rounded-xl bg-purple-500 text-white font-bold shadow-md shadow-purple-500/10">1</button>
-                <button className="p-2 border border-zinc-850 bg-zinc-950/50 rounded-xl hover:text-white transition-colors cursor-pointer">▶</button>
+                <button className="p-2 border border-line-strong bg-surface-3 rounded-xl hover:text-ink transition-colors cursor-pointer">▶</button>
               </div>
             </div>
 
@@ -479,33 +479,33 @@ const ManageItems = () => {
       {/* Edit Modal */}
       {editingProduct && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 sm:p-6 overflow-y-auto">
-          <div className="bg-[#0a0a0a] border border-pink-500/50 rounded-2xl w-full max-w-md p-5 sm:p-6 shadow-[0_0_30px_rgba(255,0,255,0.2)] my-auto max-h-[90vh] flex flex-col">
-            <h3 className="text-xl font-bold text-white mb-4 neon-text-pink shrink-0">Edit Product</h3>
+          <div className="bg-surface-2 border border-pink-500/50 rounded-2xl w-full max-w-md p-5 sm:p-6 shadow-[0_0_30px_rgba(255,0,255,0.2)] my-auto max-h-[90vh] flex flex-col">
+            <h3 className="text-xl font-bold text-ink mb-4 shrink-0">Edit Product</h3>
             <div className="space-y-4 overflow-y-auto pr-2 custom-scrollbar">
               <div>
-                <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">Title</label>
+                <label className="block text-xs font-bold text-ink-3 uppercase tracking-wider mb-2">Title</label>
                 <input 
                   type="text" 
                   value={editingProduct.title} 
                   onChange={(e) => setEditingProduct({...editingProduct, title: e.target.value})}
-                  className="w-full px-4 py-2 bg-[#050505] border border-pink-500/30 text-white rounded-xl text-sm focus:outline-none focus:border-pink-500 focus:neon-glow-pink transition-all"
+                  className="w-full px-4 py-2 bg-surface-3 border border-pink-500/30 text-ink rounded-xl text-sm focus:outline-none focus:border-pink-500 transition-all"
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">Price (৳)</label>
+                <label className="block text-xs font-bold text-ink-3 uppercase tracking-wider mb-2">Price (৳)</label>
                 <input 
                   type="number" 
                   value={editingProduct.price} 
                   onChange={(e) => setEditingProduct({...editingProduct, price: Number(e.target.value)})}
-                  className="w-full px-4 py-2 bg-[#050505] border border-pink-500/30 text-white rounded-xl text-sm focus:outline-none focus:border-pink-500 focus:neon-glow-pink transition-all"
+                  className="w-full px-4 py-2 bg-surface-3 border border-pink-500/30 text-ink rounded-xl text-sm focus:outline-none focus:border-pink-500 transition-all"
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">Category</label>
+                <label className="block text-xs font-bold text-ink-3 uppercase tracking-wider mb-2">Category</label>
                 <select
                   value={editingProduct.category}
                   onChange={(e) => setEditingProduct({...editingProduct, category: e.target.value})}
-                  className="w-full px-4 py-2 bg-[#050505] border border-pink-500/30 text-white rounded-xl text-sm focus:outline-none focus:border-pink-500 focus:neon-glow-pink transition-all"
+                  className="w-full px-4 py-2 bg-surface-3 border border-pink-500/30 text-ink rounded-xl text-sm focus:outline-none focus:border-pink-500 transition-all"
                 >
                   {allCategoryNames.map(cat => (
                     <option key={cat} value={cat}>{cat}</option>
@@ -513,12 +513,12 @@ const ManageItems = () => {
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">Stock Units</label>
+                <label className="block text-xs font-bold text-ink-3 uppercase tracking-wider mb-2">Stock Units</label>
                 <input 
                   type="number" 
                   value={editingProduct.stock !== undefined ? editingProduct.stock : getStockInfo(editingProduct).units} 
                   onChange={(e) => setEditingProduct({...editingProduct, stock: Number(e.target.value)})}
-                  className="w-full px-4 py-2 bg-[#050505] border border-pink-500/30 text-white rounded-xl text-sm focus:outline-none focus:border-pink-500 focus:neon-glow-pink transition-all"
+                  className="w-full px-4 py-2 bg-surface-3 border border-pink-500/30 text-ink rounded-xl text-sm focus:outline-none focus:border-pink-500 transition-all"
                 />
               </div>
               <div className="flex items-center pt-2">
@@ -527,20 +527,20 @@ const ManageItems = () => {
                   type="checkbox"
                   checked={editingProduct.isFeatured || false}
                   onChange={(e) => setEditingProduct({...editingProduct, isFeatured: e.target.checked})}
-                  className="h-4 w-4 rounded border-zinc-500 bg-zinc-800 text-pink-500 focus:ring-pink-500"
+                  className="h-4 w-4 rounded border-line-strong bg-surface-3 text-pink-500 focus:ring-pink-500"
                 />
-                <label htmlFor="editIsFeatured" className="ml-2 block text-sm font-medium text-zinc-300">
+                <label htmlFor="editIsFeatured" className="ml-2 block text-sm font-medium text-ink-2">
                   Featured Product
                 </label>
               </div>
               <div>
-                <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">Update Images (Optional)</label>
+                <label className="block text-xs font-bold text-ink-3 uppercase tracking-wider mb-2">Update Images (Optional)</label>
                 <input
                   type="file"
                   multiple
                   accept="image/*"
                   onChange={handleEditImageChange}
-                  className="w-full px-4 py-2 bg-[#050505] border border-pink-500/30 text-white rounded-xl text-sm focus:outline-none focus:border-pink-500 transition-all file:mr-4 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-pink-500/20 file:text-pink-400 hover:file:bg-pink-500/30"
+                  className="w-full px-4 py-2 bg-surface-3 border border-pink-500/30 text-ink rounded-xl text-sm focus:outline-none focus:border-pink-500 transition-all file:mr-4 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-pink-500/20 file:text-pink-600 dark:file:text-pink-400 hover:file:bg-pink-500/30"
                 />
                 {editImagePreviews.length > 0 && (
                   <div className="mt-3 flex gap-2 overflow-x-auto pb-2">
@@ -552,11 +552,11 @@ const ManageItems = () => {
               </div>
               <div className="border-t border-pink-500/20 pt-4 mt-2">
                 <div className="flex items-center justify-between mb-3">
-                  <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider">Specifications</label>
+                  <label className="block text-xs font-bold text-ink-3 uppercase tracking-wider">Specifications</label>
                   <button
                     type="button"
                     onClick={handleAddEditSpec}
-                    className="text-[10px] font-bold text-pink-400 bg-pink-500/10 px-2 py-1 rounded hover:bg-pink-500/20 transition-colors"
+                    className="text-[10px] font-bold text-pink-500 dark:text-pink-400 bg-pink-500/10 px-2 py-1 rounded hover:bg-pink-500/20 transition-colors"
                   >
                     + Add Spec
                   </button>
@@ -569,39 +569,39 @@ const ManageItems = () => {
                         placeholder="Key"
                         value={spec.key}
                         onChange={(e) => handleEditSpecChange(index, "key", e.target.value)}
-                        className="flex-1 px-3 py-1.5 bg-[#050505] border border-pink-500/30 text-white rounded-lg text-xs focus:outline-none focus:border-pink-500 transition-all"
+                        className="flex-1 px-3 py-1.5 bg-surface-3 border border-pink-500/30 text-ink rounded-lg text-xs focus:outline-none focus:border-pink-500 transition-all"
                       />
                       <input
                         type="text"
                         placeholder="Value"
                         value={spec.value}
                         onChange={(e) => handleEditSpecChange(index, "value", e.target.value)}
-                        className="flex-1 px-3 py-1.5 bg-[#050505] border border-pink-500/30 text-white rounded-lg text-xs focus:outline-none focus:border-pink-500 transition-all"
+                        className="flex-1 px-3 py-1.5 bg-surface-3 border border-pink-500/30 text-ink rounded-lg text-xs focus:outline-none focus:border-pink-500 transition-all"
                       />
                       <button
                         type="button"
                         onClick={() => handleRemoveEditSpec(index)}
-                        className="text-zinc-500 hover:text-red-500 transition-colors text-xs p-1"
+                        className="text-ink-3 hover:text-red-500 transition-colors text-xs p-1"
                       >
                         ✕
                       </button>
                     </div>
                   ))}
-                  {editSpecsList.length === 0 && <p className="text-[10px] text-zinc-600">No specifications.</p>}
+                  {editSpecsList.length === 0 && <p className="text-[10px] text-ink-3">No specifications.</p>}
                 </div>
               </div>
             </div>
             <div className="flex justify-end gap-3 mt-8">
               <button 
                 onClick={() => setEditingProduct(null)}
-                className="px-4 py-2 bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 text-zinc-300 text-sm font-bold rounded-xl transition-colors cursor-pointer"
+                className="px-4 py-2 bg-surface-3 border border-line hover:bg-surface-4 text-ink-2 text-sm font-bold rounded-xl transition-colors cursor-pointer"
               >
                 Cancel
               </button>
               <button 
                 onClick={() => setConfirmSave(true)}
                 disabled={isSaving}
-                className="px-4 py-2 bg-pink-500 hover:bg-pink-400 disabled:opacity-50 text-white text-sm font-bold rounded-xl transition-all neon-glow-pink cursor-pointer uppercase tracking-wider flex items-center justify-center gap-2"
+                className="px-4 py-2 bg-pink-500 hover:bg-pink-400 disabled:opacity-50 text-white text-sm font-bold rounded-xl transition-all cursor-pointer uppercase tracking-wider flex items-center justify-center gap-2"
               >
                 {isSaving ? "Saving..." : "Save Changes"}
               </button>

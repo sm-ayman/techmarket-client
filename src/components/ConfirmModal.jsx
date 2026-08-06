@@ -43,8 +43,8 @@ export default function ConfirmModal({
     danger: {
       border: "border-pink-500/60",
       glow: "shadow-[0_0_40px_rgba(255,0,128,0.25)]",
-      accent: "text-pink-400",
-      badge: "bg-pink-500/10 border border-pink-500/30 text-pink-400",
+      accent: "text-pink-500 dark:text-pink-400",
+      badge: "bg-pink-500/10 border border-pink-500/30 text-pink-500 dark:text-pink-400",
       bar: "from-pink-500 to-rose-500",
       confirmBtn: "bg-pink-500 hover:bg-pink-400 text-white shadow-[0_0_15px_rgba(255,0,128,0.5)] hover:shadow-[0_0_25px_rgba(255,0,128,0.8)]",
       iconBg: "bg-pink-500/10 border border-pink-500/30",
@@ -53,8 +53,8 @@ export default function ConfirmModal({
     warning: {
       border: "border-yellow-500/60",
       glow: "shadow-[0_0_40px_rgba(234,179,8,0.2)]",
-      accent: "text-yellow-400",
-      badge: "bg-yellow-500/10 border border-yellow-500/30 text-yellow-400",
+      accent: "text-yellow-600 dark:text-yellow-400",
+      badge: "bg-yellow-500/10 border border-yellow-500/30 text-yellow-600 dark:text-yellow-400",
       bar: "from-yellow-500 to-orange-500",
       confirmBtn: "bg-yellow-500 hover:bg-yellow-400 text-black shadow-[0_0_15px_rgba(234,179,8,0.5)] hover:shadow-[0_0_25px_rgba(234,179,8,0.8)]",
       iconBg: "bg-yellow-500/10 border border-yellow-500/30",
@@ -63,8 +63,8 @@ export default function ConfirmModal({
     success: {
       border: "border-cyan-500/60",
       glow: "shadow-[0_0_40px_rgba(0,243,255,0.2)]",
-      accent: "text-cyan-400",
-      badge: "bg-cyan-500/10 border border-cyan-500/30 text-cyan-400",
+      accent: "text-cyan-600 dark:text-cyan-400",
+      badge: "bg-cyan-500/10 border border-cyan-500/30 text-cyan-600 dark:text-cyan-400",
       bar: "from-cyan-500 to-blue-500",
       confirmBtn: "bg-cyan-500 hover:bg-cyan-400 text-black shadow-[0_0_15px_rgba(0,243,255,0.5)] hover:shadow-[0_0_25px_rgba(0,243,255,0.8)]",
       iconBg: "bg-cyan-500/10 border border-cyan-500/30",
@@ -86,7 +86,7 @@ export default function ConfirmModal({
       {/* Modal Panel */}
       <div
         className={`
-          relative w-full max-w-sm bg-[#0a0a0a] border ${v.border} ${v.glow}
+          relative w-full max-w-sm bg-surface-2 border ${v.border} ${v.glow}
           rounded-2xl overflow-hidden
           animate-[modalPop_0.25s_cubic-bezier(0.22,1,0.36,1)_forwards]
         `}
@@ -105,7 +105,7 @@ export default function ConfirmModal({
             </span>
             <button
               onClick={onCancel}
-              className="text-zinc-600 hover:text-zinc-300 transition-colors cursor-pointer"
+              className="text-ink-3 hover:text-ink-2 transition-colors cursor-pointer"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
@@ -122,21 +122,21 @@ export default function ConfirmModal({
               <h3 className={`text-base font-black tracking-tight ${v.accent}`}>
                 {title}
               </h3>
-              <p className="text-sm text-zinc-400 mt-1 leading-relaxed">{message}</p>
+              <p className="text-sm text-ink-2 mt-1 leading-relaxed">{message}</p>
               {detail && (
-                <p className="text-xs text-zinc-600 mt-2 font-mono border-l-2 border-zinc-700 pl-2">{detail}</p>
+                <p className="text-xs text-ink-3 mt-2 font-mono border-l-2 border-line-strong pl-2">{detail}</p>
               )}
             </div>
           </div>
 
           {/* Divider */}
-          <div className="border-t border-zinc-800 my-5" />
+          <div className="border-t border-line my-5" />
 
           {/* Action Buttons */}
           <div className="flex gap-3">
             <button
               onClick={onCancel}
-              className="flex-1 px-4 py-2.5 rounded-xl border border-zinc-700 bg-zinc-900 text-zinc-300 text-sm font-bold hover:border-zinc-500 hover:text-white transition-all cursor-pointer"
+              className="flex-1 px-4 py-2.5 rounded-xl border border-line-strong bg-surface-3 text-ink-2 text-sm font-bold hover:border-cyan-500 dark:hover:border-cyan-400 hover:text-ink transition-all cursor-pointer"
             >
               {cancelLabel}
             </button>

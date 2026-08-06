@@ -29,7 +29,7 @@ export default function RootLayout({ children }) {
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body suppressHydrationWarning className="min-h-full flex flex-col bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50 transition-colors duration-300">
+      <body suppressHydrationWarning className="min-h-full flex flex-col bg-surface text-ink transition-colors duration-300">
         <ThemeProvider>
           <AuthProvider>
             <CartProvider>

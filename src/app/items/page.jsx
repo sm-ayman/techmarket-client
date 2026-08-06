@@ -41,8 +41,8 @@ function AddToCartBtn({ product }) {
       title="Add to Cart"
       className={`rounded-lg bg-transparent border p-1.5 transition-all cursor-pointer ${
         added
-          ? "border-cyan-400 bg-cyan-500/20 text-cyan-400 shadow-[0_0_10px_rgba(0,243,255,0.5)]"
-          : "border-pink-500 text-pink-400 hover:bg-pink-500 hover:text-white shadow-[0_0_5px_rgba(255,0,255,0.2)] hover:shadow-[0_0_15px_rgba(255,0,255,0.6)]"
+          ? "border-cyan-500 dark:border-cyan-400 bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 shadow-[0_0_10px_rgba(0,243,255,0.5)]"
+          : "border-pink-500 text-pink-500 dark:text-pink-400 hover:bg-pink-500 hover:text-white shadow-[0_0_5px_rgba(255,0,255,0.2)] hover:shadow-[0_0_15px_rgba(255,0,255,0.6)]"
       }`}
     >
       {added ? (
@@ -131,34 +131,34 @@ const ItemsContent = () => {
     >
       {/* Title */}
       <motion.div variants={fadeInUp} className="text-center md:text-left mb-10">
-        <h1 className="text-3xl font-extrabold text-white neon-text-cyan sm:text-4xl">Browse Tech Products</h1>
-        <p className="mt-2 text-sm text-zinc-400">Find, search and filter through our latest catalog of high-end gadgets.</p>
+        <h1 className="text-3xl font-extrabold text-ink sm:text-4xl">Browse Tech Products</h1>
+        <p className="mt-2 text-sm text-ink-2">Find, search and filter through our latest catalog of high-end gadgets.</p>
       </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 mb-12">
         {/* Sidebar Filters */}
-        <motion.div variants={fadeInUp} className="bg-[#0a0a0a] border border-cyan-500/30 p-6 rounded-2xl shadow-[0_0_15px_rgba(0,243,255,0.1)] space-y-6 h-fit">
-          <h2 className="font-bold text-lg text-cyan-400 mb-4 flex items-center gap-2">
+        <motion.div variants={fadeInUp} className="bg-surface-2 border border-cyan-500/30 p-6 rounded-2xl shadow-[0_0_15px_rgba(0,243,255,0.1)] space-y-6 h-fit">
+          <h2 className="font-bold text-lg text-cyan-600 dark:text-cyan-400 mb-4 flex items-center gap-2">
             <span>⚙️</span> Filters
           </h2>
 
           <div>
-            <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">Search</label>
+            <label className="block text-xs font-bold text-ink-3 uppercase tracking-wider mb-2">Search</label>
             <input
               type="text"
               placeholder="Search product..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-3 py-2 bg-[#050505] border border-cyan-500/30 text-white rounded-lg focus:outline-none focus:border-cyan-400 focus:neon-glow-cyan transition-all placeholder-zinc-500 text-sm"
+              className="w-full px-3 py-2 bg-surface-3 border border-cyan-500/30 text-ink rounded-lg focus:outline-none focus:border-cyan-500 dark:focus:border-cyan-400 transition-all placeholder-ink-3 text-sm"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">Category</label>
+            <label className="block text-xs font-bold text-ink-3 uppercase tracking-wider mb-2">Category</label>
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="w-full px-3 py-2 bg-[#050505] border border-cyan-500/30 text-white rounded-lg focus:outline-none focus:border-cyan-400 focus:neon-glow-cyan transition-all text-sm"
+              className="w-full px-3 py-2 bg-surface-3 border border-cyan-500/30 text-ink rounded-lg focus:outline-none focus:border-cyan-500 dark:focus:border-cyan-400 transition-all text-sm"
             >
               {categories.map((cat, idx) => (
                 <option key={idx} value={cat}>{cat}</option>
@@ -168,26 +168,26 @@ const ItemsContent = () => {
 
           <div>
             <div className="flex justify-between items-center mb-2">
-              <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider">Max Price</label>
-              <span className="text-sm font-bold text-cyan-400 neon-text-cyan">৳{currentMaxPrice}</span>
+              <label className="block text-xs font-bold text-ink-3 uppercase tracking-wider">Max Price</label>
+              <span className="text-sm font-bold text-cyan-600 dark:text-cyan-400">৳{currentMaxPrice}</span>
             </div>
             <input
               type="range" min="100" max={priceCeil} step="50"
               value={currentMaxPrice}
               onChange={(e) => setMaxPrice(Number(e.target.value))}
-              className="w-full accent-cyan-500 bg-zinc-800 rounded-lg h-2"
+              className="w-full accent-cyan-500 bg-surface-3 rounded-lg h-2"
             />
           </div>
 
           <div>
             <div className="flex justify-between items-center mb-2">
-              <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider">Min Rating</label>
-              <span className="text-sm font-bold text-pink-400 neon-text-pink">{minRating} ⭐</span>
+              <label className="block text-xs font-bold text-ink-3 uppercase tracking-wider">Min Rating</label>
+              <span className="text-sm font-bold text-pink-500 dark:text-pink-400">{minRating} ⭐</span>
             </div>
             <select
               value={minRating}
               onChange={(e) => setMinRating(Number(e.target.value))}
-              className="w-full px-3 py-2 bg-[#050505] border border-cyan-500/30 text-white rounded-lg focus:outline-none focus:border-cyan-400 focus:neon-glow-cyan transition-all text-sm"
+              className="w-full px-3 py-2 bg-surface-3 border border-cyan-500/30 text-ink rounded-lg focus:outline-none focus:border-cyan-500 dark:focus:border-cyan-400 transition-all text-sm"
             >
               <option value="0">All Ratings</option>
               <option value="4.5">4.5+ Stars</option>
@@ -202,18 +202,18 @@ const ItemsContent = () => {
           {loading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {[1, 2, 3, 4, 5, 6].map((n) => (
-                <div key={n} className="h-96 rounded-2xl bg-[#0a0a0a] animate-pulse border border-zinc-800" />
+                <div key={n} className="h-96 rounded-2xl bg-surface-3 animate-pulse border border-line" />
               ))}
             </div>
           ) : filteredProducts.length === 0 ? (
             <motion.div 
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="text-center py-20 bg-[#0a0a0a] border border-pink-500/30 rounded-2xl shadow-[0_0_15px_rgba(255,0,255,0.1)]"
+              className="text-center py-20 bg-surface-2 border border-pink-500/30 rounded-2xl shadow-[0_0_15px_rgba(255,0,255,0.1)]"
             >
               <div className="text-4xl mb-4">🔍</div>
-              <h3 className="text-lg font-bold text-pink-400">No Products Found</h3>
-              <p className="text-sm text-zinc-400 mt-2">Try adjusting your filters or search keywords.</p>
+              <h3 className="text-lg font-bold text-pink-500 dark:text-pink-400">No Products Found</h3>
+              <p className="text-sm text-ink-2 mt-2">Try adjusting your filters or search keywords.</p>
             </motion.div>
           ) : (
             <motion.div 
@@ -231,27 +231,27 @@ const ItemsContent = () => {
                     whileHover={{ y: -5 }}
                     key={p.id}
                     onClick={() => router.push(`/items/${p.id}`)}
-                    className="group flex flex-col overflow-hidden rounded-2xl border border-zinc-800 bg-[#0a0a0a] transition-all hover:neon-glow-cyan cursor-pointer h-full"
+                    className="group flex flex-col overflow-hidden rounded-2xl border border-line bg-surface-2 transition-all hover:shadow-[0_0_20px_rgba(0,243,255,0.2)] cursor-pointer h-full"
                   >
-                    <div className="relative aspect-video overflow-hidden bg-[#050505]">
+                    <div className="relative aspect-video overflow-hidden bg-surface-4">
                       <img
                         src={p.image} alt={p.title}
-                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-80 group-hover:opacity-100"
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-90 group-hover:opacity-100"
                       />
-                      <span className="absolute top-3 right-3 rounded-full border border-pink-500 bg-pink-500/20 px-2.5 py-1 text-[10px] font-black text-pink-400 tracking-widest uppercase shadow-[0_0_10px_rgba(255,0,255,0.3)]">
+                      <span className="absolute top-3 right-3 rounded-full border border-pink-500 bg-pink-500/20 px-2.5 py-1 text-[10px] font-black text-pink-600 dark:text-pink-400 tracking-widest uppercase shadow-[0_0_10px_rgba(255,0,255,0.3)]">
                         {p.category}
                       </span>
                     </div>
                     <div className="flex flex-1 flex-col p-5">
                       <div className="flex items-center justify-between mb-1">
-                        <span className="text-[10px] font-black text-zinc-500 uppercase tracking-wider">
-                          Rating: <span className="text-pink-400">{p.rating} ⭐</span>
+                        <span className="text-[10px] font-black text-ink-3 uppercase tracking-wider">
+                          Rating: <span className="text-pink-500 dark:text-pink-400">{p.rating} ⭐</span>
                         </span>
                       </div>
-                      <h3 className="font-bold text-white line-clamp-1 group-hover:text-cyan-400 transition-colors">{p.title}</h3>
-                      <p className="mt-2 text-xs text-zinc-400 line-clamp-2 leading-relaxed">{p.shortDescription}</p>
-                      <div className="mt-auto pt-4 flex items-center justify-between border-t border-zinc-800/80 mt-4">
-                        <span className="font-mono font-bold text-lg text-white">৳{p.price}</span>
+                      <h3 className="font-bold text-ink line-clamp-1 group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">{p.title}</h3>
+                      <p className="mt-2 text-xs text-ink-2 line-clamp-2 leading-relaxed">{p.shortDescription}</p>
+                      <div className="mt-auto pt-4 flex items-center justify-between border-t border-line mt-4">
+                        <span className="font-mono font-bold text-lg text-ink">৳{p.price}</span>
                         {!isAdmin && (
                           <div className="flex items-center gap-2">
                             <AddToCartBtn product={p} />
@@ -290,7 +290,7 @@ export default function Items() {
     <Suspense fallback={
       <div className="mx-auto max-w-7xl px-4 py-20 text-center">
         <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-cyan-500 mx-auto mb-4" />
-        <p className="text-zinc-500">Loading catalog...</p>
+        <p className="text-ink-3">Loading catalog...</p>
       </div>
     }>
       <ItemsContent />

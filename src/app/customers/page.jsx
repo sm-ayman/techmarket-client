@@ -78,7 +78,7 @@ const CustomersPage = () => {
 
   if (authLoading || !user || user.email !== "admin@techmarket.com") {
     return (
-      <div className="min-h-screen bg-[#0A0A0C] text-zinc-400 flex items-center justify-center">
+      <div className="min-h-screen bg-surface text-ink-2 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-purple-500 mx-auto" />
           <p className="mt-4">Verifying admin access...</p>
@@ -97,49 +97,49 @@ const CustomersPage = () => {
   });
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white p-4 sm:p-12 font-sans border-t border-zinc-900">
+    <div className="min-h-screen bg-surface text-ink p-4 sm:p-12 font-sans border-t border-line">
       <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8">
         
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-extrabold tracking-tight text-white neon-text-purple">Customers Dashboard</h1>
-            <p className="text-zinc-400 text-sm mt-1">
+            <h1 className="text-3xl font-extrabold tracking-tight text-ink">Customers Dashboard</h1>
+            <p className="text-ink-2 text-sm mt-1">
               Manage and view all registered customers and guests who placed orders.
             </p>
           </div>
           
           {/* Stats Summary */}
           <div className="flex gap-4">
-            <div className="bg-[#0a0a0a] border border-cyan-500/30 px-6 py-3 rounded-xl shadow-[0_0_15px_rgba(0,243,255,0.1)]">
-              <span className="block text-[10px] font-bold text-cyan-500 uppercase tracking-widest">TOTAL CUSTOMERS</span>
-              <span className="text-2xl font-black text-white neon-text-cyan">{loading ? "..." : customers.length}</span>
+            <div className="bg-surface-2 border border-cyan-500/30 px-6 py-3 rounded-xl shadow-[0_0_15px_rgba(0,243,255,0.1)]">
+              <span className="block text-[10px] font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-widest">TOTAL CUSTOMERS</span>
+              <span className="text-2xl font-black text-ink">{loading ? "..." : customers.length}</span>
             </div>
           </div>
         </div>
 
         {/* Controls */}
-        <div className="bg-[#020202] border border-zinc-800 rounded-2xl p-4 shadow-[0_0_30px_rgba(0,0,0,0.5)] flex flex-col md:flex-row gap-4 justify-between items-center">
+        <div className="bg-surface-2 border border-line rounded-2xl p-4 flex flex-col md:flex-row gap-4 justify-between items-center">
           <div className="relative w-full max-w-md">
-            <span className="absolute inset-y-0 left-3.5 flex items-center text-zinc-500 text-sm">🔍</span>
+            <span className="absolute inset-y-0 left-3.5 flex items-center text-ink-3 text-sm">🔍</span>
             <input
               type="text"
               placeholder="Search by name, email, or phone..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-[#050505] border border-cyan-500/30 text-white rounded-xl text-sm focus:outline-none focus:border-cyan-400 focus:neon-glow-cyan transition-colors placeholder-zinc-600"
+              className="w-full pl-10 pr-4 py-2.5 bg-surface-3 border border-cyan-500/30 text-ink rounded-xl text-sm focus:outline-none focus:border-cyan-500 dark:focus:border-cyan-400 transition-colors placeholder-ink-3"
             />
           </div>
-          <button onClick={fetchCustomers} className="px-4 py-2.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-white text-sm font-bold rounded-xl transition-all cursor-pointer">
+          <button onClick={fetchCustomers} className="px-4 py-2.5 bg-surface-3 hover:bg-surface-4 border border-line-strong text-ink text-sm font-bold rounded-xl transition-all cursor-pointer">
             🔄 Refresh List
           </button>
         </div>
 
         {/* Customers Table */}
-        <div className="bg-[#020202] border border-zinc-800 rounded-2xl overflow-hidden shadow-[0_0_30px_rgba(0,0,0,0.8)]">
+        <div className="bg-surface-2 border border-line rounded-2xl overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm text-zinc-400">
-              <thead className="bg-[#0a0a0a] border-b border-zinc-800 text-xs uppercase font-black tracking-wider text-zinc-500">
+            <table className="w-full text-left text-sm text-ink-2">
+              <thead className="bg-surface-4 border-b border-line text-xs uppercase font-black tracking-wider text-ink-3">
                 <tr>
                   <th className="px-6 py-4">Customer Details</th>
                   <th className="px-6 py-4">Contact</th>
@@ -149,49 +149,49 @@ const CustomersPage = () => {
                   <th className="px-6 py-4 text-right">Last Order Date</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-800/50 bg-[#050505]">
+              <tbody className="divide-y divide-line bg-surface">
                 {loading ? (
                   <tr>
-                    <td colSpan="6" className="px-6 py-12 text-center text-zinc-500">
+                    <td colSpan="6" className="px-6 py-12 text-center text-ink-3">
                       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-cyan-500 mx-auto mb-4" />
                       Loading customers data...
                     </td>
                   </tr>
                 ) : filteredCustomers.length === 0 ? (
                   <tr>
-                    <td colSpan="6" className="px-6 py-12 text-center text-zinc-500 font-medium">
+                    <td colSpan="6" className="px-6 py-12 text-center text-ink-3 font-medium">
                       No customers found matching your search.
                     </td>
                   </tr>
                 ) : (
                   filteredCustomers.map((customer) => (
-                    <tr key={customer.email} className="hover:bg-zinc-900/30 transition-colors">
+                    <tr key={customer.email} className="hover:bg-surface-4 transition-colors">
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-tr from-cyan-500/20 to-purple-500/20 border border-cyan-500/30 font-bold text-white shadow-sm">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-tr from-cyan-500/20 to-purple-500/20 border border-cyan-500/30 font-bold text-ink shadow-sm">
                             {customer.name.charAt(0).toUpperCase()}
                           </div>
-                          <span className="font-bold text-white">{customer.name}</span>
+                          <span className="font-bold text-ink">{customer.name}</span>
                         </div>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex flex-col">
-                          <a href={`mailto:${customer.email}`} className="text-cyan-400 hover:text-cyan-300 hover:underline transition-colors">{customer.email}</a>
-                          <span className="text-xs text-zinc-500 mt-0.5">{customer.phone}</span>
+                          <a href={`mailto:${customer.email}`} className="text-cyan-600 hover:text-cyan-500 dark:text-cyan-400 dark:hover:text-cyan-300 hover:underline transition-colors">{customer.email}</a>
+                          <span className="text-xs text-ink-3 mt-0.5">{customer.phone}</span>
                         </div>
                       </td>
-                      <td className="px-6 py-4 font-medium text-zinc-300">
+                      <td className="px-6 py-4 font-medium text-ink-2">
                         {customer.city}
                       </td>
                       <td className="px-6 py-4 text-center">
-                        <span className="inline-flex items-center justify-center bg-purple-500/10 text-purple-400 border border-purple-500/30 px-2.5 py-0.5 rounded-full text-xs font-bold">
+                        <span className="inline-flex items-center justify-center bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/30 px-2.5 py-0.5 rounded-full text-xs font-bold">
                           {customer.totalOrders} {customer.totalOrders === 1 ? 'Order' : 'Orders'}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-right font-black text-pink-400">
+                      <td className="px-6 py-4 text-right font-black text-pink-600 dark:text-pink-400">
                         ${customer.totalSpent.toFixed(2)}
                       </td>
-                      <td className="px-6 py-4 text-right text-zinc-400">
+                      <td className="px-6 py-4 text-right text-ink-2">
                         {new Date(customer.lastOrderDate).toLocaleDateString()}
                       </td>
                     </tr>
@@ -202,7 +202,7 @@ const CustomersPage = () => {
           </div>
           
           {!loading && filteredCustomers.length > 0 && (
-            <div className="px-6 py-4 border-t border-zinc-800 bg-[#0a0a0a] text-xs text-zinc-500 flex justify-between items-center">
+            <div className="px-6 py-4 border-t border-line bg-surface-4 text-xs text-ink-3 flex justify-between items-center">
               <span>Showing {filteredCustomers.length} customers</span>
               <span>Derived dynamically from order history.</span>
             </div>

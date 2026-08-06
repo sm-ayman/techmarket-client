@@ -79,21 +79,21 @@ const Login = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#020202] px-4 py-12 sm:px-6 lg:px-8 border-t border-zinc-900">
-      <div className="w-full max-w-md space-y-8 bg-[#0a0a0a] p-8 rounded-3xl border border-cyan-500/30 shadow-[0_0_30px_rgba(0,243,255,0.15)] relative overflow-hidden">
+    <div className="flex min-h-screen items-center justify-center bg-surface px-4 py-12 sm:px-6 lg:px-8 border-t border-line">
+      <div className="w-full max-w-md space-y-8 bg-surface-2 p-8 rounded-3xl border border-cyan-500/30 shadow-[0_0_30px_rgba(0,243,255,0.1)] relative overflow-hidden">
         {/* Decorative neon blur */}
-        <div className="absolute -top-20 -right-20 w-40 h-40 bg-pink-500 rounded-full mix-blend-screen filter blur-[80px] opacity-20 pointer-events-none" />
-        <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-cyan-500 rounded-full mix-blend-screen filter blur-[80px] opacity-20 pointer-events-none" />
+        <div className="absolute -top-20 -right-20 w-40 h-40 bg-pink-500 rounded-full mix-blend-screen filter blur-[80px] opacity-10 pointer-events-none" />
+        <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-cyan-500 rounded-full mix-blend-screen filter blur-[80px] opacity-10 pointer-events-none" />
 
         <div className="relative z-10">
-          <h2 className="mt-2 text-center text-3xl font-extrabold tracking-tight text-white neon-text-cyan">
+          <h2 className="mt-2 text-center text-3xl font-extrabold tracking-tight text-ink">
             Welcome Back
           </h2>
-          <p className="mt-2 text-center text-sm text-zinc-400">
+          <p className="mt-2 text-center text-sm text-ink-2">
             Or{" "}
             <Link
               href="/register"
-              className="font-bold text-pink-400 hover:text-pink-300 hover:neon-text-pink transition-all"
+              className="font-bold text-pink-600 hover:text-pink-500 dark:text-pink-400 dark:hover:text-pink-300 transition-all"
             >
               create a new account
             </Link>
@@ -103,29 +103,29 @@ const Login = () => {
         <div className="grid grid-cols-2 gap-4 relative z-10">
           <div 
             onClick={fillDemoCredentials}
-            className="rounded-xl bg-[#050505] border border-cyan-500/50 p-4 text-xs text-cyan-400 cursor-pointer hover:bg-cyan-500/10 hover:neon-glow-cyan transition-all flex flex-col justify-between"
+            className="rounded-xl bg-surface-3 border border-cyan-500/50 p-4 text-xs text-cyan-600 dark:text-cyan-400 cursor-pointer hover:bg-cyan-500/10 hover:shadow-[0_0_20px_rgba(0,243,255,0.15)] transition-all flex flex-col justify-between"
           >
-            <strong className="neon-text-cyan">Admin Demo:</strong>
+            <strong className="text-cyan-600 dark:text-cyan-400">Admin Demo:</strong>
             <div className="mt-2 space-y-1">
-              <p>Email: <code className="block mt-0.5 font-mono bg-[#0a0a0a] px-1.5 py-0.5 rounded border border-cyan-500/30 truncate" title="admin@techmarket.com">admin@techmarket.com</code></p>
-              <p>Pass: <code className="block mt-0.5 font-mono bg-[#0a0a0a] px-1.5 py-0.5 rounded border border-cyan-500/30">admin123</code></p>
+              <p>Email: <code className="block mt-0.5 font-mono bg-surface-2 px-1.5 py-0.5 rounded border border-cyan-500/30 truncate" title="admin@techmarket.com">admin@techmarket.com</code></p>
+              <p>Pass: <code className="block mt-0.5 font-mono bg-surface-2 px-1.5 py-0.5 rounded border border-cyan-500/30">admin123</code></p>
             </div>
           </div>
 
           <div 
             onClick={fillCustomerCredentials}
-            className="rounded-xl bg-[#050505] border border-pink-500/50 p-4 text-xs text-pink-400 cursor-pointer hover:bg-pink-500/10 hover:neon-glow-pink transition-all flex flex-col justify-between"
+            className="rounded-xl bg-surface-3 border border-pink-500/50 p-4 text-xs text-pink-600 dark:text-pink-400 cursor-pointer hover:bg-pink-500/10 hover:shadow-[0_0_20px_rgba(255,0,255,0.15)] transition-all flex flex-col justify-between"
           >
-            <strong className="neon-text-pink">Customer Demo:</strong>
+            <strong className="text-pink-600 dark:text-pink-400">Customer Demo:</strong>
             <div className="mt-2 space-y-1">
-              <p>Email: <code className="block mt-0.5 font-mono bg-[#0a0a0a] px-1.5 py-0.5 rounded border border-pink-500/30 truncate" title="customer@techmarket.com">customer@techmarket.com</code></p>
-              <p>Pass: <code className="block mt-0.5 font-mono bg-[#0a0a0a] px-1.5 py-0.5 rounded border border-pink-500/30">customer123</code></p>
+              <p>Email: <code className="block mt-0.5 font-mono bg-surface-2 px-1.5 py-0.5 rounded border border-pink-500/30 truncate" title="customer@techmarket.com">customer@techmarket.com</code></p>
+              <p>Pass: <code className="block mt-0.5 font-mono bg-surface-2 px-1.5 py-0.5 rounded border border-pink-500/30">customer123</code></p>
             </div>
           </div>
         </div>
 
         {error && (
-          <div className="relative z-10 rounded-xl bg-pink-950/30 border border-pink-500/50 p-4 text-sm text-pink-400 neon-glow-pink">
+          <div className="relative z-10 rounded-xl bg-pink-500/10 border border-pink-500/50 p-4 text-sm text-pink-600 dark:text-pink-400 shadow-[0_0_15px_rgba(255,0,255,0.1)]">
             {error}
           </div>
         )}
@@ -133,7 +133,7 @@ const Login = () => {
         <form className="mt-8 space-y-6 relative z-10" onSubmit={handleSubmit}>
           <div className="space-y-4 rounded-md">
             <div>
-              <label htmlFor="email-address" className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">
+              <label htmlFor="email-address" className="block text-xs font-bold text-ink-3 uppercase tracking-wider mb-2">
                 Email Address
               </label>
               <input
@@ -143,12 +143,12 @@ const Login = () => {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="relative block w-full px-4 py-3 bg-[#050505] border border-cyan-500/30 text-white rounded-xl text-sm focus:outline-none focus:border-cyan-400 focus:neon-glow-cyan transition-all placeholder-zinc-600"
+                className="relative block w-full px-4 py-3 bg-surface-3 border border-line-strong text-ink rounded-xl text-sm focus:outline-none focus:border-cyan-500 dark:focus:border-cyan-400 transition-all placeholder-ink-3"
                 placeholder="you@example.com"
               />
             </div>
             <div>
-              <label htmlFor="password" className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2">
+              <label htmlFor="password" className="block text-xs font-bold text-ink-3 uppercase tracking-wider mb-2">
                 Password
               </label>
               <input
@@ -158,7 +158,7 @@ const Login = () => {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="relative block w-full px-4 py-3 bg-[#050505] border border-cyan-500/30 text-white rounded-xl text-sm focus:outline-none focus:border-cyan-400 focus:neon-glow-cyan transition-all placeholder-zinc-600"
+                className="relative block w-full px-4 py-3 bg-surface-3 border border-line-strong text-ink rounded-xl text-sm focus:outline-none focus:border-cyan-500 dark:focus:border-cyan-400 transition-all placeholder-ink-3"
                 placeholder="••••••••"
               />
             </div>
@@ -168,7 +168,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="group relative flex w-full justify-center rounded-xl bg-cyan-500 hover:bg-cyan-400 py-3.5 px-4 text-sm font-bold text-black neon-glow-cyan focus:outline-none disabled:opacity-50 transition-all cursor-pointer uppercase tracking-wider"
+              className="group relative flex w-full justify-center rounded-xl bg-cyan-500 hover:bg-cyan-400 py-3.5 px-4 text-sm font-bold text-black shadow-[0_0_15px_rgba(0,243,255,0.3)] focus:outline-none disabled:opacity-50 transition-all cursor-pointer uppercase tracking-wider"
             >
               {loading ? "Signing in..." : "Sign in"}
             </button>
@@ -177,7 +177,7 @@ const Login = () => {
 
         <div className="mt-6 relative z-10">
           <div className="relative flex justify-center text-sm">
-            <span className="bg-[#0a0a0a] px-4 text-zinc-500 text-xs font-bold uppercase tracking-widest">
+            <span className="bg-surface-2 px-4 text-ink-3 text-xs font-bold uppercase tracking-widest">
               Or continue with
             </span>
           </div>
@@ -186,7 +186,7 @@ const Login = () => {
             <button
               onClick={handleGoogleLogin}
               disabled={loading}
-              className="flex w-full items-center justify-center gap-3 rounded-xl border border-zinc-800 bg-[#050505] py-3.5 px-4 text-sm font-bold text-white hover:border-pink-500/50 hover:bg-pink-500/10 hover:neon-glow-pink focus:outline-none transition-all cursor-pointer"
+              className="flex w-full items-center justify-center gap-3 rounded-xl border border-line-strong bg-surface-3 py-3.5 px-4 text-sm font-bold text-ink hover:border-pink-500/50 hover:bg-pink-500/10 hover:shadow-[0_0_20px_rgba(255,0,255,0.1)] focus:outline-none transition-all cursor-pointer"
             >
               <svg className="h-5 w-5" viewBox="0 0 24 24">
                 <path

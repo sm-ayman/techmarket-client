@@ -71,7 +71,7 @@ const ItemDetails = ({ params }) => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0A0A0C] text-zinc-400 flex items-center justify-center">
+      <div className="min-h-screen bg-surface text-ink-2 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-purple-500 mx-auto" />
           <p className="mt-4">Loading tech specs...</p>
@@ -84,9 +84,9 @@ const ItemDetails = ({ params }) => {
 
   if (!product) {
     return (
-      <div className="min-h-screen bg-[#0A0A0C] text-white flex flex-col items-center justify-center p-6">
+      <div className="min-h-screen bg-surface text-ink flex flex-col items-center justify-center p-6">
         <h2 className="text-2xl font-bold">Product Not Found</h2>
-        <p className="mt-2 text-zinc-500">The specifications you requested are unavailable.</p>
+        <p className="mt-2 text-ink-3">The specifications you requested are unavailable.</p>
         <Link
           href="/items"
           className="mt-6 px-6 py-2.5 bg-purple-600 hover:bg-purple-700 text-sm font-semibold rounded-xl transition-all"
@@ -161,7 +161,7 @@ const ItemDetails = ({ params }) => {
   ];
 
   return (
-    <div className="bg-[#050505] text-white min-h-screen font-sans">
+    <div className="bg-surface text-ink min-h-screen font-sans">
       <motion.div 
         initial="hidden"
         animate="show"
@@ -175,11 +175,11 @@ const ItemDetails = ({ params }) => {
           {/* Left: Image Canvas */}
           <motion.div variants={fadeInUp} className="space-y-6">
             <div 
-              className="relative aspect-[4/3] w-full rounded-3xl bg-radial-[circle_at_center,rgba(0,243,255,0.05)_0%,rgba(5,5,5,1)_100%] border border-cyan-500/30 shadow-[0_0_20px_rgba(0,243,255,0.1)] flex items-center justify-center overflow-hidden group cursor-zoom-in hover:neon-glow-cyan transition-all"
+              className="relative aspect-[4/3] w-full rounded-3xl bg-surface-2 border border-cyan-500/30 shadow-[0_0_20px_rgba(0,243,255,0.1)] flex items-center justify-center overflow-hidden group cursor-zoom-in hover:shadow-[0_0_20px_rgba(0,243,255,0.2)] transition-all"
               onMouseMove={handleMouseMove}
             >
               {/* Featured Badge */}
-              <div className="absolute top-6 left-6 rounded-full border border-pink-500 bg-pink-500/20 px-3 py-1 text-[10px] font-black text-pink-400 tracking-widest uppercase z-10 pointer-events-none shadow-[0_0_10px_rgba(255,0,255,0.3)]">
+              <div className="absolute top-6 left-6 rounded-full border border-pink-500 bg-pink-500/20 px-3 py-1 text-[10px] font-black text-pink-600 dark:text-pink-400 tracking-widest uppercase z-10 pointer-events-none shadow-[0_0_10px_rgba(255,0,255,0.3)]">
                 FEATURED TECH
               </div>
               
@@ -212,8 +212,8 @@ const ItemDetails = ({ params }) => {
                 <button
                   key={idx}
                   onClick={() => setSelectedImageIdx(idx)}
-                  className={`aspect-square rounded-xl bg-[#020202] border overflow-hidden p-2 flex items-center justify-center transition-all ${
-                    selectedImageIdx === idx ? "border-cyan-400 neon-glow-cyan scale-105" : "border-zinc-800 hover:border-pink-500/50 hover:neon-glow-pink"
+                  className={`aspect-square rounded-xl bg-surface-4 border overflow-hidden p-2 flex items-center justify-center transition-all ${
+                    selectedImageIdx === idx ? "border-cyan-500 dark:border-cyan-400 shadow-[0_0_15px_rgba(0,243,255,0.3)] scale-105" : "border-line hover:border-pink-500/50"
                   }`}
                 >
                   <img src={img} alt="thumbnail" className="max-h-full max-w-full object-contain" />
@@ -225,10 +225,10 @@ const ItemDetails = ({ params }) => {
           {/* Right: Spec Controls */}
           <motion.div variants={fadeInUp} className="space-y-8">
             <div>
-              <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
+              <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-ink leading-tight">
                 {product.title}
               </h1>
-              <p className="mt-4 text-zinc-400 text-base leading-relaxed">
+              <p className="mt-4 text-ink-2 text-base leading-relaxed">
                 {product.shortDescription}
               </p>
             </div>
@@ -239,13 +239,13 @@ const ItemDetails = ({ params }) => {
                 <motion.div
                   key={idx}
                   whileHover={{ scale: 1.02 }}
-                  className="bg-[#0a0a0a] border border-zinc-800 rounded-2xl p-5 hover:border-purple-500/50 hover:neon-glow-purple transition-all cursor-default"
+                  className="bg-surface-2 border border-line rounded-2xl p-5 hover:border-purple-500/50 hover:shadow-[0_0_15px_rgba(176,38,255,0.2)] transition-all cursor-default"
                 >
-                  <div className="flex items-center gap-2 text-zinc-500 text-[10px] font-bold tracking-wider uppercase">
-                    <span className="text-purple-400">{spec.icon}</span>
+                  <div className="flex items-center gap-2 text-ink-3 text-[10px] font-bold tracking-wider uppercase">
+                    <span className="text-purple-500 dark:text-purple-400">{spec.icon}</span>
                     <span>{spec.label}</span>
                   </div>
-                  <div className="text-lg font-bold text-white mt-2 leading-snug">
+                  <div className="text-lg font-bold text-ink mt-2 leading-snug">
                     {spec.value}
                   </div>
                 </motion.div>
@@ -255,17 +255,17 @@ const ItemDetails = ({ params }) => {
             {/* Price Card */}
             <motion.div 
               whileHover={{ scale: 1.01 }}
-              className="bg-[#0a0a0a] border border-zinc-800 rounded-2xl p-6 space-y-6 hover:border-cyan-500/30 hover:shadow-[0_0_20px_rgba(0,243,255,0.05)] transition-all"
+              className="bg-surface-2 border border-line rounded-2xl p-6 space-y-6 hover:border-cyan-500/30 hover:shadow-[0_0_20px_rgba(0,243,255,0.05)] transition-all"
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="block text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Current Price</span>
+                  <span className="block text-[10px] font-bold text-ink-3 uppercase tracking-widest">Current Price</span>
                   <div className="flex items-baseline gap-3 mt-1.5">
-                    <span className="text-3xl font-black text-white">৳{product.price}.99</span>
-                    <span className="text-xs text-zinc-500 line-through">৳{product.price + 50}.99</span>
+                    <span className="text-3xl font-black text-ink">৳{product.price}.99</span>
+                    <span className="text-xs text-ink-3 line-through">৳{product.price + 50}.99</span>
                   </div>
                 </div>
-                <div className="rounded-full bg-purple-500/10 border border-purple-500/20 px-3 py-1 text-[10px] font-bold text-purple-400">
+                <div className="rounded-full bg-purple-500/10 border border-purple-500/20 px-3 py-1 text-[10px] font-bold text-purple-600 dark:text-purple-400">
                   Save ৳50.00
                 </div>
               </div>
@@ -274,7 +274,7 @@ const ItemDetails = ({ params }) => {
               <div className="space-y-4 pt-2">
                 {!!user && (
                   <div className="bg-orange-500/10 border border-orange-500/50 rounded-xl p-3 text-center">
-                    <p className="text-orange-400 text-xs font-bold uppercase tracking-wider">
+                    <p className="text-orange-600 dark:text-orange-400 text-xs font-bold uppercase tracking-wider">
                       ⚠️ Purchasing disabled for admins
                     </p>
                   </div>
@@ -285,10 +285,10 @@ const ItemDetails = ({ params }) => {
                   disabled={!!user}
                   className={`w-full py-4 font-black text-sm uppercase tracking-wider rounded-xl transition-all flex items-center justify-center gap-2 border-2 ${
                     !!user 
-                      ? "opacity-50 cursor-not-allowed border-zinc-700 text-zinc-500 bg-zinc-900"
+                      ? "opacity-50 cursor-not-allowed border-line-strong text-ink-3 bg-surface-3"
                       : cartAdded
-                        ? "bg-cyan-500/20 border-cyan-400 text-cyan-400 shadow-[0_0_20px_rgba(0,243,255,0.5)] cursor-pointer"
-                        : "bg-transparent border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-black shadow-[0_0_10px_rgba(0,243,255,0.3)] hover:shadow-[0_0_20px_rgba(0,243,255,0.6)] cursor-pointer"
+                        ? "bg-cyan-500/20 border-cyan-500 dark:border-cyan-400 text-cyan-600 dark:text-cyan-400 shadow-[0_0_20px_rgba(0,243,255,0.5)] cursor-pointer"
+                        : "bg-transparent border-cyan-500 dark:border-cyan-400 text-cyan-600 dark:text-cyan-400 hover:bg-cyan-400 hover:text-black shadow-[0_0_10px_rgba(0,243,255,0.3)] hover:shadow-[0_0_20px_rgba(0,243,255,0.6)] cursor-pointer"
                   }`}
                 >
                   {cartAdded ? (
@@ -303,7 +303,7 @@ const ItemDetails = ({ params }) => {
                   disabled={!!user}
                   className={`w-full py-4 font-black text-sm uppercase tracking-wider rounded-xl transition-all ${
                     !!user
-                      ? "bg-zinc-800 text-zinc-500 opacity-50 cursor-not-allowed"
+                      ? "bg-surface-3 text-ink-3 opacity-50 cursor-not-allowed"
                       : "bg-pink-500 hover:bg-pink-400 text-white shadow-[0_0_10px_rgba(255,0,255,0.4)] hover:shadow-[0_0_20px_rgba(255,0,255,0.6)] cursor-pointer"
                   }`}
                 >
@@ -312,7 +312,7 @@ const ItemDetails = ({ params }) => {
               </div>
 
               {/* Info Label */}
-              <div className="text-[10px] text-center text-zinc-500 font-medium">
+              <div className="text-[10px] text-center text-ink-3 font-medium">
                 🛡️ Official Brand Warranty Included
               </div>
             </motion.div>
@@ -325,26 +325,26 @@ const ItemDetails = ({ params }) => {
           whileInView="show"
           viewport={{ once: true, margin: "-100px" }}
           variants={staggerContainer}
-          className="border-t border-zinc-800/80 pt-20 mb-20"
+          className="border-t border-line pt-20 mb-20"
         >
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start mb-12">
-            <motion.h2 variants={fadeInUp} className="text-3xl font-extrabold text-white leading-tight lg:col-span-1">
+            <motion.h2 variants={fadeInUp} className="text-3xl font-extrabold text-ink leading-tight lg:col-span-1">
               Experience Pure Silence
             </motion.h2>
             <motion.div variants={fadeInUp} className="lg:col-span-2 space-y-6">
-              <p className="text-zinc-400 text-base leading-relaxed">
+              <p className="text-ink-2 text-base leading-relaxed">
                 The {product.title} headphones rewrite the rules for distraction-free listening. From airplane noise to people's voices, our noise-canceling headphones with multiple microphone technologies keep out more high and mid frequency sounds than ever.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 pt-4">
                 <div>
-                  <h3 className="font-bold text-purple-400 text-sm tracking-wider uppercase mb-2">Magnificent Sound</h3>
-                  <p className="text-xs text-zinc-500 leading-relaxed">
+                  <h3 className="font-bold text-purple-600 dark:text-purple-400 text-sm tracking-wider uppercase mb-2">Magnificent Sound</h3>
+                  <p className="text-xs text-ink-3 leading-relaxed">
                     The specially designed 30mm driver unit with light and rigid dome using carbon fiber composite material improves high frequency sensitivity for more natural sound quality.
                   </p>
                 </div>
                 <div>
-                  <h3 className="font-bold text-purple-400 text-sm tracking-wider uppercase mb-2">Crystal Clear Calls</h3>
-                  <p className="text-xs text-zinc-500 leading-relaxed">
+                  <h3 className="font-bold text-purple-600 dark:text-purple-400 text-sm tracking-wider uppercase mb-2">Crystal Clear Calls</h3>
+                  <p className="text-xs text-ink-3 leading-relaxed">
                     With four beamforming microphones, these headphones are calibrated to only pick up your voice. An improved signal-to-noise ratio enables them to catch every single word.
                   </p>
                 </div>
@@ -353,7 +353,7 @@ const ItemDetails = ({ params }) => {
           </div>
 
           {/* Banner Graphic */}
-          <motion.div variants={fadeInUp} className="relative rounded-3xl overflow-hidden aspect-video max-h-[380px] border border-zinc-800/80 shadow-2xl">
+          <motion.div variants={fadeInUp} className="relative rounded-3xl overflow-hidden aspect-video max-h-[380px] border border-line shadow-2xl">
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent z-10" />
             <img
               src="https://images.unsplash.com/photo-1545239351-ef35f43d514b?w=1200&auto=format&fit=crop&q=80"
@@ -372,11 +372,11 @@ const ItemDetails = ({ params }) => {
           whileInView="show"
           viewport={{ once: true, margin: "-100px" }}
           variants={staggerContainer}
-          className="border-t border-zinc-800/80 pt-20"
+          className="border-t border-line pt-20"
         >
           <motion.div variants={fadeInUp} className="flex items-center justify-between mb-10">
-            <h2 className="text-2xl font-bold text-white">You Might Also Like</h2>
-            <Link href="/items" className="text-xs font-bold text-zinc-500 hover:text-white transition-colors flex items-center gap-1">
+            <h2 className="text-2xl font-bold text-ink">You Might Also Like</h2>
+            <Link href="/items" className="text-xs font-bold text-ink-3 hover:text-ink transition-colors flex items-center gap-1">
               View All <span>→</span>
             </Link>
           </motion.div>
@@ -391,14 +391,14 @@ const ItemDetails = ({ params }) => {
                 <motion.div
                   variants={fadeInUp}
                   whileHover={{ y: -5 }}
-                  className="group h-full bg-[#0a0a0a] border border-zinc-800 rounded-2xl p-4 flex flex-col justify-between hover:neon-glow-cyan transition-all cursor-pointer"
+                  className="group h-full bg-surface-2 border border-line rounded-2xl p-4 flex flex-col justify-between hover:shadow-[0_0_20px_rgba(0,243,255,0.2)] transition-all cursor-pointer"
                 >
-                  <div className="aspect-square bg-[#020202] rounded-xl overflow-hidden p-4 mb-4 flex items-center justify-center">
-                    <img src={item.image} alt={item.title} className="max-h-full max-w-full object-contain transition-transform duration-500 group-hover:scale-105 opacity-80 group-hover:opacity-100" />
+                  <div className="aspect-square bg-surface-4 rounded-xl overflow-hidden p-4 mb-4 flex items-center justify-center">
+                    <img src={item.image} alt={item.title} className="max-h-full max-w-full object-contain transition-transform duration-500 group-hover:scale-105 opacity-90 group-hover:opacity-100" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-sm text-white line-clamp-1 group-hover:text-cyan-400 transition-colors">{item.title}</h4>
-                    <span className="block font-mono font-bold text-cyan-400 text-xs mt-2">৳{item.price}.00</span>
+                    <h4 className="font-bold text-sm text-ink line-clamp-1 group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">{item.title}</h4>
+                    <span className="block font-mono font-bold text-cyan-600 dark:text-cyan-400 text-xs mt-2">৳{item.price}.00</span>
                   </div>
                 </motion.div>
               </Link>

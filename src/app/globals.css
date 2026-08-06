@@ -9,6 +9,43 @@
   --color-neon-green: #39ff14;
 }
 
+/* Semantic theme tokens — light mode defaults, dark overrides */
+:root {
+  --bg-surface: #f8fafc;
+  --bg-surface-2: #ffffff;
+  --bg-surface-3: #e4e4e7;
+  --bg-surface-4: #f1f5f9;
+  --ink: #18181b;
+  --ink-2: #52525b;
+  --ink-3: #a1a1aa;
+  --line: #e4e4e7;
+  --line-strong: #d4d4d8;
+}
+
+.dark {
+  --bg-surface: #050505;
+  --bg-surface-2: #0a0a0a;
+  --bg-surface-3: #18181b;
+  --bg-surface-4: #101012;
+  --ink: #ffffff;
+  --ink-2: #d4d4d8;
+  --ink-3: #a1a1aa;
+  --line: #27272a;
+  --line-strong: #3f3f46;
+}
+
+@theme inline {
+  --color-surface: var(--bg-surface);
+  --color-surface-2: var(--bg-surface-2);
+  --color-surface-3: var(--bg-surface-3);
+  --color-surface-4: var(--bg-surface-4);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+}
+
 @utility neon-glow-cyan {
   box-shadow: 0 0 10px theme('colors.cyan.400'), inset 0 0 5px theme('colors.cyan.400');
 }
@@ -43,7 +80,7 @@
 }
 
 body {
-  @apply bg-[#050505] text-white;
+  @apply bg-surface text-ink;
 }
 
 @keyframes shimmer {
@@ -58,17 +95,15 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #0a0a0a;
-  border-left: 1px solid rgba(0, 243, 255, 0.1);
+  background: var(--bg-surface-3);
 }
 
 ::-webkit-scrollbar-thumb {
   background: var(--color-neon-cyan);
   border-radius: 10px;
-  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5), 0 0 10px var(--color-neon-cyan);
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-neon-pink);
-  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5), 0 0 15px var(--color-neon-pink);
 }

@@ -12,13 +12,13 @@ export default function CartPage() {
 
   if (cartItems.length === 0) {
     return (
-      <div className="min-h-screen bg-[#020202] flex flex-col items-center justify-center px-4 border-t border-zinc-900">
+      <div className="min-h-screen bg-surface flex flex-col items-center justify-center px-4 border-t border-line">
         <div className="text-center max-w-md">
           <div className="text-7xl mb-6">🛒</div>
-          <h1 className="text-3xl font-extrabold text-white neon-text-cyan mb-3">
+          <h1 className="text-3xl font-extrabold text-ink mb-3">
             Your Cart is Empty
           </h1>
-          <p className="text-zinc-400 mb-8">
+          <p className="text-ink-2 mb-8">
             Looks like you haven&apos;t added anything yet. Browse our catalog and find something you&apos;ll love.
           </p>
           <Link
@@ -33,21 +33,21 @@ export default function CartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#020202] border-t border-zinc-900">
+    <div className="min-h-screen bg-surface border-t border-line">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-10">
           <div>
-            <h1 className="text-3xl font-extrabold text-white neon-text-cyan">
+            <h1 className="text-3xl font-extrabold text-ink">
               Your Cart
             </h1>
-            <p className="mt-1 text-zinc-400 text-sm">
+            <p className="mt-1 text-ink-2 text-sm">
               {cartCount} item{cartCount !== 1 ? "s" : ""} in your cart
             </p>
           </div>
           <button
             onClick={clearCart}
-            className="text-xs font-bold text-pink-500 hover:text-pink-400 border border-pink-500/30 hover:border-pink-500/60 px-4 py-2 rounded-xl transition-all hover:neon-glow-pink cursor-pointer"
+            className="text-xs font-bold text-pink-500 hover:text-pink-400 border border-pink-500/30 hover:border-pink-500/60 px-4 py-2 rounded-xl transition-all cursor-pointer"
           >
             Clear Cart
           </button>
@@ -59,55 +59,55 @@ export default function CartPage() {
             {cartItems.map((item) => (
               <div
                 key={item.id}
-                className="flex gap-4 bg-[#0a0a0a] border border-zinc-800 rounded-2xl p-4 hover:border-cyan-500/30 transition-all group"
+                className="flex gap-4 bg-surface-2 border border-line rounded-2xl p-4 hover:border-cyan-500/30 transition-all group"
               >
                 {/* Image */}
-                <div className="w-24 h-24 flex-shrink-0 bg-[#050505] rounded-xl overflow-hidden border border-zinc-800 flex items-center justify-center">
+                <div className="w-24 h-24 flex-shrink-0 bg-surface-4 rounded-xl overflow-hidden border border-line flex items-center justify-center">
                   <img
                     src={item.image}
                     alt={item.title}
-                    className="max-h-full max-w-full object-contain opacity-80 group-hover:opacity-100 transition-opacity"
+                    className="max-h-full max-w-full object-contain opacity-90 group-hover:opacity-100 transition-opacity"
                   />
                 </div>
 
                 {/* Info */}
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-bold text-white text-sm leading-tight line-clamp-2 group-hover:text-cyan-400 transition-colors">
+                  <h3 className="font-bold text-ink text-sm leading-tight line-clamp-2 group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">
                     {item.title}
                   </h3>
-                  <span className="inline-block mt-1 text-[10px] font-black text-pink-400 border border-pink-500/30 bg-pink-500/10 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                  <span className="inline-block mt-1 text-[10px] font-black text-pink-600 dark:text-pink-400 border border-pink-500/30 bg-pink-500/10 px-2 py-0.5 rounded-full uppercase tracking-wider">
                     {item.category}
                   </span>
 
                   <div className="mt-3 flex items-center justify-between gap-3 flex-wrap">
                     {/* Qty control */}
-                    <div className="flex items-center gap-2 bg-[#050505] border border-zinc-700 rounded-xl overflow-hidden">
+                    <div className="flex items-center gap-2 bg-surface-3 border border-line-strong rounded-xl overflow-hidden">
                       <button
                         onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                        className="w-8 h-8 flex items-center justify-center text-zinc-300 hover:text-cyan-400 hover:bg-cyan-500/10 transition-all font-bold text-lg cursor-pointer"
+                        className="w-8 h-8 flex items-center justify-center text-ink-2 hover:text-cyan-600 dark:hover:text-cyan-400 hover:bg-cyan-500/10 transition-all font-bold text-lg cursor-pointer"
                       >
                         −
                       </button>
-                      <span className="w-8 text-center text-white font-bold text-sm">
+                      <span className="w-8 text-center text-ink font-bold text-sm">
                         {item.quantity}
                       </span>
                       <button
                         onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                        className="w-8 h-8 flex items-center justify-center text-zinc-300 hover:text-cyan-400 hover:bg-cyan-500/10 transition-all font-bold text-lg cursor-pointer"
+                        className="w-8 h-8 flex items-center justify-center text-ink-2 hover:text-cyan-600 dark:hover:text-cyan-400 hover:bg-cyan-500/10 transition-all font-bold text-lg cursor-pointer"
                       >
                         +
                       </button>
                     </div>
 
                     {/* Line total */}
-                    <span className="font-mono font-black text-white text-base">
+                    <span className="font-mono font-black text-ink text-base">
                       ৳{(item.price * item.quantity).toLocaleString()}
                     </span>
 
                     {/* Remove */}
                     <button
                       onClick={() => removeFromCart(item.id)}
-                      className="text-zinc-600 hover:text-pink-400 transition-colors cursor-pointer p-1.5 hover:bg-pink-500/10 rounded-lg"
+                      className="text-ink-3 hover:text-pink-500 transition-colors cursor-pointer p-1.5 hover:bg-pink-500/10 rounded-lg"
                       title="Remove item"
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -122,27 +122,27 @@ export default function CartPage() {
 
           {/* Order Summary */}
           <div className="lg:col-span-1">
-            <div className="bg-[#0a0a0a] border border-cyan-500/30 rounded-2xl p-6 shadow-[0_0_20px_rgba(0,243,255,0.08)] sticky top-24 space-y-5">
-              <h2 className="font-bold text-lg text-white neon-text-cyan">Order Summary</h2>
+            <div className="bg-surface-2 border border-cyan-500/30 rounded-2xl p-6 shadow-[0_0_20px_rgba(0,243,255,0.08)] sticky top-24 space-y-5">
+              <h2 className="font-bold text-lg text-ink">Order Summary</h2>
 
-              <div className="space-y-3 text-sm border-b border-zinc-800 pb-5">
-                <div className="flex justify-between text-zinc-400">
+              <div className="space-y-3 text-sm border-b border-line pb-5">
+                <div className="flex justify-between text-ink-2">
                   <span>Subtotal ({cartCount} items)</span>
-                  <span className="font-mono text-white">৳{cartTotal.toLocaleString()}</span>
+                  <span className="font-mono text-ink">৳{cartTotal.toLocaleString()}</span>
                 </div>
-                <div className="flex justify-between text-zinc-400">
+                <div className="flex justify-between text-ink-2">
                   <span>Shipping</span>
-                  <span className="text-cyan-400 font-bold">Free</span>
+                  <span className="text-cyan-600 dark:text-cyan-400 font-bold">Free</span>
                 </div>
-                <div className="flex justify-between text-zinc-400">
+                <div className="flex justify-between text-ink-2">
                   <span>Tax (10%)</span>
-                  <span className="font-mono text-white">৳{(cartTotal * 0.1).toFixed(2)}</span>
+                  <span className="font-mono text-ink">৳{(cartTotal * 0.1).toFixed(2)}</span>
                 </div>
               </div>
 
               <div className="flex justify-between items-center">
-                <span className="font-black text-white">Total</span>
-                <span className="font-mono font-black text-xl text-white neon-text-cyan">
+                <span className="font-black text-ink">Total</span>
+                <span className="font-mono font-black text-xl text-ink">
                   ৳{(cartTotal * 1.1).toFixed(2)}
                 </span>
               </div>
@@ -156,19 +156,19 @@ export default function CartPage() {
 
               <Link
                 href="/items"
-                className="block text-center text-xs font-bold text-zinc-500 hover:text-cyan-400 transition-colors mt-2"
+                className="block text-center text-xs font-bold text-ink-3 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors mt-2"
               >
                 ← Continue Shopping
               </Link>
 
               {/* Trust badges */}
-              <div className="border-t border-zinc-800 pt-4 grid grid-cols-3 gap-2 text-center">
+              <div className="border-t border-line pt-4 grid grid-cols-3 gap-2 text-center">
                 {[
                   { icon: "🔒", label: "Secure" },
                   { icon: "🚀", label: "Fast Ship" },
                   { icon: "🛡️", label: "Warranty" },
                 ].map((b) => (
-                  <div key={b.label} className="text-[10px] text-zinc-600 flex flex-col items-center gap-1">
+                  <div key={b.label} className="text-[10px] text-ink-3 flex flex-col items-center gap-1">
                     <span className="text-base">{b.icon}</span>
                     {b.label}
                   </div>

@@ -36,42 +36,42 @@ const STYLES = {
   success: {
     border: "border-cyan-500/60",
     glow: "shadow-[0_0_20px_rgba(0,243,255,0.3)]",
-    icon: "bg-cyan-500/20 text-cyan-400 border border-cyan-500/50",
-    title: "text-cyan-400",
+    icon: "bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 border border-cyan-500/50",
+    title: "text-cyan-600 dark:text-cyan-400",
     bar: "bg-cyan-500",
-    badge: "text-cyan-500/60",
+    badge: "text-cyan-600/70 dark:text-cyan-500/60",
   },
   error: {
     border: "border-pink-500/60",
     glow: "shadow-[0_0_20px_rgba(255,0,128,0.3)]",
-    icon: "bg-pink-500/20 text-pink-400 border border-pink-500/50",
-    title: "text-pink-400",
+    icon: "bg-pink-500/20 text-pink-600 dark:text-pink-400 border border-pink-500/50",
+    title: "text-pink-600 dark:text-pink-400",
     bar: "bg-pink-500",
-    badge: "text-pink-500/60",
+    badge: "text-pink-600/70 dark:text-pink-500/60",
   },
   info: {
     border: "border-purple-500/60",
     glow: "shadow-[0_0_20px_rgba(168,85,247,0.3)]",
-    icon: "bg-purple-500/20 text-purple-400 border border-purple-500/50",
-    title: "text-purple-400",
+    icon: "bg-purple-500/20 text-purple-600 dark:text-purple-400 border border-purple-500/50",
+    title: "text-purple-600 dark:text-purple-400",
     bar: "bg-purple-500",
-    badge: "text-purple-500/60",
+    badge: "text-purple-600/70 dark:text-purple-500/60",
   },
   cart: {
     border: "border-cyan-500/60",
     glow: "shadow-[0_0_20px_rgba(0,243,255,0.3)]",
-    icon: "bg-cyan-500/20 text-cyan-400 border border-cyan-500/50",
-    title: "text-cyan-400",
+    icon: "bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 border border-cyan-500/50",
+    title: "text-cyan-600 dark:text-cyan-400",
     bar: "bg-cyan-500",
-    badge: "text-cyan-500/60",
+    badge: "text-cyan-600/70 dark:text-cyan-500/60",
   },
   warning: {
     border: "border-yellow-500/60",
     glow: "shadow-[0_0_20px_rgba(234,179,8,0.3)]",
-    icon: "bg-yellow-500/20 text-yellow-400 border border-yellow-500/50",
-    title: "text-yellow-400",
+    icon: "bg-yellow-500/20 text-yellow-600 dark:text-yellow-400 border border-yellow-500/50",
+    title: "text-yellow-600 dark:text-yellow-400",
     bar: "bg-yellow-500",
-    badge: "text-yellow-500/60",
+    badge: "text-yellow-600/70 dark:text-yellow-500/60",
   },
 };
 
@@ -84,7 +84,7 @@ function ToastTile({ toast, onClose }) {
     <div
       className={`
         relative flex items-start gap-3 w-80 max-w-[calc(100vw-2rem)]
-        bg-[#0a0a0a]/95 backdrop-blur-xl border ${s.border} ${s.glow}
+        bg-surface-2/95 backdrop-blur-xl border ${s.border} ${s.glow}
         rounded-2xl p-4 overflow-hidden
         animate-[slideInRight_0.3s_cubic-bezier(0.22,1,0.36,1)_forwards]
       `}
@@ -104,14 +104,14 @@ function ToastTile({ toast, onClose }) {
         </p>
         <p className={`text-sm font-bold ${s.title} mt-0.5`}>{toast.title}</p>
         {toast.message && (
-          <p className="text-xs text-zinc-400 mt-0.5 leading-relaxed">{toast.message}</p>
+          <p className="text-xs text-ink-2 mt-0.5 leading-relaxed">{toast.message}</p>
         )}
       </div>
 
       {/* Close */}
       <button
         onClick={() => onClose(toast.id)}
-        className="flex-shrink-0 text-zinc-600 hover:text-zinc-300 transition-colors cursor-pointer mt-0.5"
+        className="flex-shrink-0 text-ink-3 hover:text-ink transition-colors cursor-pointer mt-0.5"
       >
         <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
