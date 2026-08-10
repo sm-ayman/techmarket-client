@@ -105,7 +105,9 @@ const OrdersPage = () => {
   });
 
   // Stats
-  const totalRevenue = orders.reduce((sum, o) => sum + (o.total || 0), 0);
+  const totalRevenue = orders
+    .filter((o) => o.status === "delivered")
+    .reduce((sum, o) => sum + (o.total || 0), 0);
   const pendingCount = orders.filter((o) => o.status === "pending").length;
   const deliveredCount = orders.filter((o) => o.status === "delivered").length;
 
