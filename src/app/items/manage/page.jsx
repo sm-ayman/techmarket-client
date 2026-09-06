@@ -226,6 +226,52 @@ const ManageItems = () => {
     }
   };
 
+  const handleExportCSV = () => {
+    const rows = products.length > 0 ? products : [];
+    if (rows.length === 0) return;
+
+    const escape = (value) => {
+      const str = value == null ? "" : String(value);
+      if (str.includes('"') || str.includes(",") || str.includes("\n") || str.includes("\r")) {
+        return `"${str.replace(/"/g, '""')}"`;
+      }
+      return str;
+    };
+
+    const headers = [
+      "Product Name", "Category", "Price (BDT)",
+      "Stock", "Image URL", "Specification",
+    ];
+
+    const csvRows = rows.map((p) => {
+      const stockInfo = getStockInfo(p);
+      const specs = p.specs || {};
+      const specEntries = Object.entries(specs)
+        .map(([k, v]) => `${k}: ${v}`)
+        .join(" | ");
+      const imageUrl = p.image || "";
+      return [
+        escape(p.title),
+        escape(p.category),
+        escape(p.price),
+        escape(stockInfo.units),
+        escape(imageUrl),
+        escape(specEntries),
+      ].join(",");
+    });
+
+    const csvContent = [headers.join(","), ...csvRows].join("\n");
+
+    const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `products_export_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="bg-surface text-ink min-h-screen font-sans border-t border-line">
       <div className="flex flex-col lg:flex-row">
@@ -357,7 +403,7 @@ const ManageItems = () => {
                 <button className="px-4 py-2.5 bg-surface-3 border border-line text-ink-3 rounded-xl text-xs font-bold hover:text-ink transition-colors cursor-pointer">
                   🎛️ Columns
                 </button>
-                <button className="px-4 py-2.5 bg-surface-3 border border-line text-ink-3 rounded-xl text-xs font-bold hover:text-ink transition-colors cursor-pointer">
+                <button onClick={handleExportCSV} disabled={productsLoading || products.length === 0} className="px-4 py-2.5 bg-surface-3 border border-line text-ink-3 rounded-xl text-xs font-bold hover:text-ink transition-colors cursor-pointer">
                   📤 Export
                 </button>
               </div>

@@ -178,30 +178,81 @@ const OrdersPage = () => {
     );
   };
 
-  const handleExportCSV = () => {
-    if (orders.length === 0) return;
-    
-    const headers = ["Order ID", "Date", "Customer Name", "Customer Email", "Status", "Items", "Total (BDT)"];
-    
-    const csvContent = [
-      headers.join(","),
-      ...orders.map(o => {
-        const date = o.createdAt ? new Date(o.createdAt).toLocaleDateString() : "";
-        const name = `"${o.contact?.name || ''}"`;
-        const email = `"${o.contact?.email || ''}"`;
-        const itemsCount = o.items?.length || 0;
-        return `${o.orderId},${date},${name},${email},${o.status},${itemsCount},${o.total}`;
-      })
-    ].join("\n");
+  const escapeCSV = (value) => {
+    const str = value == null ? "" : String(value);
+    if (/[",\n\r]/.test(str)) {
+      return `"${str.replace(/"/g, '""')}"`;
+    }
+    return str;
+  };
 
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", `orders_export_${new Date().toISOString().split('T')[0]}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const handleExportCSV = async () => {
+    try {
+      toast({ type: "info", title: "Preparing Export", message: "Fetching all matching orders..." });
+
+      const params = new URLSearchParams({ sortBy, sortOrder });
+      if (startDate) params.append('startDate', startDate);
+      if (endDate) params.append('endDate', endDate);
+      if (searchQuery) params.append('search', searchQuery);
+      if (filterStatus !== 'All') params.append('status', filterStatus);
+
+      const res = await fetch(`${API_URL}/orders?${params.toString()}`);
+      if (!res.ok) throw new Error("Failed to fetch orders");
+      const data = await res.json();
+      const allOrders = Array.isArray(data) ? data : (data.data || []);
+
+      if (allOrders.length === 0) {
+        toast({ type: "info", title: "No Data", message: "No orders matched to export." });
+        return;
+      }
+
+      const headers = [
+        "Order ID", "Date",
+        "Customer Name", "Customer Email", "Customer Phone",
+        "Shipping Address", "City", "ZIP",
+        "Items", "Item Details",
+        "Subtotal (BDT)", "Tax (BDT)", "Total (BDT)",
+        "Payment Method", "Status",
+      ];
+
+      const rows = allOrders.map(o => {
+        const itemNames = (o.items || []).map(i => i.title).join(" | ");
+        const itemDetails = (o.items || []).map(i => `${i.title} x${i.quantity} @ ${i.price}`).join(" ; ");
+        return [
+          o.orderId,
+          o.createdAt ? new Date(o.createdAt).toLocaleDateString() : "",
+          o.contact?.name || "",
+          o.contact?.email || "",
+          o.contact?.phone || "",
+          o.shipping?.address || "",
+          o.shipping?.city || "",
+          o.shipping?.zip || "",
+          itemNames,
+          itemDetails,
+          o.subtotal ?? "",
+          o.tax ?? "",
+          o.total ?? "",
+          o.payment?.method || o.payment || "",
+          o.status,
+        ].map(escapeCSV).join(",");
+      });
+
+      const csvContent = [headers.join(","), ...rows].join("\n");
+
+      const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `orders_export_${new Date().toISOString().split('T')[0]}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      toast({ type: "success", title: "Export Complete", message: `${allOrders.length} orders exported.` });
+    } catch (err) {
+      console.error(err);
+      toast({ type: "error", title: "Export Failed", message: "Could not export orders." });
+    }
   };
 
   if (authLoading || !user) {
