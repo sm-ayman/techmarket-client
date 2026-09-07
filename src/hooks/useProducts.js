@@ -185,7 +185,7 @@ export function useProducts() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState([]);
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://techmarket-server.vercel.app";
 
   useEffect(() => {
     const fetchProducts = async () => {
