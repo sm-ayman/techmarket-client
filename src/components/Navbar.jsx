@@ -2,11 +2,12 @@
 
 import React, { useContext, useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { AuthContext } from "../context/AuthContext";
 import { CartContext } from "../context/CartContext";
 import { ThemeContext } from "../context/ThemeContext";
 import { ToastContext } from "../context/ToastContext";
+import { useProducts } from "../hooks/useProducts";
 
 const Navbar = () => {
   const { user, logoutUser, loading: authLoading } = useContext(AuthContext);
@@ -17,8 +18,15 @@ const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const [mode, setMode] = useState("hybrid");
+  const [results, setResults] = useState([]);
+  const [searching, setSearching] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
   const dropdownRef = useRef(null);
+  const searchInputRef = useRef(null);
+  const { searchProducts } = useProducts();
 
   const isAdmin = user?.email === "admin@techmarket.com";
 
@@ -34,9 +42,51 @@ const Navbar = () => {
 
   // Close mobile menu on route change
   useEffect(() => {
-    setMobileMenuOpen(false);
-    setDropdownOpen(false);
+    const t = setTimeout(() => {
+      setMobileMenuOpen(false);
+      setDropdownOpen(false);
+      setIsSearchOpen(false);
+    }, 0);
+    return () => clearTimeout(t);
   }, [pathname]);
+
+  useEffect(() => {
+    if (!isSearchOpen) return;
+    searchInputRef.current?.focus();
+    const q = query.trim();
+    const t = setTimeout(async () => {
+      if (q.length < 2) {
+        setResults([]);
+        setSearching(false);
+        return;
+      }
+      setSearching(true);
+      try {
+        const data = await searchProducts(q, { mode, limit: 6 });
+        setResults(Array.isArray(data) ? data : []);
+      } catch {
+        setResults([]);
+      } finally {
+        setSearching(false);
+      }
+    }, 350);
+    return () => clearTimeout(t);
+  }, [query, mode, isSearchOpen, searchProducts]);
+
+  const submitSearch = (q = query) => {
+    const term = q.trim();
+    if (!term) return;
+    setIsSearchOpen(false);
+    setMobileMenuOpen(false);
+    router.push(`/items?search=${encodeURIComponent(term)}&mode=${mode}`);
+  };
+
+  const pickResult = (p) => {
+    setIsSearchOpen(false);
+    setQuery("");
+    setResults([]);
+    router.push(`/items/${p.id}`);
+  };
 
   const handleLogout = async () => {
     try {
@@ -262,6 +312,11 @@ const Navbar = () => {
                 </span>
               )}
             </Link>
+            <button onClick={() => setIsSearchOpen(true)} title="Search products" className="p-2 text-ink-2 hover:bg-surface-3 rounded-lg cursor-pointer">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </button>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-2 text-ink-2 hover:bg-surface-3 rounded-lg cursor-pointer"
@@ -282,19 +337,73 @@ const Navbar = () => {
 
       {/* ── Search overlay ─────────────────────────────────── */}
       {isSearchOpen && (
-        <div className="absolute top-full left-0 w-full bg-surface-2/95 backdrop-blur-md border-b border-cyan-500/40 shadow-[0_10px_30px_rgba(0,243,255,0.1)] p-4 flex gap-2">
-          <input
-            type="text"
-            placeholder="Search products..."
-            className="flex-1 bg-surface-3 border border-cyan-500/30 text-ink px-4 py-2 rounded-xl focus:outline-none focus:border-cyan-500"
-            autoFocus
-          />
-          <button
-            onClick={() => setIsSearchOpen(false)}
-            className="px-4 py-2 bg-pink-500 text-white font-bold rounded-xl hover:bg-pink-600 transition-all cursor-pointer"
-          >
-            Close
-          </button>
+        <div className="absolute top-full left-0 w-full bg-surface-2/95 backdrop-blur-md border-b border-cyan-500/40 shadow-[0_10px_30px_rgba(0,243,255,0.1)] p-4">
+          <div className="mx-auto max-w-3xl">
+            <div className="flex gap-2">
+              <input
+                ref={searchInputRef}
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") submitSearch();
+                  if (e.key === "Escape") setIsSearchOpen(false);
+                }}
+                placeholder="Try 'phone for gaming'..."
+                className="flex-1 bg-surface-3 border border-cyan-500/30 text-ink px-4 py-2 rounded-xl focus:outline-none focus:border-cyan-500"
+              />
+              <button
+                onClick={() => submitSearch()}
+                className="px-4 py-2 bg-cyan-500 text-black font-bold rounded-xl hover:bg-cyan-400 transition-all cursor-pointer"
+              >
+                Go
+              </button>
+              <button
+                onClick={() => setIsSearchOpen(false)}
+                className="px-4 py-2 bg-pink-500 text-white font-bold rounded-xl hover:bg-pink-600 transition-all cursor-pointer"
+              >
+                Close
+              </button>
+            </div>
+            <div className="flex gap-1.5 mt-2">
+              {["hybrid", "keyword", "semantic"].map((m) => (
+                <button
+                  key={m}
+                  onClick={() => setMode(m)}
+                  className={`rounded-md px-2.5 py-1 text-[10px] font-black uppercase tracking-wider cursor-pointer ${mode === m ? "bg-cyan-500 text-black" : "bg-surface-3 text-ink-3 border border-line"}`}
+                >
+                  {m === "hybrid" ? "✨ Hybrid" : m === "keyword" ? "🔤 Key" : "🧠 AI"}
+                </button>
+              ))}
+              {searching && <span className="text-[11px] text-cyan-500 ml-auto animate-pulse">🧠 AI ranking…</span>}
+            </div>
+            {results.length > 0 && (
+              <div className="mt-2 overflow-hidden rounded-xl border border-line bg-surface-3">
+                {results.map((p) => (
+                  <button
+                    key={p.id}
+                    onClick={() => pickResult(p)}
+                    className="flex w-full items-center gap-3 px-3 py-2 text-left hover:bg-cyan-500/10 transition-colors cursor-pointer"
+                  >
+                    <img src={p.image} alt="" className="h-10 w-10 rounded-lg object-cover" />
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-sm font-bold text-ink">{p.title}</span>
+                      <span className="block text-[11px] text-ink-3">{p.category} · ৳{p.price}</span>
+                    </span>
+                    {typeof p.score === "number" && (
+                      <span className="text-[10px] font-black text-cyan-500">{(p.score * 100).toFixed(0)}%</span>
+                    )}
+                  </button>
+                ))}
+                <button
+                  onClick={() => submitSearch()}
+                  className="w-full px-3 py-2 text-center text-xs font-bold text-cyan-500 hover:bg-cyan-500/10 cursor-pointer"
+                >
+                  See all results for “{query.trim()}” →
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       )}
 

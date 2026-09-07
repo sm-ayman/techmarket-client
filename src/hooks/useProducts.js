@@ -307,5 +307,21 @@ export function useProducts() {
     }
   };
 
-  return { products, loading, addProduct, deleteProduct, updateProduct, categories, fetchCategories, addCategory, deleteCategory };
+  // Hybrid search: keyword + AI semantic (vector) ranking, server-side.
+  // mode: "hybrid" | "keyword" | "semantic"
+  const searchProducts = useCallback(
+    async (query, { category, mode = "hybrid", limit = 50 } = {}) => {
+      const params = new URLSearchParams();
+      if (query) params.append("search", query);
+      if (category && category !== "All") params.append("category", category);
+      params.append("mode", mode);
+      params.append("limit", String(limit));
+      const res = await fetch(`${API_URL}/products?${params.toString()}`);
+      if (!res.ok) throw new Error("Search failed");
+      return res.json();
+    },
+    [API_URL]
+  );
+
+  return { products, loading, addProduct, deleteProduct, updateProduct, categories, fetchCategories, addCategory, deleteCategory, searchProducts };
 }

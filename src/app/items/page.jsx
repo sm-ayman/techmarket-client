@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useContext, Suspense } from "react";
+import React, { useState, useContext, Suspense, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
@@ -74,7 +74,7 @@ const fadeInUp = {
 };
 
 const ItemsContent = () => {
-  const { products, loading } = useProducts();
+  const { products, loading, searchProducts } = useProducts();
   const { addToCart } = useContext(CartContext);
   const { user } = useContext(AuthContext);
   const { toast } = useContext(ToastContext);
@@ -82,14 +82,53 @@ const ItemsContent = () => {
   const router = useRouter();
   const isAdmin = user?.email === "admin@techmarket.com";
 
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(searchParams.get("search") || "");
+  const [searchMode, setSearchMode] = useState(
+    ["hybrid", "keyword", "semantic"].includes(searchParams.get("mode")) ? searchParams.get("mode") : "hybrid"
+  );
+  const [serverResults, setServerResults] = useState(null);
+  const [searching, setSearching] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(
     searchParams.get("category") || "All"
   );
   const [maxPrice, setMaxPrice] = useState(null);
   const [minRating, setMinRating] = useState(0);
 
+  const urlSearch = searchParams.get("search") || "";
+  const urlMode = searchParams.get("mode");
+  const urlCategory = searchParams.get("category") || "All";
+
+  useEffect(() => {
+    const t = setTimeout(() => {
+      setSearchQuery(urlSearch);
+      if (["hybrid", "keyword", "semantic"].includes(urlMode)) setSearchMode(urlMode);
+      setSelectedCategory(urlCategory);
+    }, 0);
+    return () => clearTimeout(t);
+  }, [urlSearch, urlMode, urlCategory]);
+
   const categories = ["All", ...new Set(products.map((p) => p.category))];
+
+  useEffect(() => {
+    const q = searchQuery.trim();
+    const t = setTimeout(async () => {
+      if (q.length < 2) {
+        setServerResults(null);
+        setSearching(false);
+        return;
+      }
+      setSearching(true);
+      try {
+        const data = await searchProducts(q, { category: selectedCategory, mode: searchMode });
+        setServerResults(data);
+      } catch {
+        setServerResults(null);
+      } finally {
+        setSearching(false);
+      }
+    }, 400);
+    return () => clearTimeout(t);
+  }, [searchQuery, selectedCategory, searchMode, searchProducts]);
 
   // Dynamic upper bound so expensive items (e.g. RTX 5090) aren't filtered out
   const priceCeil = products.length
@@ -97,10 +136,14 @@ const ItemsContent = () => {
     : 2000;
   const currentMaxPrice = maxPrice === null ? priceCeil : maxPrice;
 
-  const filteredProducts = products.filter((p) => {
-    const matchesSearch =
-      p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.shortDescription.toLowerCase().includes(searchQuery.toLowerCase());
+  const baseList = serverResults ?? products;
+  const isHybridActive = serverResults !== null;
+
+  const filteredProducts = baseList.filter((p) => {
+    const matchesSearch = isHybridActive
+      ? true
+      : p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.shortDescription.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory === "All" || p.category === selectedCategory;
     const matchesPrice = p.price <= currentMaxPrice;
     const matchesRating = p.rating >= minRating;
@@ -146,11 +189,31 @@ const ItemsContent = () => {
             <label className="block text-xs font-bold text-ink-3 uppercase tracking-wider mb-2">Search</label>
             <input
               type="text"
-              placeholder="Search product..."
+              placeholder="Try 'phone for gaming'..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full px-3 py-2 bg-surface-3 border border-cyan-500/30 text-ink rounded-lg focus:outline-none focus:border-cyan-500 dark:focus:border-cyan-400 transition-all placeholder-ink-3 text-sm"
             />
+            <div className="flex gap-1.5 mt-2">
+              {["hybrid", "keyword", "semantic"].map((m) => (
+                <button
+                  key={m}
+                  onClick={() => setSearchMode(m)}
+                  title={m === "hybrid" ? "Keyword + AI semantic" : m === "keyword" ? "Exact keyword only" : "AI meaning only"}
+                  className={`flex-1 rounded-md px-2 py-1 text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer ${
+                    searchMode === m
+                      ? "bg-cyan-500 text-black shadow-[0_0_10px_rgba(0,243,255,0.4)]"
+                      : "bg-surface-3 text-ink-3 border border-line hover:border-cyan-500/50"
+                  }`}
+                >
+                  {m === "hybrid" ? "✨ Hybrid" : m === "keyword" ? "🔤 Key" : "🧠 AI"}
+                </button>
+              ))}
+            </div>
+            {searching && <p className="text-[11px] text-cyan-600 dark:text-cyan-400 mt-1.5 animate-pulse">🧠 AI ranking…</p>}
+            {isHybridActive && !searching && (
+              <p className="text-[11px] text-ink-3 mt-1.5">{filteredProducts.length} results · {searchMode} search</p>
+            )}
           </div>
 
           <div>
@@ -247,6 +310,11 @@ const ItemsContent = () => {
                         <span className="text-[10px] font-black text-ink-3 uppercase tracking-wider">
                           Rating: <span className="text-pink-500 dark:text-pink-400">{p.rating} ⭐</span>
                         </span>
+                        {isHybridActive && typeof p.score === "number" && (
+                          <span className="text-[10px] font-black text-cyan-600 dark:text-cyan-400 bg-cyan-500/10 border border-cyan-500/30 rounded-full px-2 py-0.5">
+                            {(p.score * 100).toFixed(0)}% match
+                          </span>
+                        )}
                       </div>
                       <h3 className="font-bold text-ink line-clamp-1 group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">{p.title}</h3>
                       <p className="mt-2 text-xs text-ink-2 line-clamp-2 leading-relaxed">{p.shortDescription}</p>
