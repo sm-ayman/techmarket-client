@@ -457,7 +457,7 @@ const BuildSetup = ({ products }) => {
                   </option>
                   {slot.options.map((opt) => (
                     <option key={opt.id} value={opt.id}>
-                      {opt.title} — ${opt.price}
+                      {opt.title} — ৳{opt.price}
                     </option>
                   ))}
                 </select>
@@ -482,13 +482,13 @@ const BuildSetup = ({ products }) => {
                     <p className="text-sm text-ink truncate">{p.title}</p>
                     <p className="text-xs text-ink-3">{p.category}</p>
                   </div>
-                  <span className="font-mono text-sm text-cyan-600 dark:text-cyan-400">${p.price}</span>
+                  <span className="font-mono text-sm text-cyan-600 dark:text-cyan-400">৳{p.price}</span>
                 </li>
               ))}
             </ul>
             <div className="flex items-center justify-between border-t border-line pt-4 mb-5">
               <span className="text-ink-2 text-sm font-bold uppercase tracking-wider">Total</span>
-              <span className="font-mono font-black text-2xl text-ink">${total}</span>
+              <span className="font-mono font-black text-2xl text-ink">৳{total}</span>
             </div>
             <button
               onClick={handleAddSetup}
